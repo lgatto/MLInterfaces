@@ -1,0 +1,196 @@
+%
+% NOTE -- ONLY EDIT .Rnw!!!
+% .tex file will get overwritten.
+%
+%\VignetteIndexEntry{MLInterfaces Primer}
+%\VignetteDepends{}
+%\VignetteKeywords{Genomics}
+%\VignettePackage{MLInterfaces}
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+
+\bibliographystyle{plainnat} 
+ 
+\begin{document}
+%\setkeys{Gin}{width=0.55\textwidth}
+
+\title{\Rpackage{MLInterfaces}: towards uniform behavior of machine
+learning tools in R}
+\author{VJ Carey, J Mar, R Gentleman}
+\maketitle
+
+\section{Introduction}
+
+We define machine learning methods as data based algorithms for
+prediction.  Given data D, a generic machine learning procedure
+MLP produces a function ML = MLP(D).  For D', data with
+structure comparable to D, ML(D') is a set of predictions
+about elements of D'.
+
+To be slightly more precise, a dataset
+D is a set of records.  Each record
+has the same structure, consisting of a set of features (predictors)
+and one or more predictands (classes or responses of interest, to
+be predicted).  MLP uses features, predictands, and
+tuning parameter settings to construct
+the function ML.  ML is to be a function from features only
+to predictands.
+
+There are many packages and functions in R that provide
+machine learning procedures.  They conform to the abstract
+setup described above, but with great diversity in the
+details of implementation and use.  The input requirements
+and the output objects differ from procedure to procedure.
+
+Our objective in \Rpackage{MLInterfaces} is to simplify
+the use and evaluation of machine learning methods by providing
+specifications and implementations for a uniform interface.
+At present, we want to simplify use of machine learning
+with microarray data, assumed to take the form of {\tt exprSet}s.
+The present implementation addresses the following concerns:
+\begin{itemize}
+\item simplify the selection of the predictand from
+{\tt exprSet} structure;
+\item simplify (in fact, require) decomposition of
+input data into training and test set, with output
+emphasizing test set results;
+\item provide a uniform output structure.
+\end{itemize}
+
+Several other concerns will be addressed as the
+project matures.  Among these are:
+\begin{itemize}
+\item generic interfaces for cross-validation (exploiting
+native resources when available)
+\item simplified specification of criteria for outlier
+and doubt predictions
+\item appropriate visualizations.
+\end{itemize}
+
+To give a flavor of the current implementation, we
+perform a few runs with different machine learning
+tools.  We will use 60 genes drawn arbitrarily
+from Golub's data.
+<<>>=
+library(MLInterfaces)
+library(golubEsets)
+data(golubMerge)
+smallG <- golubMerge[200:259,]
+smallG
+@
+Here is how $k$-nearest neighbors is used
+to get predictions of ALL status training with the
+first 40 records:
+\clearpage
+<<>>=
+knnB( smallG, "ALL.AML", trainInd=1:40 )
+@
+Additional parameters can be supplied as accepted by
+the target procedure in package \Rpackage{class}.
+To use a neural net in the same context,
+<<>>=
+nnetB( smallG, "ALL.AML", trainInd=1:40, size=4, decay=.01 )
+@
+\section{Usage}
+The basic call sequence for supervised learning
+for {\tt exprSet}s is
+\begin{verbatim}
+methB(eset, tag, trainInd, ...)
+\end{verbatim}
+The parameter {\tt tag} is the name of the {\tt phenoData}
+element to be used as predictand.  Parameter {\tt trainInd}
+is an integer sequence isolating the samples to be used for
+training.
+For unsupervised learning,
+\begin{verbatim}
+methB(eset, k, height, ...)
+\end{verbatim}
+The idea here is that one may specify a number {\tt k}
+of clusters, or a height of a clustering tree that will
+be cut to form clusters from the {\tt eset} samples.
+Note that there is no training/test dichotomy for clustering
+at this stage.
+\section{Classes}
+The S4 class structure is based on a few observations.
+First, there are two basic types of task covered in machine
+learning, `supervised' (MLP uses known classes and ML
+returns predictand instances) and `unsupervised' (MLP groups
+data based on features, no predictand data assumed; ML can
+tell which group D' is closest to).  
+Second, there is an important concept of `quality' of
+prediction or clustering events, and it will be important
+to allow flexible representation of different approaches to
+quality measurement by machine learning procedures.
+Third, there are
+various things that one always wants access to, regardless
+of the underlying MLP (call information, R object constituting
+the `fit' to the training data).  This leads to general classes {\tt MLOutput},
+which collects the most general information of interest,
+{\tt MLLabel}, which represents predictand
+or clustergroup information, and {\tt MLScore}, which represents
+quality information.  Classes {\tt classifOutput} and
+{\tt clustOutput} manage the results of supervised and unsupervised
+learning respectively.
+
+\subsection{MLOutput}
+Extended by all machine learning output containers.
+<<>>=
+getClass("MLOutput")
+@
+\subsubsection{MLLabel}
+Identifies the results of machine learning labeling
+events, either in the form of class labels or
+integer cluster indices.
+<<>>=
+getClass("MLLabel")
+@
+\subsubsection{MLScore}
+Identifies quality information about classification
+or clustering events.  This can range from a
+scalar (agglomeration coefficient, not yet used)
+to a vector (vote proportions in knn) to a matrix
+(posterior probabilities of class assignments)
+to an array (pamr thresholded posteriors).
+<<>>=
+getClass("MLScore")
+@
+\subsection{classifOutput}
+Container for classification results.
+<<>>=
+getClass("classifOutput")
+@
+\subsection{clustOutput}
+Container for clustering results.
+<<>>=
+getClass("clustOutput")
+@
+\end{document}
+
