@@ -127,7 +127,7 @@ knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
 \arguments{
   \item{exprObj}{An instance of the \code{exprset} class. }
   \item{classifLab}{A vector of class labels. }
-  \item{trainInd}{Which are the training set. }
+  \item{trainInd}{ integer vector: Which elements are the training set. }
   \item{k}{The number of nearest neighbors. }
   \item{l}{See \code{knn} for a complete description. }
   \item{prob}{See \code{knn} for a complete description. }
