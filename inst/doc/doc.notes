@@ -1,0 +1,24 @@
+
+Documentation project: MLInterfaces
+
+1) we need a manageable documentation approach for this
+"broker" package.  This package brokers relationships
+between data formats (like exprSets) and requirements of
+machine learning procedures.
+
+There are two main classes of activity: clustering and
+classification.  There are two major output object classes
+(clustOutput, classifOutput).  I propose that the
+man pages classifIntf.Rd and clusterIntf.Rd are the
+workhorses for documenting this package.
+
+2) an example clusterIntf.Rd already exists.  We want
+well-linked documentation that will get this through
+R CMD check.
+
+3) the knnB.Rd exists only as a receptacle for examples
+to be run.  it shows that all the functions work.  but
+eventually it should be removed.
+
+4) some additional functionality like xval-methods is documented
+separately.
