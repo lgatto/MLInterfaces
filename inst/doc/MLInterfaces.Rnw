@@ -51,7 +51,7 @@ learning tools in R}
 
 We define machine learning methods as data based algorithms for
 prediction.  Given data D, a generic machine learning procedure
-MLP produces a function ML = MLP(D).  For D', data with
+MLP produces a function ML = MLP(D).  For data D' with
 structure comparable to D, ML(D') is a set of predictions
 about elements of D'.
 
