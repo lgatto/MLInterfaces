@@ -51,6 +51,9 @@ svmB( smallG, "ALL.AML", 1:40 )
 baggingB( smallG, "ALL.AML", 1:40 )
 ipredknnB( smallG, "ALL.AML", 1:40 )
 sldaB( smallG, "ALL.AML", 1:40 )
+ldaB( smallG, "ALL.AML", 1:40 )
+qdaB( smallG[1:10,], "ALL.AML", 1:40 )
+pamrB( smallG, "ALL.AML", 1:40 )
 }
 \keyword{ classif }
 

@@ -20,10 +20,12 @@ newGroupIndex <- function(x) new("groupIndex", x)
 
 setClass("MLScore", "VIRTUAL")
 setClass("probMat", contains=c("MLScore", "matrix"))
+setClass("probArray", contains=c("MLScore", "array"))
 setClass("membMat", contains=c("MLScore", "matrix"))
 setClass("qualScore", contains=c("MLScore", "numeric"))
 setClass("silhouetteVec", contains=c("MLScore", "numeric"))
 newProbMat <- function(x) if(length(x)>0)new("probMat", x) else new("probMat")
+newProbArray <- function(x) if(length(x)>0)new("probArray", x) else new("probArray")
 newMembMat <- function(x) if(length(x)>0)new("membMat", x) else new("membMat")
 newQualScore <- function(x) if(length(x)>0)new("qualScore", x) else new("qualScore")
 newSilhouetteVec <- function(x) if(length(x)>0)new("silhouetteVec", x) else new("silhouetteVec")
@@ -31,6 +33,10 @@ newSilhouetteVec <- function(x) if(length(x)>0)new("silhouetteVec", x) else new(
 setMethod("show", "probMat", function(object) {
 	cat("summary of class membership probabilities:\n")
 	print(apply(object,2,summary))
+})
+setMethod("show", "probArray", function(object) {
+	cat("dimensions of (threshold-based) class membership probabilities:\n")
+	print(dim(object))
 })
 setMethod("show", "membMat", function(object) {
 	cat("summary of cluster membership scores:\n")

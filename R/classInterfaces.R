@@ -1,4 +1,27 @@
 
+knnP <- function(train, test, cl, k=1, l=0, prob=FALSE, use.all=TRUE) {
+#
+# idea here is to allow knn to work with predict method using new data.
+# create a closure that knows about the training data, and later evaluate
+# it on any conforming test data
+#
+ ans <- class::knn(train,test,cl,k,l,prob,use.all)
+ nf <- function(train,cl,k,l,prob,use.all) function(test)
+	 class::knn(train,test,cl,k,l,prob,use.all)
+ attr(ans, "predfun") <- nf(train,cl,k,l,prob,use.all)
+ class(ans) <- c("knnP", "factor")
+ ans
+}
+
+predict.knnP <- function(object, newdata) 
+	attr(object, "predfun")(newdata)
+
+print.knnP <- function(x, ...)
+	{
+	cat("instance of knnP [predictable knn object]\n")
+	NextMethod()
+	}
+
 setGeneric("knnB", function(exprObj, classifLab, trainInd, 
 		k=1, l=1, prob=TRUE, use.all=TRUE, metric="euclidean"){
 			standardGeneric("knnB")
@@ -13,7 +36,7 @@ setMethod("knnB", c("exprSet", "character", "integer",
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
 		dis <- dist(testDat, method=metric)
-		out <- class::knn(trainDat, testDat, cl, k, l, prob, use.all)
+		out <- knnP(trainDat, testDat, cl, k, l, prob, use.all)
                 new("classifOutput", method="knn", 
 			predLabels=newPredClass(as.character(out)), 
 			predScores=newQualScore(attr(out,"prob")),
