@@ -8,6 +8,7 @@
 \alias{clustOutput-class}
 \alias{cshell-class}
 \alias{diana-class}
+\alias{dist-class}
 \alias{fclust-class}
 \alias{gbm-class}
 \alias{groupIndex-class}

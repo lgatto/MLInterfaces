@@ -60,6 +60,7 @@ setMethod("show", "silhouetteVec", function(object) {
 # about the MLLabel and MLScore output classes,
 # but now retains call, fitted model object, and dist
 #
+setOldClass("dist")
 setClass("MLOutput", representation(method="character",
 			RObject="ANY", call="call", distMat="dist"), "VIRTUAL")
 

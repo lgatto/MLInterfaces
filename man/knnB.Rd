@@ -138,7 +138,7 @@ knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
   See \code{\link{knn}} for a complete description.
 }
 \value{
- An object of class \code{\link{classifOutput}}.
+ An object of class \code{\link{classifOutput-class}}.
 }
 
 \author{Jess Mar, VJ Carey <stvjc@channing.harvard.edu>}
