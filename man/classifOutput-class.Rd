@@ -4,11 +4,14 @@
 \alias{show,classifOutput-method}
 \alias{silhouetteB,classifOutput-method}
 
-\title{Class "classifOutput" ~~~ }
-\description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
+\title{Class "classifOutput": container for output of
+classification procedures in R }
+\description{  container with uniform contents for classifier outputs }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("classifOutput", ...)}.
-    ~~ describe objects here ~~ 
+These objects include label vectors for test set elements, scores on labeling
+events, call history information, native classifier object access,
+and a distance matrix for test set feature vectors.
 }
 \section{Slots}{
   \describe{
@@ -34,17 +37,10 @@ of test set feature vectors }
     \item{silhouetteB}{\code{signature(out = "classifOutput")}: ... }
   }
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ }
-
- ~Make other sections like Warning with \section{Warning }{....} ~
+\author{ VJ Carey <stvjc@channing.harvard.edu> }
 
 \seealso{
-  ~~objects to See Also as \code{\link{~~fun~~}}, ~~~
-  or \code{\link{CLASSNAME-class}} for links to other classes
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
 }
 \keyword{classes}

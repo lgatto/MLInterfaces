@@ -1,19 +1,132 @@
 \name{knnB}
+\alias{allClass}
+ \alias{balKfold}
+ \alias{chkMLInterfaceProc}
+ \alias{claraB}
+ \alias{confuMat}
+ \alias{cvB}
+ \alias{distMat}
+ \alias{fannyB}
+ \alias{getGrid}
+ \alias{isoMDSB}
+ \alias{knn1B}
+ \alias{knn.cvB}
+ \alias{knnP}
+ \alias{lcaB}
+ \alias{logitboostB}
+ \alias{lvq2B}
+ \alias{lvq3B}
+ \alias{makeCVFunc}
+ \alias{newGroupIndex}
+ \alias{newMembMat}
+ \alias{newPredClass}
+ \alias{newProbArray}
+ \alias{newProbMat}
+ \alias{newQualScore}
+ \alias{newSilhouetteVec}
+ \alias{olvq1B}
+ \alias{planarPlot}
+ \alias{predict.knnP}
+ \alias{predLabels}
+ \alias{print.knnP}
+ \alias{RObject}
+ \alias{silhouetteB}
+ \alias{somB}
+ \alias{SOMB}
+ \alias{trainInds}
+ \alias{wrapClust}
+ \alias{xval}
 \alias{knnB}
-\title{An interface to knn for exprSets }
+\alias{nnetB}
+\alias{lvq1B}
+\alias{agnesB}
+\alias{dianaB}
+\alias{pamB}
+\alias{bclustB}
+\alias{cmeansB}
+\alias{cshellB}
+\alias{naiveBayesB}
+\alias{svmB}
+\alias{baggingB}
+\alias{ipredknnB}
+\alias{sldaB}
+\alias{ldaB}
+\alias{qdaB}
+\alias{pamrB}
+\alias{kmeansB}
+\alias{rpartB}
+\alias{randomForestB}
+\alias{hclustB}
+\alias{gbmB}
+
+ \alias{agnesB,exprSet,numeric-method}
+  \alias{allClass,classifOutput-method}
+  \alias{baggingB,exprSet,character,integer-method}
+  \alias{bclustB,exprSet,numeric-method}
+  \alias{claraB,exprSet,numeric-method}
+  \alias{cmeansB,exprSet,numeric-method}
+  \alias{confuMat,classifOutput-method}
+  \alias{cshellB,exprSet,numeric-method}
+  \alias{cvB,exprSet,character-method}
+  \alias{dianaB,exprSet,numeric-method}
+  \alias{distMat,MLOutput-method}
+  \alias{fannyB,exprSet,numeric-method}
+  \alias{gbmB,exprSet,character,integer-method}
+  \alias{hclustB,exprSet,numeric,missing-method}
+  \alias{hclustB,exprSet,numeric,ANY-method}
+  \alias{hclustB,exprSet,missing,numeric-method}
+  \alias{ipredknnB,exprSet,character,integer-method}
+  \alias{kmeansB,exprSet,numeric-method}
+  \alias{knn1B,exprSet,character,integer-method}
+  \alias{knnB,exprSet,character,integer-method}
+  \alias{knn.cvB,exprSet,character-method}
+  \alias{lcaB,exprSet,numeric-method}
+  \alias{ldaB,exprSet,character,integer-method}
+  \alias{logitboostB,exprSet,character,integer,numeric-method}
+  \alias{lvq1B,exprSet,character,integer-method}
+  \alias{lvq2B,exprSet,character,integer-method}
+  \alias{lvq3B,exprSet,character,integer-method}
+  \alias{naiveBayesB,exprSet,character,integer-method}
+  \alias{nnetB,exprSet,character,integer-method}
+  \alias{olvq1B,exprSet,character,integer-method}
+  \alias{pamB,exprSet,numeric-method}
+  \alias{pamrB,exprSet,character,integer-method}
+  \alias{predLabels,MLOutput-method}
+  \alias{predLabels,classifOutput-method}
+\alias{last.warning}
+  \alias{qdaB,exprSet,character,integer-method}
+  \alias{randomForestB,exprSet,character,integer-method}
+  \alias{RObject,MLOutput-method}
+  \alias{rpartB,exprSet,character,integer-method}
+  \alias{show,probMat-method}
+  \alias{show,probArray-method}
+  \alias{show,membMat-method}
+  \alias{show,qualScore-method}
+  \alias{show,silhouetteVec-method}
+  \alias{show,MLOutput-method}
+  \alias{show,SOMBout-method}
+  \alias{sldaB,exprSet,character,integer-method}
+  \alias{somB,exprSet,character-method}
+  \alias{SOMB,exprSet,character-method}
+  \alias{svmB,exprSet,character,integer-method}
+  \alias{trainInds,classifOutput-method}
+  \alias{xval,exprSet,character,nonstandardGeneric,character,missing-method}
+
+
+\title{An interface to various machine learning methods for exprSets }
 \description{
  This function is a wrapper for a call to \code{\link{knn}} for objects
  of class \code{exprSet}. These interfaces provide a common calling
  sequence and common return value for machine learning code.
 }
 \usage{
-knnB(exprObj, classLab, trainInd, k = 1, l = 1, prob = TRUE,
+knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
   use.all = TRUE, metric = "euclidean") 
 }
 
 \arguments{
   \item{exprObj}{An instance of the \code{exprset} class. }
-  \item{classLab}{A vector of class labels. }
+  \item{classifLab}{A vector of class labels. }
   \item{trainInd}{Which are the training set. }
   \item{k}{The number of nearest neighbors. }
   \item{l}{See \code{knn} for a complete description. }
@@ -28,7 +141,7 @@ knnB(exprObj, classLab, trainInd, k = 1, l = 1, prob = TRUE,
  An object of class \code{\link{classifOutput}}.
 }
 
-\author{Jess Mar}
+\author{Jess Mar, VJ Carey <stvjc@channing.harvard.edu>}
 
 \seealso{ \code{\link{ldaB}} }
 \examples{
