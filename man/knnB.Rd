@@ -50,6 +50,7 @@ cshellB( smallG, k=5, height=0 , iter.max=1)
 svmB( smallG, "ALL.AML", 1:40 )
 baggingB( smallG, "ALL.AML", 1:40 )
 ipredknnB( smallG, "ALL.AML", 1:40 )
+sldaB( smallG, "ALL.AML", 1:40 )
 }
 \keyword{ classif }
 
