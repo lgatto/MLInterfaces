@@ -39,3 +39,25 @@ require(gbm) # no namespace
                         RObject=out, call=match.call(), distMat=dis)
 })
 
+setGeneric("logitboostB",
+ function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE)
+ standardGeneric("logitboostB"))
+setMethod("logitboostB", 
+ c("exprSet", "character", "integer", "numeric", "ANY", "ANY", "ANY"),
+ function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE) {
+		cl <- exprObj[[classifLab]][trainInd]				
+		trainDat <- t(exprs(exprObj)[,trainInd])
+		testDat <- t(exprs(exprObj)[,-trainInd])
+		dis <- dist(testDat, method=metric)
+                out <- logitboost(trainDat, as.numeric(as.factor(cl))-1, 
+			testDat, mfinal, presel=presel, 
+			estimate=estimate, verbose=verbose)
+                if (length(dim(out$probs))==3)
+                  predcat <- apply(apply(out$probs,c(1,3),mean),1,which.max)
+	 	else predcat <- 1*(apply(out$probs,1,mean)>.5)+1
+
+                new("classifOutput", method="logitboost", 
+			predLabels=newPredClass(levels(as.factor(cl))[predcat]),
+#			predScores=newQualScore(attr(out,"prob")),
+                        RObject=out, call=match.call(), distMat=dis)
+})

@@ -99,3 +99,6 @@ setMethod("show", "MLOutput", function(object) {
 		show(object@clustScores)
 	}
 })
+
+setGeneric("predLabels", function(obj) standardGeneric("predLabels"))
+setMethod("predLabels", "MLOutput", function(obj) obj@predLabels@.Data)
