@@ -20,8 +20,8 @@
 ####################
 
 setGeneric("pamrB", function(exprObj, classifLab, trainInd, thresholdp=1, threshold, 
-			n.threshold = 30, scale.sd = T, threshold.scale, se.scale, 
-			offset.percent = 50, prior, remove.zeros = T, sign.contrast="both", 
+			n.threshold = 30, scale.sd = TRUE, threshold.scale, se.scale, 
+			offset.percent = 50, prior, remove.zeros = TRUE, sign.contrast="both", 
 			metric="euclidean"){
 			standardGeneric("pamrB")
 })

@@ -32,16 +32,19 @@ knnP <- function(train, test, cl, k=1, l=0, prob=FALSE, use.all=TRUE) {
 # create a closure that knows about the training data, and later evaluate
 # it on any conforming test data
 #
+# october 25 -- seem to need to use name newdata
+# for this to work with generic prediction
+#
  ans <- class::knn(train,test,cl,k,l,prob,use.all)
- nf <- function(train,cl,k,l,prob,use.all) function(test)
-	 class::knn(train,test,cl,k,l,prob,use.all)
+ nf <- function(train,cl,k,l,prob,use.all) function(newdata)
+	 class::knn(train,newdata,cl,k,l,prob,use.all)
  attr(ans, "predfun") <- nf(train,cl,k,l,prob,use.all)
  class(ans) <- c("knnP", "factor")
  ans
 }
 
-predict.knnP <- function(object, newdata) 
-	attr(object, "predfun")(newdata)
+predict.knnP <- function(object, ...) 
+	attr(object, "predfun")(...)
 
 print.knnP <- function(x, ...)
 	{

@@ -67,15 +67,6 @@ setGeneric("RObject", function(obj) standardGeneric("RObject"))
 setMethod("RObject", "MLOutput", function(obj) obj@RObject)
 setGeneric("distMat", function(obj) standardGeneric("distMat"))
 setMethod("distMat", "MLOutput", function(obj) obj@distMat)
-setGeneric("predLabels", function(obj) standardGeneric("predLabels"))
-setMethod("predLabels", "classifOutput", function(obj) obj@predLabels@.Data)
-setGeneric("allClass", function(obj) standardGeneric("allClass"))
-setMethod("allClass", "classifOutput", function(obj) obj@allClass)
-setGeneric("trainInds", function(obj) standardGeneric("trainInds"))
-setMethod("trainInds", "classifOutput", function(obj) obj@trainInds)
-setGeneric("confuMat", function(obj) standardGeneric("confuMat"))
-setMethod("confuMat", "classifOutput", function(obj) 
-table(allClass(obj)[-trainInds(obj)], predLabels(obj) ) )
 
 
 setClass("classifOutput", representation(
@@ -114,3 +105,12 @@ setMethod("show", "MLOutput", function(object) {
 
 setGeneric("predLabels", function(obj) standardGeneric("predLabels"))
 setMethod("predLabels", "MLOutput", function(obj) obj@predLabels@.Data)
+setGeneric("predLabels", function(obj) standardGeneric("predLabels"))
+setMethod("predLabels", "classifOutput", function(obj) obj@predLabels@.Data)
+setGeneric("allClass", function(obj) standardGeneric("allClass"))
+setMethod("allClass", "classifOutput", function(obj) obj@allClass)
+setGeneric("trainInds", function(obj) standardGeneric("trainInds"))
+setMethod("trainInds", "classifOutput", function(obj) obj@trainInds)
+setGeneric("confuMat", function(obj) standardGeneric("confuMat"))
+setMethod("confuMat", "classifOutput", function(obj) 
+table(allClass(obj)[-trainInds(obj)], predLabels(obj) ) )
