@@ -1,3 +1,22 @@
+knnC <- function(exprObj, classifLab, trainInd, metric="euclidean",
+			 ...) {
+		library(class)
+		meth <- "knn"
+		cl <- exprObj[[classifLab]][trainInd]				
+		trainDat <- t(exprs(exprObj)[,trainInd])
+		testDat <- t(exprs(exprObj)[,-trainInd])
+		dis <- dist(testDat, method=metric)
+		alist <- list(...)
+		alist[["train"]] <- trainDat
+		alist[["test"]] <- testDat
+		alist[["cl"]] <- cl
+		out <- do.call( meth, alist )
+                new("classifOutput", method=meth, 
+			predLabels=newPredClass(as.character(out)), 
+			predScores=newQualScore(attr(out,"prob")),
+                        RObject=out, call=match.call(), distMat=dis)
+}
+	
 
 setGeneric("knnB", function(exprObj, classifLab, trainInd, 
 		k=1, l=1, prob=TRUE, use.all=TRUE, metric="euclidean"){
@@ -17,7 +36,7 @@ setMethod("knnB", c("exprSet", "character", "integer",
                 new("classifOutput", method="knn", 
 			predLabels=newPredClass(as.character(out)), 
 			predScores=newQualScore(attr(out,"prob")),
-                        classifRobject=out, call=match.call(), distMat=dis)
+                        RObject=out, call=match.call(), distMat=dis)
                                                                                 
 })
 
@@ -49,7 +68,7 @@ setMethod("knn.cvB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"
                 new("classifOutput", method="knn.cv", 
 			predLabels=newPredClass(as.character(out)), 
 			predScores=newQualScore(attr(out,"prob")),
-                        classifRobject=out, call=match.call(), distMat=dis)
+                        RObject=out, call=match.call(), distMat=dis)
 })
 
 #####################
@@ -84,7 +103,7 @@ setMethod("knn1B", c("exprSet", "character", "integer", "ANY"),
                 new("classifOutput", method="knn1", 
 			predLabels=newPredClass(as.character(out)), 
 			predScores=newQualScore(attr(out,"prob")),
-                        classifRobject=out, call=match.call(), distMat=dis)
+                        RObject=out, call=match.call(), distMat=dis)
 })
 
 #####################
@@ -124,7 +143,7 @@ setMethod("lvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
                 new("classifOutput", method="lvq1", 
 			predLabels=newPredClass(as.character(out)), 
 			predScores=newQualScore(attr(out,"prob")),
-                        classifRobject=cbkTrain, call=match.call(), distMat=dis)
+                        RObject=cbkTrain, call=match.call(), distMat=dis)
 })	
 
 #####################
@@ -167,7 +186,7 @@ setMethod("lvq2B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
                 new("classifOutput", method="lvq2", 
 			predLabels=newPredClass(as.character(out)), 
 			predScores=newQualScore(attr(out,"prob")),
-                        classifRobject=cbkTrain, call=match.call(), distMat=dis)
+                        RObject=cbkTrain, call=match.call(), distMat=dis)
 	
 })	
 
@@ -209,7 +228,7 @@ setMethod("lvq3B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
                 new("classifOutput", method="lvq3", 
 			predLabels=newPredClass(as.character(out)), 
 			predScores=newQualScore(attr(out,"prob")),
-                        classifRobject=cbkTrain, call=match.call(), distMat=dis)
+                        RObject=cbkTrain, call=match.call(), distMat=dis)
 	
 })	
 
@@ -249,7 +268,7 @@ setMethod("olvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "A
                 new("classifOutput", method="olvq1", 
 			predLabels=newPredClass(as.character(out)), 
 			predScores=newQualScore(attr(out,"prob")),
-                        classifRobject=cbkTrain, call=match.call(), distMat=dis)
+                        RObject=cbkTrain, call=match.call(), distMat=dis)
 
 })	
 
@@ -276,24 +295,4 @@ setGeneric("SOMB", function(exprObj, classifLab, kx, ky, topo="hexagonal", rlen=
 		standardGeneric("SOMB")
 })
 
-setClass("SOMBout", contains="list")
-setMethod("show", "SOMBout", function(object) {
- cat("SOMB output\n")
- print(object$call)
- cat("available elements:\n")
- print(names(object))
-})
-
-setMethod("SOMB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
-		function(exprObj, classifLab, kx, ky, topo, rlen, alpha, radii, init, metric){
-
-		dat <- t(exprs(exprObj))
-		dis <- dist(dat, method=metric)
-		sgrid <- class::somgrid(xdim=kx, ydim=ky, topo=topo)
-		out <- class::SOM(dat, sgrid, rlen=rlen, alpha=alpha, radii=radii, init)
-#		new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
-# this function has no commonality with the others, just return a list for now
-		new("SOMBout", list(method="SOM", SOMout=out, SOMgrid=sgrid, distMat=dis,
-			call=match.call()))
-
-})
+# a special container is provided for SOMB in INIT.R

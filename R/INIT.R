@@ -1,6 +1,7 @@
 #
 # the class structure has been changed.  labels and scores
-# are fundamental and can have different structures.  so
+# are fundamental and can have different structures for
+# different procedures.  so
 # virual classes are defined with specializations to
 #   a) class labels (as in classification outputs) vs
 #       group indices (as in clustering outputs)
@@ -28,25 +29,38 @@ newQualScore <- function(x) if(length(x)>0)new("qualScore", x) else new("qualSco
 # about the MLLabel and MLScore output classes,
 # but now retains call, fitted model object, and dist
 #
+setClass("MLOutput", representation(method="character",
+			RObject="ANY", call="call", distMat="dist"), "VIRTUAL")
 
-setClass("classifOutput", representation(method="character",
-	predLabels="MLLabel", predScores="MLScore", 
-	call="call", classifRobject="ANY", distMat="dist"),
-		prototype=prototype(method="",
+setClass("classifOutput", representation(
+	predLabels="MLLabel", predScores="MLScore"), contains="MLOutput",
+		prototype=prototype(method="", RObject=NULL,
+			call=match.call(), distMat=dist(0),
 			predLabels=newPredClass(character(0)),
 			predScores=newQualScore(numeric(0))))
 
+setClass("clustOutput", representation(
+	clustIndices="MLLabel", clustScores="MLScore"), contains="MLOutput",
+		prototype=prototype(method="", RObject=NULL,
+			call=match.call(), distMat=dist(0),
+			clustIndices=newGroupIndex(integer(0)),
+			clustScores=newQualScore(numeric(0))))
 
-setMethod("show", "classifOutput", function(object) {
-	cat("classifOutput instance, method", object@method, "\n")
+
+setMethod("show", "MLOutput", function(object) {
+	cat("MLOutput instance, method=", object@method, "\n")
 	if (object@method == "nnet")
-		print(object@classifRobject)
+		print(object@RObject)
 	if (length(object@call)>0) print (object@call)
-        if (length(object@predLabels)>0) {
+        if (is(object, "classifOutput") && length(object@predLabels)>0) {
 		cat("predicted class distribution:")
 		print(table(object@predLabels))
 	}
-        if (length(object@predScores)>0 && object@method %in% c("nnet", "knn"))
+        else if (is(object, "clustOutput") && length(object@clustIndices)>0) {
+		cat("predicted cluster size distribution:")
+		print(table(object@clustIndices))
+	}
+        if (object@method %in% c("nnet", "knn"))
            {
 	   if (is(object@predScores,"qualScore"))
 	   	{
