@@ -58,6 +58,9 @@ LOO1 <- xval(smallG, "ALL.AML", knnB, "LOO", 0:0)
 LOO2 <- xval(smallG, "ALL.AML", knnB, "FUN", 0:0, function(x,y,i) {
   (1:ncol(exprs(x)))[-i] }, niter=72 )
 table(LOO1, LOO2)
+kmeansB( smallG, k=4 )
+hclustB( smallG, k=4 )
+hclustB( smallG, height=40000 )
 
 }
 \keyword{ classif }

@@ -30,17 +30,12 @@ setMethod("agnesB", c("exprSet", "numeric", "ANY",
 		
 		out <- cluster::agnes(dat, metric=metric, stand=stand, method=method, 
 					keep.diss=keep.diss, keep.data=keep.data)
-		if (k>0 && height>0) warning("both nclust and height supplied, using nclust")
-                else if (k > 0 && height == 0)
-                        clinds <- newGroupIndex(cutree(out,k))
-                else if (k == 0 && height > 0)
-                        clinds <- newGroupIndex(cutree(as.hclust(out),h=height))
-		else clinds <- NA
-                clsco <- newSilhouetteVec(cluster::silhouette( clinds, dis )[,3])
+		tmp <- wrapClust(out, k, height, dis)
+
 		new("clustOutput", method="agnes",
 			RObject=out, call=match.call(),
 			distMat=dis,
-			clustIndices=clinds, clustScores=clsco)
+			clustIndices=tmp$clinds, clustScores=tmp$clsco)
 })
 
 #####################
@@ -106,17 +101,12 @@ setMethod("dianaB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "
 
 		out <- cluster::diana(dat, diss=F, metric=metric, stand=stand, keep.diss=T,
 					keep.data=keep.data)
-		if (k>0 && height>0) warning("both k and height supplied, using nclust")
-                else if (k > 0 && height == 0)
-                        clinds <- newGroupIndex(cutree(out,k))
-                else if (k == 0 && height > 0)
-                        clinds <- newGroupIndex(cutree(as.hclust(out),h=height))
-		else clinds <- NA
-                clsco <- newSilhouetteVec(cluster::silhouette( clinds, dis )[,3])
+		tmp <- wrapClust( out, k, height, dis)
+
 		new("clustOutput", method="diana",
 			RObject=out, call=match.call(),
 			distMat=dis,
-			clustIndices=clinds, clustScores=clsco)
+			clustIndices=tmp$clinds, clustScores=tmp$clsco)
 })
 
 #####################
@@ -177,8 +167,10 @@ setGeneric("pamB", function(exprObj, k, height=0, diss, stand=FALSE,
 setMethod("pamB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, diss, stand, keep.diss, keep.data, metric){
 
+		
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
+		if (height > 0 ) warning("ignoring height parameter")
 		out <- cluster::pam(dat, k=k, diss=FALSE, metric=metric, stand=stand, keep.diss=keep.diss, 
 					keep.data=keep.data)
 		clinds <- newGroupIndex(out$clustering)
