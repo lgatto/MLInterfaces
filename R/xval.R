@@ -1,4 +1,4 @@
-setGeneric("xval", function(data, classLab, proc, xvalMethod, strata, ...)
+setGeneric("xval", function(data, classLab, proc, xvalMethod, group, ...)
  standardGeneric("xval"))
 
 chkMLInterfaceProc <- function(x) {
@@ -17,14 +17,27 @@ chkMLInterfaceProc <- function(x) {
 }
 
 setMethod("xval", c("exprSet", "character", "nonstandardGeneric", "character", "integer", "ANY"),
-	function(data, classLab, proc, xvalMethod="LOO", strata=0:0) {
-		if (xvalMethod != "LOO") stop("only supporting LOO xval")
+	function(data, classLab, proc, xvalMethod=c("LOO","LOG")[1], group=0:0) {
+		if (!(xvalMethod %in% c("LOO","LOG"))) stop("unrecognized xvalMethod")
 		if (chkMLInterfaceProc(proc))
 		X <- t(exprs(data))
-		inds <- 1:nrow(X)
-		out <- rep(NA, nrow(X))
-		for (i in 1:length(inds))
+		N <- nrow(X)
+		inds <- 1:N
+                if (xvalMethod == "LOO")
+                 {
+		 out <- rep(NA, N)
+		 for (i in 1:N)
 			out[i] <- proc( data, classLab, inds[-i], ... )@predLabels@.Data
-		out
+		 return(out)
+                 }
+		else if (xvalMethod == "LOG")
+		 {
+	 	 ug <- unique(group)
+		 Nu <- length(ug)
+		 out <- NULL
+		 for (i in 1:Nu)
+		    out <- c(out, proc(data, classLab, inds[group != ug[i]], ...)@predLabels@.Data)
+		 return(out)
+	         }
 })
 		
