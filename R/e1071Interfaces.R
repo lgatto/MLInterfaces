@@ -223,6 +223,7 @@ setMethod("naiveBayesB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY
 		out <- predict( model, newdata=testDat )
                 new("classifOutput", method="naiveBayes",
                         predLabels=newPredClass(as.character(out)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
                 #        predScores=newQualScore(attr(out,"prob")),
                         RObject=model, call=match.call(), distMat=dis)
                                                                                 
@@ -278,6 +279,7 @@ setMethod("svmB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 				decision.values=decision.values, na.action=na.action)
                 new("classifOutput", method="svm",
                         predLabels=newPredClass(as.character(ans)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
                 #        predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 			

@@ -51,6 +51,7 @@ require(pamr)
 			res <- pamr.predict(out, testDat, thresholdp)
                 new("classifOutput", method="pamr",
                         predLabels=newPredClass(as.character(res)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
                         predScores=newProbArray(out$prob),
                         RObject=out, call=match.call(), distMat=dis)
 

@@ -39,6 +39,7 @@ setMethod("cvB", c("exprSet", "character", "ANY", "ANY", "ANY"),
                 #out <- class::knn(trainDat, testDat, cl, k, l, prob, use.all)
                 new("classifOutput", method="knn",
                         predLabels=newPredClass(as.character(predCV)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 #                        predScores=newQualScore(attr(out,"prob")),
                         RObject=err, call=match.call(), distMat=dis)
                                                                                 

@@ -35,6 +35,7 @@ require(gbm) # no namespace
                 
                 new("classifOutput", method="gbm", 
 			predLabels=newPredClass(levels(cl)[(ps>0.5)+1]),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 #			predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -60,6 +61,7 @@ require(LogitBoost)
 
                 new("classifOutput", method="logitboost", 
 			predLabels=newPredClass(levels(as.factor(cl))[predcat]),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 #			predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })

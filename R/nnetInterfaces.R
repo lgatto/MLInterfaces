@@ -50,6 +50,7 @@ setMethod("nnetB", c("exprSet", "character", "integer", "ANY", "ANY",
 
 			new("classifOutput", method="nnet",
 	predLabels=newPredClass(as.character(predict(out, testDat, type="class"))), 
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
         predScores=newProbMat(predict(out, newdata=testDat)), call=match.call(),
         distMat=dis, RObject=out)	
 })		  

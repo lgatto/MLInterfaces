@@ -37,6 +37,7 @@ library(ipred)
 		out <- predict(tmp, newdata=testDat)
                 new("classifOutput", method="bagging",
                         predLabels=newPredClass(as.character(out)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 #                        predScores=newQualScore(attr(out,"prob")),
                         RObject=tmp, call=match.call(), distMat=dis)
 })
@@ -77,6 +78,7 @@ library(ipred)
 		prob <- predict(tmp, newdata=testDat, type="prob")
                 new("classifOutput", method="ipredknn",
                         predLabels=newPredClass(as.character(out)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
                         predScores=newQualScore(prob),
                         RObject=tmp, call=match.call(), distMat=dis)
 })
@@ -117,6 +119,7 @@ library(ipred)
 		out <- predict(tmp, newdata=testDat)
                 new("classifOutput", method="slda",
                         predLabels=newPredClass(as.character(out$class)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
                         predScores=newProbMat(out$posterior),
                         RObject=tmp, call=match.call(), distMat=dis)
 })
@@ -183,6 +186,7 @@ library(ipred)
 #		out <- predict(tmp, newdata=testDat)
 #                new("classifOutput", method="inbagg",
 #                        predLabels=newPredClass(as.character(out)),
+#			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 #                        predScores=newProbMat(out$posterior),
 #                        RObject=tmp, call=match.call(), distMat=dis)
 #})

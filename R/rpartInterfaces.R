@@ -53,6 +53,7 @@ setMethod("rpartB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY",
 		preds <- predict(out, testDat, type="class")
                 new("classifOutput", method="rpart",
                         predLabels=newPredClass(as.character(preds)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 #                        predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })

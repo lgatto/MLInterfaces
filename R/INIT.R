@@ -67,11 +67,23 @@ setGeneric("RObject", function(obj) standardGeneric("RObject"))
 setMethod("RObject", "MLOutput", function(obj) obj@RObject)
 setGeneric("distMat", function(obj) standardGeneric("distMat"))
 setMethod("distMat", "MLOutput", function(obj) obj@distMat)
+setGeneric("predLabels", function(obj) standardGeneric("predLabels"))
+setMethod("predLabels", "classifOutput", function(obj) obj@predLabels@.Data)
+setGeneric("allClass", function(obj) standardGeneric("allClass"))
+setMethod("allClass", "classifOutput", function(obj) obj@allClass)
+setGeneric("trainInds", function(obj) standardGeneric("trainInds"))
+setMethod("trainInds", "classifOutput", function(obj) obj@trainInds)
+setGeneric("confuMat", function(obj) standardGeneric("confuMat"))
+setMethod("confuMat", "classifOutput", function(obj) 
+table(allClass(obj)[-trainInds(obj)], predLabels(obj) ) )
+
 
 setClass("classifOutput", representation(
-	predLabels="MLLabel", predScores="MLScore"), contains="MLOutput",
+	predLabels="MLLabel", predScores="MLScore",
+	trainInds="integer", allClass="character"), contains="MLOutput",
 		prototype=prototype(method="", RObject=NULL,
-			call=match.call(), distMat=dist(0),
+			call=match.call(), distMat=dist(0), 
+			allClass=character(0), trainInds=integer(0),
 			predLabels=newPredClass(character(0)),
 			predScores=newQualScore(numeric(0))))
 

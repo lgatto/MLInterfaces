@@ -39,6 +39,7 @@ setMethod("ldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 		res <- predict(out, testDat, ...)
                 new("classifOutput", method="lda",
                         predLabels=newPredClass(as.character(res$class)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
                         predScores=newProbMat(res$posterior),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -80,6 +81,7 @@ setMethod("qdaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 		res <- predict(out, testDat, ...)
                 new("classifOutput", method="qda",
                         predLabels=newPredClass(as.character(res$class)),
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
                         predScores=newProbMat(res$posterior),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -118,6 +120,7 @@ setGeneric("isoMDSB", function(exprObj, classifLab, y, k=2, maxit=50, trace=TRUE
 #		res <- predict(out, testDat, ...)
 #                new("classifOutput", method="qda",
 #                        predLabels=newPredClass(as.character(res$class)),
+#			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 #                        predScores=newProbMat(res$posterior),
 #                        RObject=out, call=match.call(), distMat=dis)
 #		new("classifPred", sampLabels=cl, distMat=dmat, classifObj=out)

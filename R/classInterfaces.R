@@ -66,6 +66,7 @@ setMethod("knnB", c("exprSet", "character", "integer",
 		out <- knnP(trainDat, testDat, cl, k, l, prob, use.all)
                 new("classifOutput", method="knn", 
 			predLabels=newPredClass(as.character(out)), 
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
                                                                                 
@@ -98,6 +99,7 @@ setMethod("knn.cvB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"
 			out <- class::knn.cv(dat, cl, k, l, prob, use.all)
                 new("classifOutput", method="knn.cv", 
 			predLabels=newPredClass(as.character(out)), 
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -133,6 +135,7 @@ setMethod("knn1B", c("exprSet", "character", "integer", "ANY"),
 		out <- class::knn1(trainDat, testDat, cl)
                 new("classifOutput", method="knn1", 
 			predLabels=newPredClass(as.character(out)), 
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -173,6 +176,7 @@ setMethod("lvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="lvq1", 
 			predLabels=newPredClass(as.character(out)), 
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 			#predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 })	
@@ -216,6 +220,7 @@ setMethod("lvq2B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="lvq2", 
 			predLabels=newPredClass(as.character(out)), 
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 	
@@ -258,6 +263,7 @@ setMethod("lvq3B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="lvq3", 
 			predLabels=newPredClass(as.character(out)), 
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 	
@@ -298,6 +304,7 @@ setMethod("olvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "A
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="olvq1", 
 			predLabels=newPredClass(as.character(out)), 
+			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 
