@@ -66,3 +66,9 @@ balKfold <- function(K) function( data, clab, iternum ) {
    grpinds[[i]] <- rep(1:K, nrep[[i]])[1:clens[[i]]]
  (1:narr)[ - which( unlist(grpinds)==iternum ) ]
 }
+
+setMethod("xval", c("exprSet", "character", "nonstandardGeneric", "character", "missing", "ANY", "ANY", "ANY"),
+	function(data, classLab, proc, xvalMethod=c("LOO","LOG", "FUN")[1], group=0:0, indFun, niter, ...) 
+		xval(data=data, classLab=classLab, proc=proc, 
+			xvalMethod=xvalMethod, group=0:0, indFun=function(){},
+			niter=0, ...))
