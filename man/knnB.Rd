@@ -39,6 +39,8 @@ smallG <- golubMerge[1:60,]
 knnB( smallG, "ALL.AML", 1:40 )
 set.seed(1234) # needed for nnet initialization
 nnetB( smallG, "ALL.AML", 1:40, size=5, decay=.01 )
+lvq1B( smallG, "ALL.AML", 1:40 )
+agnesB( smallG, nclust=5, height=0, FALSE )
 }
 \keyword{ classif }
 

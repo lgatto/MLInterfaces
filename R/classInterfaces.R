@@ -1,21 +1,21 @@
-knnC <- function(exprObj, classifLab, trainInd, metric="euclidean",
-			 ...) {
-		library(class)
-		meth <- "knn"
-		cl <- exprObj[[classifLab]][trainInd]				
-		trainDat <- t(exprs(exprObj)[,trainInd])
-		testDat <- t(exprs(exprObj)[,-trainInd])
-		dis <- dist(testDat, method=metric)
-		alist <- list(...)
-		alist[["train"]] <- trainDat
-		alist[["test"]] <- testDat
-		alist[["cl"]] <- cl
-		out <- do.call( meth, alist )
-                new("classifOutput", method=meth, 
-			predLabels=newPredClass(as.character(out)), 
-			predScores=newQualScore(attr(out,"prob")),
-                        RObject=out, call=match.call(), distMat=dis)
-}
+#knnC <- function(exprObj, classifLab, trainInd, metric="euclidean",
+#			 ...) {
+#		library(class)
+#		meth <- "knn"
+#		cl <- exprObj[[classifLab]][trainInd]				
+#		trainDat <- t(exprs(exprObj)[,trainInd])
+#		testDat <- t(exprs(exprObj)[,-trainInd])
+#		dis <- dist(testDat, method=metric)
+#		alist <- list(...)
+#		alist[["train"]] <- trainDat
+#		alist[["test"]] <- testDat
+#		alist[["cl"]] <- cl
+#		out <- do.call( meth, alist )
+#                new("classifOutput", method=meth, 
+#			predLabels=newPredClass(as.character(out)), 
+#			predScores=newQualScore(attr(out,"prob")),
+#                        RObject=out, call=match.call(), distMat=dis)
+#}
 	
 
 setGeneric("knnB", function(exprObj, classifLab, trainInd, 
