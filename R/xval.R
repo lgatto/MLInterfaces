@@ -51,3 +51,18 @@ setMethod("xval", c("exprSet", "character", "nonstandardGeneric", "character", "
 		 }
 })
 		
+
+balKfold <- function(K) function( data, clab, iternum ) {
+ clabs <- data[[clab]]
+ narr <- nrow(pData(data))
+ cnames <- unique(clabs)
+ ilist <- list()
+ for (i in 1:length(cnames))
+   ilist[[cnames[i]]] <- which( clabs == cnames[i] )
+ clens <- lapply(ilist,length)
+ nrep <- lapply(clens, function(x) ceiling(x/K))
+ grpinds <- list()
+ for (i in 1:length(nrep))
+   grpinds[[i]] <- rep(1:K, nrep[[i]])[1:clens[[i]]]
+ (1:narr)[ - which( unlist(grpinds)==iternum ) ]
+}
