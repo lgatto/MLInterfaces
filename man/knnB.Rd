@@ -59,6 +59,8 @@ LOO2 <- xval(smallG, "ALL.AML", knnB, "FUN", 0:0, function(x,y,i) {
   (1:ncol(exprs(x)))[-i] }, niter=72 )
 table(LOO1, LOO2)
 kmeansB( smallG, k=4 )
+rpartB( smallG, "ALL.AML", 1:35 )
+randomForestB( smallG, "ALL.AML", 1:35 )
 hclustB( smallG, k=4 )
 hclustB( smallG, height=40000 )
 
