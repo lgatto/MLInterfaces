@@ -1,22 +1,3 @@
-#knnC <- function(exprObj, classifLab, trainInd, metric="euclidean",
-#			 ...) {
-#		library(class)
-#		meth <- "knn"
-#		cl <- exprObj[[classifLab]][trainInd]				
-#		trainDat <- t(exprs(exprObj)[,trainInd])
-#		testDat <- t(exprs(exprObj)[,-trainInd])
-#		dis <- dist(testDat, method=metric)
-#		alist <- list(...)
-#		alist[["train"]] <- trainDat
-#		alist[["test"]] <- testDat
-#		alist[["cl"]] <- cl
-#		out <- do.call( meth, alist )
-#                new("classifOutput", method=meth, 
-#			predLabels=newPredClass(as.character(out)), 
-#			predScores=newQualScore(attr(out,"prob")),
-#                        RObject=out, call=match.call(), distMat=dis)
-#}
-	
 
 setGeneric("knnB", function(exprObj, classifLab, trainInd, 
 		k=1, l=1, prob=TRUE, use.all=TRUE, metric="euclidean"){
@@ -142,7 +123,7 @@ setMethod("lvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="lvq1", 
 			predLabels=newPredClass(as.character(out)), 
-			predScores=newQualScore(attr(out,"prob")),
+			#predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 })	
 

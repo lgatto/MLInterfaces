@@ -189,6 +189,9 @@ setMethod("pamB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY", "ANY",
 			clustIndices=clinds, clustScores=clsco)
 })
 			
+#
+# UNTIL THERE IS A CLEAR METHOD FOR DICHOTOMIZING AN EXPRSET,
+# MONA WILL HAVE TO BE RUN RAW
 
 #####################
 # title: monaB
@@ -209,17 +212,17 @@ setMethod("pamB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY", "ANY",
 # note: artificial example since data needs to be binary
 #####################
 
-setGeneric("monaB", function(exprObj, classifLab, metric="euclidean"){
-		standardGeneric("monaB")
-})
-
-setMethod("monaB", c("exprSet", "character", "ANY"), 
-		function(exprObj, classifLab, metric){
-
-		dat <- t(exprs(exprObj))
-		dis <- dist(dat, method=metric)
-		row.names(dat) <- exprObj[[classifLab]]
-		out <- cluster::mona(dat)
-
-		new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
-})
+#setGeneric("monaB", function(exprObj, classifLab, metric="euclidean"){
+#		standardGeneric("monaB")
+#})
+#
+#setMethod("monaB", c("exprSet", "character", "ANY"), 
+#		function(exprObj, classifLab, metric){
+#
+#		dat <- t(exprs(exprObj))
+#		dis <- dist(dat, method=metric)
+#		row.names(dat) <- exprObj[[classifLab]]
+#		out <- cluster::mona(dat)
+#
+#		new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
+##})

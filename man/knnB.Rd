@@ -40,7 +40,14 @@ knnB( smallG, "ALL.AML", 1:40 )
 set.seed(1234) # needed for nnet initialization
 nnetB( smallG, "ALL.AML", 1:40, size=5, decay=.01 )
 lvq1B( smallG, "ALL.AML", 1:40 )
-agnesB( smallG, nclust=5, height=0, FALSE )
+agnesB( smallG, k=5, height=0, FALSE )
+dianaB( smallG, k=5, height=0, FALSE )
+pamB( smallG, k=5, height=0, FALSE )
+bclustB( smallG, k=5, height=0 )
+cmeansB( smallG, k=5, height=0 )
+cshellB( smallG, k=5, height=0 , iter.max=1)
+#lcaB( BsmG, k=3 )
+svmB( smallG, "ALL.AML", 1:40 )
 }
 \keyword{ classif }
 

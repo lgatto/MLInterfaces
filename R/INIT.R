@@ -20,9 +20,34 @@ newGroupIndex <- function(x) new("groupIndex", x)
 
 setClass("MLScore", "VIRTUAL")
 setClass("probMat", contains=c("MLScore", "matrix"))
-setClass("qualScore", contains=c("MLScore", "vector"))
+setClass("membMat", contains=c("MLScore", "matrix"))
+setClass("qualScore", contains=c("MLScore", "numeric"))
+setClass("silhouetteVec", contains=c("MLScore", "numeric"))
 newProbMat <- function(x) if(length(x)>0)new("probMat", x) else new("probMat")
+newMembMat <- function(x) if(length(x)>0)new("membMat", x) else new("membMat")
 newQualScore <- function(x) if(length(x)>0)new("qualScore", x) else new("qualScore")
+newSilhouetteVec <- function(x) if(length(x)>0)new("silhouetteVec", x) else new("silhouetteVec")
+
+setMethod("show", "probMat", function(object) {
+	cat("summary of class membership probabilities:\n")
+	print(apply(object,2,summary))
+})
+setMethod("show", "membMat", function(object) {
+	cat("summary of cluster membership scores:\n")
+	print(apply(object,2,summary))
+})
+setMethod("show", "qualScore", function(object) {
+   if (length(object)>0)
+	{
+	cat("summary of class assignment quality scores:\n")
+	print(summary(object))
+        }
+   else invisible(NULL)
+})
+setMethod("show", "silhouetteVec", function(object) {
+	cat("summary of clustering silhouette values:\n")
+	print(summary(object))
+})
 
 #
 # the base output representation class now just knows
@@ -44,7 +69,7 @@ setClass("clustOutput", representation(
 		prototype=prototype(method="", RObject=NULL,
 			call=match.call(), distMat=dist(0),
 			clustIndices=newGroupIndex(integer(0)),
-			clustScores=newQualScore(numeric(0))))
+			clustScores=newSilhouetteVec(numeric(0))))
 
 
 setMethod("show", "MLOutput", function(object) {
@@ -55,22 +80,11 @@ setMethod("show", "MLOutput", function(object) {
         if (is(object, "classifOutput") && length(object@predLabels)>0) {
 		cat("predicted class distribution:")
 		print(table(object@predLabels))
+		show(object@predScores)
 	}
         else if (is(object, "clustOutput") && length(object@clustIndices)>0) {
 		cat("predicted cluster size distribution:")
 		print(table(object@clustIndices))
+		show(object@clustScores)
 	}
-        if (object@method %in% c("nnet", "knn"))
-           {
-	   if (is(object@predScores,"qualScore"))
-	   	{
-		cat("summary of labeling scores:\n")
-		print(summary(object@predScores))
-		}
-	   else if (is(object@predScores,"probMat"))
-		{
-		cat("summary of class probabilities:\n")
-		print(apply(object@predScores,2,summary))
-		}
-            }
-	})
+})
