@@ -63,6 +63,11 @@ setMethod("show", "silhouetteVec", function(object) {
 setClass("MLOutput", representation(method="character",
 			RObject="ANY", call="call", distMat="dist"), "VIRTUAL")
 
+setGeneric("RObject", function(obj) standardGeneric("RObject"))
+setMethod("RObject", "MLOutput", function(obj) obj@RObject)
+setGeneric("distMat", function(obj) standardGeneric("distMat"))
+setMethod("distMat", "MLOutput", function(obj) obj@distMat)
+
 setClass("classifOutput", representation(
 	predLabels="MLLabel", predScores="MLScore"), contains="MLOutput",
 		prototype=prototype(method="", RObject=NULL,
@@ -82,7 +87,7 @@ setMethod("show", "MLOutput", function(object) {
 	cat("MLOutput instance, method=", object@method, "\n")
 	if (object@method == "nnet")
 		print(object@RObject)
-	if (length(object@call)>0) print (object@call)
+	if (length(object@call)>0) {cat("Call:\n "); print (object@call)}
         if (is(object, "classifOutput") && length(object@predLabels)>0) {
 		cat("predicted class distribution:")
 		print(table(object@predLabels))

@@ -115,9 +115,11 @@ knnB( smallG, "ALL.AML", trainInd=1:40 )
 @
 Additional parameters can be supplied as accepted by
 the target procedure in package \Rpackage{class}.
-To use a neural net in the same context,
+To use a neural net in the same context (with fewer
+genes to simplify the summary below)
 <<>>=
-nnetB( smallG, "ALL.AML", trainInd=1:40, size=4, decay=.01 )
+nns <- nnetB( smallG[1:10,], "ALL.AML", trainInd=1:40, size=4, decay=.01 )
+nns
 @
 \section{Usage}
 The basic call sequence for supervised learning
@@ -138,6 +140,20 @@ of clusters, or a height of a clustering tree that will
 be cut to form clusters from the {\tt eset} samples.
 Note that there is no training/test dichotomy for clustering
 at this stage.
+
+The {\tt RObject} method will access the fit object
+from the basic procedure.  Thus, returning to the {\tt nnetB}
+invocation above, we have
+<<>>=
+summary(RObject(nns))
+@
+which is the customary {\tt nnet} summary.  This also gives
+access to visualization.
+<<>>=
+ags <- agnesB(smallG, k=4, height=0, stand=FALSE)
+<<fig=TRUE>>=
+plot(RObject(ags), which.plot=2)
+@
 \section{Classes}
 The S4 class structure is based on a few observations.
 First, there are two basic types of task covered in machine

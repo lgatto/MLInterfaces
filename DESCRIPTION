@@ -1,6 +1,6 @@
 Package: MLInterfaces
 Title: MLInterfaces
-Version: 0.1.5
+Version: 0.1.6
 Author: Jess Mar, Robert Gentleman, Vince Carey
 Description: A package that implements uniform interfaces to machine learning
    code for the exprSet class from Bioconductor.
