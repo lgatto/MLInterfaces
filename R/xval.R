@@ -1,4 +1,4 @@
-setGeneric("xval", function(data, classLab, proc, xvalMethod, group, ...)
+setGeneric("xval", function(data, classLab, proc, xvalMethod, group, indFun, niter, ...)
  standardGeneric("xval"))
 
 chkMLInterfaceProc <- function(x) {
@@ -16,9 +16,9 @@ chkMLInterfaceProc <- function(x) {
  else return(TRUE)
 }
 
-setMethod("xval", c("exprSet", "character", "nonstandardGeneric", "character", "integer", "ANY"),
-	function(data, classLab, proc, xvalMethod=c("LOO","LOG")[1], group=0:0) {
-		if (!(xvalMethod %in% c("LOO","LOG"))) stop("unrecognized xvalMethod")
+setMethod("xval", c("exprSet", "character", "nonstandardGeneric", "character", "integer", "ANY", "ANY", "ANY"),
+	function(data, classLab, proc, xvalMethod=c("LOO","LOG", "FUN")[1], group=0:0, indFun, niter, ...) {
+		if (!(xvalMethod %in% c("LOO","LOG","FUN"))) stop("unrecognized xvalMethod")
 		if (chkMLInterfaceProc(proc))
 		X <- t(exprs(data))
 		N <- nrow(X)
@@ -39,5 +39,15 @@ setMethod("xval", c("exprSet", "character", "nonstandardGeneric", "character", "
 		    out <- c(out, proc(data, classLab, inds[group != ug[i]], ...)@predLabels@.Data)
 		 return(out)
 	         }
+		else if (xvalMethod == "FUN")
+                 {
+		 out <- NULL
+		 for (i in 1:niter)
+			{
+                        tinds <- indFun( data, classLab, i )
+			out <- c(out, proc( data, classLab, tinds, ...)@predLabels@.Data)
+			}
+		 return(out)
+		 }
 })
 		

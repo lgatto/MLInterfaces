@@ -54,6 +54,11 @@ sldaB( smallG, "ALL.AML", 1:40 )
 ldaB( smallG, "ALL.AML", 1:40 )
 qdaB( smallG[1:10,], "ALL.AML", 1:40 )
 pamrB( smallG, "ALL.AML", 1:40 )
+LOO1 <- xval(smallG, "ALL.AML", knnB, "LOO", 0:0)
+LOO2 <- xval(smallG, "ALL.AML", knnB, "FUN", 0:0, function(x,y,i) {
+  (1:ncol(exprs(x)))[-i] }, niter=72 )
+table(LOO1, LOO2)
+
 }
 \keyword{ classif }
 
