@@ -77,8 +77,9 @@ library(ipred)
 		prob <- predict(tmp, newdata=testDat, type="prob")
                 new("classifOutput", method="ipredknn",
                         predLabels=newPredClass(as.character(out)),
-#                        predScores=newQualScore(prob),
+                        predScores=newQualScore(prob),
                         RObject=tmp, call=match.call(), distMat=dis)
+})
 
 #####################
 # title: sldaB
@@ -111,11 +112,13 @@ setMethod("sldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 		testDat <- data.frame(t(exprs(exprObj)[,-trainInd]))
 		dis <- dist(testDat, method=metric)
 
-		out <- ipred::slda(y~., data=trainDat, subset=subset, na.action=na.action, ...)
-		predOut <- predict(out, testDat)
-	
-		new("classif3Output", sampLabels=predOut$class, probVals=predOut$posterior, testScores=predOut$x, 
-			distMat=dis, classifObj=out)
+library(ipred)
+		tmp <- slda(y~., data=trainDat, na.action=na.action, ...)
+		out <- predict(tmp, newdata=testDat)
+                new("classifOutput", method="slda",
+                        predLabels=newPredClass(as.character(out$class)),
+                        predScores=newProbMat(out$posterior),
+                        RObject=tmp, call=match.call(), distMat=dis)
 })
 
 #####################
@@ -150,10 +153,9 @@ setMethod("inbaggB", c("exprSet", "character", "integer", "character", "ANY", "A
 		cl <- exprObj[[classifLab]]
 		
 		if(length(intLab) > 1){ 
-	
 			intDat <- exprObj[[intLab[1]]]
 			for( v in intLab[-1] ){
-			intDat <- cbind(intDat, exprObj[[v]])
+				intDat <- cbind(intDat, exprObj[[v]])
 			}
 
 			intNam <- paste("i", ".", 1:length(intLab), sep="")
@@ -175,8 +177,13 @@ setMethod("inbaggB", c("exprSet", "character", "integer", "character", "ANY", "A
 		}
 
 		dis <- dist(t(exprs(exprObj)[,-trainInd]), method=metric)
-		out <- ipred::inbagg(equ, pFUN=pFUN, cFUN=cFUN, data=trainDat, ...)
-		new("classifPred", sampLabels=predict(out, testDat, ...), distMat=dis, classifObj=out)
+library(ipred)
+		tmp <- inbagg(equ, pFun=pFun, cFun=cFun, data=trainDat,  ...)
+		out <- predict(tmp, newdata=testDat)
+                new("classifOutput", method="slda",
+                        predLabels=newPredClass(as.character(out)),
+#                        predScores=newProbMat(out$posterior),
+                        RObject=tmp, call=match.call(), distMat=dis)
 })
 
 #####################
