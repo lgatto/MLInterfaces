@@ -14,7 +14,7 @@ by two genes in an exprSet
 \examples{
 library(ALL)
 data(ALL)
-bio <- which( ALL$mol.biol %in% c("BCR/ABL", "NEG"))
+bio <- which( ALL$mol.biol \%in\% c("BCR/ABL", "NEG"))
 isb <- grep("^B", as.character(ALL$BT))
 kp <- intersect(bio,isb)
 all2 <- ALL[,kp]
@@ -42,6 +42,5 @@ sgg <- svmB( gg, "class", trainInds )
 planarPlot( sgg, gg, "class" )
 title("svm")
 }
-
 \keyword{methods}
 \keyword{ ~~ other possible keyword(s)}
