@@ -40,11 +40,11 @@ require(gbm) # no namespace
 })
 
 setGeneric("logitboostB",
- function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE)
+ function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean")
  standardGeneric("logitboostB"))
 setMethod("logitboostB", 
- c("exprSet", "character", "integer", "numeric", "ANY", "ANY", "ANY"),
- function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE) {
+ c("exprSet", "character", "integer", "numeric", "ANY", "ANY", "ANY", "ANY"),
+ function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean") {
 		cl <- exprObj[[classifLab]][trainInd]				
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])

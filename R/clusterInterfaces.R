@@ -99,7 +99,7 @@ setMethod("dianaB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
 
-		out <- cluster::diana(dat, diss=F, metric=metric, stand=stand, keep.diss=T,
+		out <- cluster::diana(dat, diss=FALSE, metric=metric, stand=stand, keep.diss=T,
 					keep.data=keep.data)
 		tmp <- wrapClust( out, k, height, dis)
 
