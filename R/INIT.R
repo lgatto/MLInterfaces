@@ -11,6 +11,7 @@
 #
 #
 
+setOldClass("dist")
 setClass("MLLabel", "VIRTUAL")
 setClass("predClass", contains=c("MLLabel", "character"),
 	prototype=prototype(""))
