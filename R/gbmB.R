@@ -45,6 +45,8 @@ setGeneric("logitboostB",
 setMethod("logitboostB", 
  c("exprSet", "character", "integer", "numeric", "ANY", "ANY", "ANY", "ANY"),
  function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean") {
+require(LogitBoost)
+#warning("version 1.1 of LogitBoost has bugs.  consult with authors of that package if you run into problems with this method.")
 		cl <- exprObj[[classifLab]][trainInd]				
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])

@@ -15,7 +15,7 @@
 # agOut <- agnesB(golubMerge[100:200,], "ALL.AML")
 #####################
 
-setGeneric("agnesB", function(exprObj, k, height, stand=FALSE, method="average",
+setGeneric("agnesB", function(exprObj, k, height=0, stand=FALSE, method="average",
 		keep.diss=TRUE, keep.data=TRUE, metric="euclidean", ...){
 		standardGeneric("agnesB")
 })
@@ -88,7 +88,7 @@ setMethod("claraB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "
 # diOut <- dianaB(golubMerge[100:200,], "ALL.AML")
 #####################
 
-setGeneric("dianaB", function(exprObj, k, height, diss, stand=FALSE, 
+setGeneric("dianaB", function(exprObj, k, height=0, diss, stand=FALSE, 
 		keep.diss, keep.data=TRUE, metric="euclidean"){
 		standardGeneric("dianaB")
 })
@@ -127,7 +127,7 @@ setGeneric("fannyB", function(exprObj, k, height=0, diss, stand=FALSE, metric="e
 		standardGeneric("fannyB")
 }) 
 
-setMethod("fannyB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY"), 
+setMethod("fannyB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, diss, stand, metric){
 		if (height > 0) warning("ignoring height parameter")
 
@@ -164,7 +164,7 @@ setGeneric("pamB", function(exprObj, k, height=0, diss, stand=FALSE,
 		standardGeneric("pamB")
 })
 
-setMethod("pamB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("pamB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, diss, stand, keep.diss, keep.data, metric){
 
 		

@@ -23,7 +23,7 @@ setGeneric("bclustB", function(exprObj, k, height=0, iter.base=10, minsize=0, di
 		standardGeneric("bclustB")
 })
 
-setMethod("bclustB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY",
+setMethod("bclustB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY",
 		"ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, iter.base, minsize, dist.method, hclust.method, base.method, 
 			base.centers, verbose, final.kmeans, docmdscale, resample, weights, 
@@ -39,11 +39,12 @@ setMethod("bclustB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY", "AN
 						verbose=verbose, final.kmeans=final.kmeans,
 						docmdscale=docmdscale, resample=resample, weights=weights, 
 									maxcluster=maxcluster, ...)
+# CANNOT USE WRAPCLUST                tmp <- wrapClust( out, k, height, dis) 
 		if (k > 0 && height > 0) warn("both k and height provided, using k")
-                if (k > 0) clinds <- newGroupIndex(out$cluster)
-		else if (k == 0 && height > 0)
+		if (k > 0) clinds <- newGroupIndex(out$cluster)
+		else if (k == 0 & height > 0)
 			clinds <- cutree(out$hclust, h=height)
-                clsco <- newSilhouetteVec(cluster::silhouette( clinds, dis )[,3])
+		clsco <- newSilhouetteVec(cluster::silhouette(clinds,dis)[,3])
                 new("clustOutput", method="bclust",
                         RObject=out, call=match.call(),
                         distMat=dis,
