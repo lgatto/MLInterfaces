@@ -276,6 +276,14 @@ setGeneric("SOMB", function(exprObj, classifLab, kx, ky, topo="hexagonal", rlen=
 		standardGeneric("SOMB")
 })
 
+setClass("SOMBout", contains="list")
+setMethod("show", "SOMBout", function(object) {
+ cat("SOMB output\n")
+ print(object$call)
+ cat("available elements:\n")
+ print(names(object))
+})
+
 setMethod("SOMB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, kx, ky, topo, rlen, alpha, radii, init, metric){
 
@@ -285,6 +293,7 @@ setMethod("SOMB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "
 		out <- class::SOM(dat, sgrid, rlen=rlen, alpha=alpha, radii=radii, init)
 #		new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
 # this function has no commonality with the others, just return a list for now
-		list(method="SOM", SOMout=out, SOMgrid=sgrid, distMat=dis)
+		new("SOMBout", list(method="SOM", SOMout=out, SOMgrid=sgrid, distMat=dis,
+			call=match.call()))
 
 })
