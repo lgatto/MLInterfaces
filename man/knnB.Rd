@@ -63,6 +63,7 @@ rpartB( smallG, "ALL.AML", 1:35 )
 randomForestB( smallG, "ALL.AML", 1:35 )
 hclustB( smallG, k=4 )
 hclustB( smallG, height=40000 )
+gbmB( smallG, "ALL.AML", 1:40, n.minobsinnode=3 , n.trees=6000)
 
 }
 \keyword{ classif }
