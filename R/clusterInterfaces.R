@@ -15,14 +15,14 @@
 # agOut <- agnesB(golubMerge[100:200,], "ALL.AML")
 #####################
 
-setGeneric("agnesB", function(exprObj, nclust, height, stand=FALSE, method="average",
+setGeneric("agnesB", function(exprObj, k, height, stand=FALSE, method="average",
 		keep.diss=TRUE, keep.data=TRUE, metric="euclidean", ...){
 		standardGeneric("agnesB")
 })
 
 setMethod("agnesB", c("exprSet", "numeric", "numeric", 
                 "logical", "ANY", "ANY", "ANY", "ANY", "ANY"), 
-		function(exprObj, nclust, height, stand, method, keep.diss, keep.data, metric, ...){
+		function(exprObj, k, height, stand, method, keep.diss, keep.data, metric, ...){
 
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
@@ -30,13 +30,13 @@ setMethod("agnesB", c("exprSet", "numeric", "numeric",
 		
 		out <- cluster::agnes(dat, metric=metric, stand=stand, method=method, 
 					keep.diss=keep.diss, keep.data=keep.data)
-		if (nclust>0 && height>0) warning("both nclust and height supplied, using nclust")
-                else if (nclust > 0 && height == 0)
-                        clinds <- newGroupIndex(cutree(out,nclust))
-                else if (nclust == 0 && height > 0)
+		if (k>0 && height>0) warning("both nclust and height supplied, using nclust")
+                else if (k > 0 && height == 0)
+                        clinds <- newGroupIndex(cutree(out,k))
+                else if (k == 0 && height > 0)
                         clinds <- newGroupIndex(cutree(as.hclust(out),h=height))
 		else clinds <- NA
-                clsco <- newQualScore(cluster::silhouette( clinds, dis )[,3])
+                clsco <- newSilhouetteVec(cluster::silhouette( clinds, dis )[,3])
 		new("clustOutput", method="agnes",
 			RObject=out, call=match.call(),
 			distMat=dis,
@@ -57,22 +57,27 @@ setMethod("agnesB", c("exprSet", "numeric", "numeric",
 # clObj <- claraB(golubMerge[100:200,], "ALL.AML", 2)
 #####################
 
-setGeneric("claraB", function(exprObj, classifLab, k, stand=FALSE, 
+setGeneric("claraB", function(exprObj, k, height=0, stand=FALSE, 
 		samples=5, sampsize, trace=0, keep.data=TRUE, keepdata, rngR=FALSE, metric="euclidean"){
 		standardGeneric("claraB")
 })
 
-setMethod("claraB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
-		"ANY", "ANY"), function(exprObj, classifLab, k, stand, samples, sampsize,
+setMethod("claraB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
+		"ANY", "ANY"), function(exprObj, k, height, stand, samples, sampsize,
 		trace, keep.data, keepdata, rngR, metric){
 
 		if(missing(sampsize)){ sampsize <- 40 + 2*k }
+		if (height > 0 ) warning("ignoring height parameter")
 
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
-		row.names(dat) <- exprObj[[classifLab]]
 		out <- cluster::clara(dat, k=k, metric=metric, stand=stand, samples=samples, 							sampsize=sampsize, trace=trace, keep.data=keep.data, keepdata=keepdata, rngR= rngR)	
-		new("classifPred", sampLabels=out$clustering, distMat=dis, classifObj=out)
+                clinds <- newGroupIndex(out$clustering)
+                clsco <- newSilhouetteVec(cluster::silhouette( clinds, dis )[,3])
+		new("clustOutput", method="clara",
+			RObject=out, call=match.call(),
+			distMat=dis,
+			clustIndices=clinds, clustScores=clsco)
 })
 
 #####################
@@ -88,21 +93,30 @@ setMethod("claraB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY",
 # diOut <- dianaB(golubMerge[100:200,], "ALL.AML")
 #####################
 
-setGeneric("dianaB", function(exprObj, classifLab, diss, stand=FALSE, 
-		keep.diss, keep.data=TRUE, metric="euclidean", ...){
+setGeneric("dianaB", function(exprObj, k, height, diss, stand=FALSE, 
+		keep.diss, keep.data=TRUE, metric="euclidean"){
 		standardGeneric("dianaB")
 })
 
-setMethod("dianaB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
-		function(exprObj, classifLab, diss, stand, keep.diss, keep.data, metric, ...){
+setMethod("dianaB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+		function(exprObj, k, height, diss, stand, keep.diss, keep.data, metric){
 
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
-		row.names(dat) <- exprObj[[classifLab]]
 
 		out <- cluster::diana(dat, diss=F, metric=metric, stand=stand, keep.diss=T,
 					keep.data=keep.data)
-		new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
+		if (k>0 && height>0) warning("both k and height supplied, using nclust")
+                else if (k > 0 && height == 0)
+                        clinds <- newGroupIndex(cutree(out,k))
+                else if (k == 0 && height > 0)
+                        clinds <- newGroupIndex(cutree(as.hclust(out),h=height))
+		else clinds <- NA
+                clsco <- newSilhouetteVec(cluster::silhouette( clinds, dis )[,3])
+		new("clustOutput", method="diana",
+			RObject=out, call=match.call(),
+			distMat=dis,
+			clustIndices=clinds, clustScores=clsco)
 })
 
 #####################
@@ -119,21 +133,26 @@ setMethod("dianaB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY",
 # faOut <- fannyB(golubMerge[100:200,], "ALL.AML", 2)
 #####################
 
-setGeneric("fannyB", function(exprObj, classifLab, k, diss, stand=FALSE, metric="euclidean", ...){
+setGeneric("fannyB", function(exprObj, k, height=0, diss, stand=FALSE, metric="euclidean"){
 		standardGeneric("fannyB")
 }) 
 
-setMethod("fannyB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
-		function(exprObj, classifLab, k, diss, stand, metric, ...){
+setMethod("fannyB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY"), 
+		function(exprObj, k, height, diss, stand, metric){
+		if (height > 0) warning("ignoring height parameter")
 
 		if(missing(diss)){ diss <- F }
 
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
-		row.names(dat) <- exprObj[[classifLab]]
 		out <- cluster::fanny(dat, k=k, diss=diss, metric=metric, stand=stand)
 
-		new("classifPred", sampLabels=out$clustering, distMat=dis, classifObj=out)
+		clinds <- newGroupIndex(out$clustering)
+                clsco <- newSilhouetteVec(cluster::silhouette( clinds, dis )[,3])
+		new("clustOutput", method="fanny",
+			RObject=out, call=match.call(),
+			distMat=dis,
+			clustIndices=clinds, clustScores=clsco)
 })
 
 #####################
@@ -150,22 +169,26 @@ setMethod("fannyB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY")
 # paOut <- pamB(golubMerge[100:200,], "ALL.AML", 2)
 #####################
 
-setGeneric("pamB", function(exprObj, classifLab, k, diss, stand=FALSE, 
+setGeneric("pamB", function(exprObj, k, height=0, diss, stand=FALSE, 
 		keep.diss=TRUE, keep.data=TRUE, metric="euclidean"){
 		standardGeneric("pamB")
 })
 
-setMethod("pamB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
-		function(exprObj, classifLab, k, diss, stand, keep.diss, keep.data, metric){
+setMethod("pamB", c("exprSet", "numeric", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+		function(exprObj, k, height, diss, stand, keep.diss, keep.data, metric){
 
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
-		row.names(dat) <- exprObj[[classifLab]]
 		out <- cluster::pam(dat, k=k, diss=FALSE, metric=metric, stand=stand, keep.diss=keep.diss, 
 					keep.data=keep.data)
-			
-		new("classifPred", sampLabels=out$clustering, distMat=dis, classifObj=out)
+		clinds <- newGroupIndex(out$clustering)
+                clsco <- newSilhouetteVec(cluster::silhouette( clinds, dis )[,3])
+		new("clustOutput", method="pam",
+			RObject=out, call=match.call(),
+			distMat=dis,
+			clustIndices=clinds, clustScores=clsco)
 })
+			
 
 #####################
 # title: monaB
