@@ -73,6 +73,8 @@ and the output objects differ from procedure to procedure.
 Our objective in \Rpackage{MLInterfaces} is to simplify
 the use and evaluation of machine learning methods by providing
 specifications and implementations for a uniform interface.
+(The {\tt tune} procedures in \Rpackage{e1071} also
+pursue more uniform interface to machine learning procedures.)
 At present, we want to simplify use of machine learning
 with microarray data, assumed to take the form of {\tt exprSet}s.
 The present implementation addresses the following concerns:
@@ -85,6 +87,7 @@ emphasizing test set results;
 \item provide a uniform output structure.
 \end{itemize}
 
+\noindent
 Several other concerns will be addressed as the
 project matures.  Among these are:
 \begin{itemize}
