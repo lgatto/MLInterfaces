@@ -1,3 +1,4 @@
+##PLEASE PUT THE CLASSES FIRST!!!! THEN THE METHODS
 #
 # the class structure has been changed.  labels and scores
 # are fundamental and can have different structures for
@@ -30,6 +31,27 @@ newMembMat <- function(x) if(length(x)>0)new("membMat", x) else new("membMat")
 newQualScore <- function(x) if(length(x)>0)new("qualScore", x) else new("qualScore")
 newSilhouetteVec <- function(x) if(length(x)>0)new("silhouetteVec", x) else new("silhouetteVec")
 
+setClass("MLOutput", representation(method="character",
+			RObject="ANY", call="call", distMat="dist"), "VIRTUAL")
+
+setClass("classifOutput", representation(
+	predLabels="MLLabel", predScores="MLScore",
+	trainInds="integer", allClass="character"), contains="MLOutput",
+		prototype=prototype(method="", RObject=NULL,
+			call=match.call(), distMat=dist(0), 
+			allClass=character(0), trainInds=integer(0),
+			predLabels=newPredClass(character(0)),
+			predScores=newQualScore(numeric(0))))
+
+setClass("clustOutput", representation(
+	clustIndices="MLLabel", clustScores="MLScore"), contains="MLOutput",
+		prototype=prototype(method="", RObject=NULL,
+			call=match.call(), distMat=dist(0),
+			clustIndices=newGroupIndex(integer(0)),
+			clustScores=newSilhouetteVec(numeric(0))))
+
+########################################################
+
 setMethod("show", "probMat", function(object) {
 	cat("summary of class membership probabilities:\n")
 	print(apply(object,2,summary))
@@ -60,31 +82,11 @@ setMethod("show", "silhouetteVec", function(object) {
 # about the MLLabel and MLScore output classes,
 # but now retains call, fitted model object, and dist
 #
-setOldClass("dist")
-setClass("MLOutput", representation(method="character",
-			RObject="ANY", call="call", distMat="dist"), "VIRTUAL")
-
 setGeneric("RObject", function(obj) standardGeneric("RObject"))
 setMethod("RObject", "MLOutput", function(obj) obj@RObject)
 setGeneric("distMat", function(obj) standardGeneric("distMat"))
 setMethod("distMat", "MLOutput", function(obj) obj@distMat)
 
-
-setClass("classifOutput", representation(
-	predLabels="MLLabel", predScores="MLScore",
-	trainInds="integer", allClass="character"), contains="MLOutput",
-		prototype=prototype(method="", RObject=NULL,
-			call=match.call(), distMat=dist(0), 
-			allClass=character(0), trainInds=integer(0),
-			predLabels=newPredClass(character(0)),
-			predScores=newQualScore(numeric(0))))
-
-setClass("clustOutput", representation(
-	clustIndices="MLLabel", clustScores="MLScore"), contains="MLOutput",
-		prototype=prototype(method="", RObject=NULL,
-			call=match.call(), distMat=dist(0),
-			clustIndices=newGroupIndex(integer(0)),
-			clustScores=newSilhouetteVec(numeric(0))))
 
 
 setMethod("show", "MLOutput", function(object) {
