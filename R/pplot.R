@@ -27,6 +27,11 @@ setMethod("planarPlot", c("classifOutput", "exprSet", "character"),
  ff <- getGrid(eset)
  if (clo@method %in% c("nnet", "rpart"))
     ps <- predict( clo@RObject, newdata=ff, type="class")
+ else if (clo@method == "randomForest")
+    {
+    names(ff) <- rownames(exprs(eset))
+    ps <- predict( clo@RObject, newdata=ff )
+    }
  else
     ps <- predict( clo@RObject, newdata=ff )
  plot( ff[,1], ff[,2], col=pal[as.numeric(factor(ps))], pch=19,
