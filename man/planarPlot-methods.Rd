@@ -1,5 +1,6 @@
 \name{planarPlot-methods}
 \docType{methods}
+\alias{planarPlot}
 \alias{planarPlot-methods}
 \alias{planarPlot,classifOutput,exprSet,character-method}
 \title{ Methods for Function planarPlot in Package `MLInterfaces' }
@@ -30,7 +31,10 @@ all2 <- ALL[,kp]
 set.seed(1234)
 ng <- nrow(exprs(all2))
 pick <- sample(1:ng, size=2, replace=FALSE)
+library(hgu95av2)
 gg <- all2[pick,]
+sym <- unlist(mget(geneNames(gg), hgu95av2SYMBOL))
+geneNames(gg) <- sym
 class <- as.character(all2$mol.biol)
 gg@phenoData@pData$class <- factor(class)
 cl1 <- which( class == "NEG" )
@@ -44,6 +48,7 @@ trainInds <- c( sample(cl1, size=floor(length(cl1)/2) ),
 # run rpart
 #
 tgg <- rpartB( gg, "class", trainInds, minsplit=4 )
+opar <- par(no.readonly=TRUE)
 par(mfrow=c(2,2))
 planarPlot( tgg, gg, "class" )
 title("rpart")
@@ -65,5 +70,6 @@ title("3-nn")
 sgg <- svmB( gg, "class", trainInds )
 planarPlot( sgg, gg, "class" )
 title("svm")
+par(opar)
 }
 \keyword{methods}

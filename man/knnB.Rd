@@ -25,7 +25,6 @@
  \alias{newQualScore}
  \alias{newSilhouetteVec}
  \alias{olvq1B}
- \alias{planarPlot}
  \alias{predict.knnP}
  \alias{predLabels}
  \alias{print.knnP}
