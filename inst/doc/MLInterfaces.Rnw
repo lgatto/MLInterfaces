@@ -229,7 +229,10 @@ getClass("clustOutput")
 The \Rfunction{nnet} function returns a structure encoding
 predicted probabilities of class occupancy.  We will use
 this to enrich the \Rfunction{nnetB} output to include
-a ``doubt'' outcome.
+a ``doubt'' outcome.  As written this code will handle
+a two-class outcome; additional structure emerges with
+more than two classes and some changes will be needed
+for such cases.
 
 First we obtain the predicted probabilities (for the test set)
 and round these for display purposes.
