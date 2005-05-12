@@ -2,12 +2,8 @@
 \alias{allClass}
  \alias{stat.diag.daB}
  \alias{stat.diag.daB,exprSet,character,integer-method}
- \alias{claraB}
  \alias{confuMat}
  \alias{cvB}
- \alias{distMat}
- \alias{fannyB}
- \alias{isoMDSB}
  \alias{knn1B}
  \alias{knn.cvB}
  \alias{knnP}
@@ -18,20 +14,11 @@
  \alias{olvq1B}
  \alias{predLabels}
  \alias{RObject}
- \alias{silhouetteB}
  \alias{somB}
  \alias{SOMB}
- \alias{trainInds}
- \alias{xval}
 \alias{knnB}
 \alias{nnetB}
 \alias{lvq1B}
-\alias{agnesB}
-\alias{dianaB}
-\alias{pamB}
-\alias{bclustB}
-\alias{cmeansB}
-\alias{cshellB}
 \alias{naiveBayesB}
 \alias{svmB}
 \alias{baggingB}
@@ -40,30 +27,33 @@
 \alias{ldaB}
 \alias{qdaB}
 \alias{pamrB}
-\alias{kmeansB}
 \alias{rpartB}
 \alias{randomForestB}
-\alias{hclustB}
 \alias{gbmB}
 
- \alias{agnesB,exprSet,numeric-method}
+# infrastructure
   \alias{allClass,classifOutput-method}
-  \alias{baggingB,exprSet,character,integer-method}
-  \alias{bclustB,exprSet,numeric-method}
-  \alias{claraB,exprSet,numeric-method}
-  \alias{cmeansB,exprSet,numeric-method}
   \alias{confuMat,classifOutput-method}
-  \alias{cshellB,exprSet,numeric-method}
   \alias{cvB,exprSet,character-method}
-  \alias{dianaB,exprSet,numeric-method}
+  \alias{predLabels,MLOutput-method}
+  \alias{predLabels,classifOutput-method}
+\alias{last.warning}
   \alias{distMat,MLOutput-method}
-  \alias{fannyB,exprSet,numeric-method}
+  \alias{RObject,MLOutput-method}
+  \alias{trainInds,classifOutput-method}
+  \alias{xval,exprSet,character,nonstandardGeneric,character,missing-method}
+  \alias{show,probMat-method}
+  \alias{show,probArray-method}
+  \alias{show,membMat-method}
+  \alias{show,qualScore-method}
+  \alias{show,silhouetteVec-method}
+  \alias{show,MLOutput-method}
+  \alias{show,SOMBout-method}
+
+# classification
+  \alias{baggingB,exprSet,character,integer-method}
   \alias{gbmB,exprSet,character,integer-method}
-  \alias{hclustB,exprSet,numeric,missing-method}
-  \alias{hclustB,exprSet,numeric,ANY-method}
-  \alias{hclustB,exprSet,missing,numeric-method}
   \alias{ipredknnB,exprSet,character,integer-method}
-  \alias{kmeansB,exprSet,numeric-method}
   \alias{knn1B,exprSet,character,integer-method}
   \alias{knnB,exprSet,character,integer-method}
   \alias{knn.cvB,exprSet,character-method}
@@ -76,35 +66,27 @@
   \alias{naiveBayesB,exprSet,character,integer-method}
   \alias{nnetB,exprSet,character,integer-method}
   \alias{olvq1B,exprSet,character,integer-method}
-  \alias{pamB,exprSet,numeric-method}
   \alias{pamrB,exprSet,character,integer-method}
-  \alias{predLabels,MLOutput-method}
-  \alias{predLabels,classifOutput-method}
-\alias{last.warning}
   \alias{qdaB,exprSet,character,integer-method}
   \alias{randomForestB,exprSet,character,integer-method}
-  \alias{RObject,MLOutput-method}
   \alias{rpartB,exprSet,character,integer-method}
-  \alias{show,probMat-method}
-  \alias{show,probArray-method}
-  \alias{show,membMat-method}
-  \alias{show,qualScore-method}
-  \alias{show,silhouetteVec-method}
-  \alias{show,MLOutput-method}
-  \alias{show,SOMBout-method}
   \alias{sldaB,exprSet,character,integer-method}
   \alias{somB,exprSet,character-method}
   \alias{SOMB,exprSet,character-method}
   \alias{svmB,exprSet,character,integer-method}
-  \alias{trainInds,classifOutput-method}
-  \alias{xval,exprSet,character,nonstandardGeneric,character,missing-method}
 
 
 \title{An interface to various machine learning methods for exprSets }
 \description{
- This function is a wrapper for a call to \code{\link{knn}} for objects
- of class \code{exprSet}. These interfaces provide a common calling
- sequence and common return value for machine learning code.
+ This document describes a family of
+wrappers of calls to machine learning classifiers
+distributed through various R packages.
+For example \code{knnB} is a wrapper for a call to \code{\link{knn}} for objects
+ of class \code{exprSet}. These interfaces, of the form \code{[f]B} provide a common calling
+ sequence and common return value for machine learning code in function \code{[f]}.
+For details on the additional arguments that may be passed to any covered
+machine learning function \code{f}, check the manual page for that function.
+This will require loading the package in which \code{f} is found.
 }
 \usage{
 knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
