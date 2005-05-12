@@ -3,7 +3,8 @@
 \alias{varImpStruct-class}
 \alias{plot,varImpStruct-method}
 \alias{show,varImpStruct-method}
-
+\alias{getVarImp}
+\alias{getVarImp,classifOutput-method}
 \title{Class "varImpStruct" -- collect data on variable importance
  from various machine learning methods}
 \description{  collects data on variable importance }
@@ -36,6 +37,8 @@ you can supply an argument resolveenv which will look up variable
 names in a translation environment }
     \item{show}{\code{signature(object = "varImpStruct")}: simple abbreviated
 display }
+    \item{getVarImp}{\code{signature(object = "classifOutput")}: extractor
+of variable importance structure}
   }
 }
 %\references{ ~put references to the literature/web site here ~ }

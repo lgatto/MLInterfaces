@@ -2,9 +2,16 @@
 \docType{methods}
 \alias{xval-methods}
 \alias{xval,exprSet,character,nonstandardGeneric,character,integer-method}
+\alias{balKfold}
 \title{ support for cross-validatory machine learning with exprSets}
 \description{
 support for cross-validatory machine learning with exprSets
+}
+\usage{
+balKfold(K)
+}
+\arguments{
+ \item{K}{number of balanced cross-validation partitions}
 }
 \section{Methods}{
 \describe{

@@ -1,8 +1,7 @@
 \name{knnB}
 \alias{allClass}
- \alias{balKfold}
  \alias{stat.diag.daB}
- \alias{chkMLInterfaceProc}
+ \alias{stat.diag.daB,exprSet,character,integer-method}
  \alias{claraB}
  \alias{confuMat}
  \alias{cvB}
@@ -17,18 +16,8 @@
  \alias{logitboostB}
  \alias{lvq2B}
  \alias{lvq3B}
- \alias{makeCVFunc}
- \alias{newGroupIndex}
- \alias{newMembMat}
- \alias{newPredClass}
- \alias{newProbArray}
- \alias{newProbMat}
- \alias{newQualScore}
- \alias{newSilhouetteVec}
  \alias{olvq1B}
- \alias{predict.knnP}
  \alias{predLabels}
- \alias{print.knnP}
  \alias{RObject}
  \alias{silhouetteB}
  \alias{somB}
