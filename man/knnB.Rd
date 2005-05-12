@@ -31,7 +31,6 @@
 \alias{randomForestB}
 \alias{gbmB}
 
-# infrastructure
   \alias{allClass,classifOutput-method}
   \alias{confuMat,classifOutput-method}
   \alias{cvB,exprSet,character-method}
@@ -50,7 +49,6 @@
   \alias{show,MLOutput-method}
   \alias{show,SOMBout-method}
 
-# classification
   \alias{baggingB,exprSet,character,integer-method}
   \alias{gbmB,exprSet,character,integer-method}
   \alias{ipredknnB,exprSet,character,integer-method}
