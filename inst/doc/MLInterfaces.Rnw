@@ -86,8 +86,11 @@ input data into training and test set, with output
 emphasizing test set results;
 \item provide a uniform output structure.
 \end{itemize}
+The output structures currently supported are subclasses
+of a general class \Rclass{MLOutput}, described in Section
+\ref{mlosec} below.
+@
 
-\noindent
 Several other concerns will be addressed as the
 project matures.  Among these are:
 \begin{itemize}
@@ -102,27 +105,36 @@ To give a flavor of the current implementation, we
 perform a few runs with different machine learning
 tools.  We will use 60 genes drawn arbitrarily
 from Golub's data.
-<<>>=
+<<results=hide>>=
 library(MLInterfaces)
 library(golubEsets)
+<<redu>>=
 data(golubMerge)
 smallG <- golubMerge[200:259,]
 smallG
 @
 Here is how $k$-nearest neighbors is used
-to get predictions of ALL status training with the
-first 40 records:
-\clearpage
-<<>>=
-knnB( smallG, "ALL.AML", trainInd=1:40 )
+to get predictions of ALL status, using the first
+40 records as the training set:
+<<doknnB>>=
+krun <- knnB( smallG, "ALL.AML", trainInd=1:40 )
+krun
+@
+The \Rfunction{confuMat} method computes the confusion matrix
+resulting from applying the trained model to the reserved
+test data:
+<<lkco>>=
+confuMat(krun)
 @
 Additional parameters can be supplied as accepted by
 the target procedure in package \Rpackage{class}.
 To use a neural net in the same context (with fewer
 genes to simplify the summary below)
 <<>>=
-nns <- nnetB( smallG[1:10,], "ALL.AML", trainInd=1:40, size=4, decay=.01 )
+set.seed(1234)
+nns <- nnetB( smallG[1:10,], "ALL.AML", trainInd=1:40, size=2, decay=.01, maxit=250 )
 nns
+confuMat(nns)
 @
 \section{Usage}
 The basic call sequence for supervised learning
@@ -180,6 +192,7 @@ quality information.  Classes {\tt classifOutput} and
 learning respectively.
 
 \subsection{MLOutput}
+\label{mlosec}
 Extended by all machine learning output containers.
 <<>>=
 getClass("MLOutput")
@@ -210,6 +223,46 @@ getClass("classifOutput")
 Container for clustering results.
 <<>>=
 getClass("clustOutput")
+@
+\section{A sketch of a `doubt' computation}
+
+The \Rfunction{nnet} function returns a structure encoding
+predicted probabilities of class occupancy.  We will use
+this to enrich the \Rfunction{nnetB} output to include
+a ``doubt'' outcome.
+
+First we obtain the predicted probabilities (for the test set)
+and round these for display purposes.
+<<getpp>>=
+predProb <- round(nns@predScores,3)
+@
+We save the true labels and the predicted labels.
+<<gettrue>>=
+truth <- as.character(smallG$ALL.AML[-c(1:40)]) 
+simpPred <- predict(RObject(nns),newdata=data.frame(t(exprs(smallG)[1:10,-c(1:40)])),type="class")
+@
+We create a closure that allows boundaries of class probabilities
+to be specified for assertion of ``doubt'':
+<<mkclo>>=
+douClo <- function(pprob)  function(lo,hi) pprob>lo & pprob<hi
+@
+Evaluate the closure on the predicted probabilities, yielding a function
+of two arguments (lo, hi).
+<<evclo>>=
+smallDou <- douClo(predProb)
+@
+Now replace the labels for those predictions that are
+very close to .5.
+<<repla>>=
+douPred <- simpPred
+douPred[smallDou(.48,.52)] <- "doubt"
+@
+The resulting modified predictions are in the fourth column:
+<<lkpr>>=
+mm <- cbind(predProb,truth,simpPred,douPred)
+mm
+table(mm[,"truth"], mm[,"simpPred"])
+table(mm[,"truth"], mm[,"douPred"])
 @
 \end{document}
 

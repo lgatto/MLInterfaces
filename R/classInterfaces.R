@@ -90,12 +90,12 @@ setMethod("knnB", c("exprSet", "character", "integer",
 # knn.cvOut <- knn.cvB(golubMerge[101:140,], "ALL.AML")
 ####################
 
-setGeneric("knn.cvB", function(exprObj, classifLab, k=1, l=1, prob=TRUE, use.all=TRUE, metric="euclidean"){
+setGeneric("knn.cvB", function(exprObj, classifLab, trainInd, k=1, l=1, prob=TRUE, use.all=TRUE, metric="euclidean"){
 		standardGeneric("knn.cvB")
 })
 
 setMethod("knn.cvB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
-			function(exprObj, classifLab, k, l, prob, use.all, metric){
+			function(exprObj, classifLab, trainInd, k, l, prob, use.all, metric){
 			cl <- exprObj[[classifLab]]
 			dat <- t(exprs(exprObj))
 			dis <- dist(dat, method=metric)

@@ -7,7 +7,6 @@
  \alias{cvB}
  \alias{distMat}
  \alias{fannyB}
- \alias{getGrid}
  \alias{isoMDSB}
  \alias{knn1B}
  \alias{knn.cvB}
@@ -23,7 +22,6 @@
  \alias{somB}
  \alias{SOMB}
  \alias{trainInds}
- \alias{wrapClust}
  \alias{xval}
 \alias{knnB}
 \alias{nnetB}
