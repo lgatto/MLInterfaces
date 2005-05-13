@@ -117,6 +117,7 @@ library(golubEsets)
 data(golubMerge)
 smallG <- golubMerge[1:60,]
 knnB( smallG, "ALL.AML", 1:40 )
+knn.cvB( smallG, "ALL.AML" )
 set.seed(1234) # needed for nnet initialization
 nnetB( smallG, "ALL.AML", 1:40, size=5, decay=.01 )
 lvq1B( smallG, "ALL.AML", 1:40 )
