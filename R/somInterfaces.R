@@ -1,9 +1,3 @@
-#####################
-# PACKAGE: SOM 
-#####################
-#
-#####################
-# title: SOMB
 # description: interface to som {som} 
 # arguments:
 #	exprObj		exprSet
@@ -17,7 +11,15 @@
 # somOut <- somB(golubMerge[100:200,], "ALL.AML", 2, 3)
 #####################
 
-setGeneric("somB", function(exprObj, classifLab, xdim, ydim, init="linear", alpha, alphaType="inverse", 
+setClass("somout", contains="list")
+setMethod("show", "somout", function(object) {
+ cat("somB output\n")
+ print(object$call)
+ cat("available elements:\n")
+ print(names(object))
+})
+
+setGeneric("somB", function(exprObj, classifLab, xdim=3, ydim=3, init="linear", alpha, alphaType="inverse", 
 		neigh="gaussian", topol="rect", radius, rlen, err.radius=1, inv.alp.c, metric="euclidean"){
 		standardGeneric("somB")
 })
@@ -37,7 +39,7 @@ setMethod("somB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "
 				topol=topol, radius=radius, rlen=rlen, err.radius=err.radius,
 				inv.alp.c=inv.alp.c)
 
-		new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
+		new("somout", list(method="som", somout=out, call=match.call()))
 })
 	
 

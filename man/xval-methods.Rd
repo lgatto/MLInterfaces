@@ -3,6 +3,9 @@
 \alias{xval-methods}
 \alias{xval,exprSet,character,nonstandardGeneric,character,integer-method}
 \alias{balKfold}
+\alias{xval,exprSet,character,genericFunction,character,integer-method}
+\alias{xval,exprSet,character,genericFunction,character,missing-method}
+
 \title{ support for cross-validatory machine learning with exprSets}
 \description{
 support for cross-validatory machine learning with exprSets

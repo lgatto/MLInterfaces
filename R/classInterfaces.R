@@ -331,10 +331,10 @@ setMethod("olvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "A
 # somOut <- SOMB(golubMerge[100:200,], "ALL.AML", 2, 2)
 ####################
 
-setGeneric("SOMB", function(exprObj, classifLab, kx, ky, topo="hexagonal", rlen=10000, 
+setGeneric("SOMB", function(exprObj, classifLab, kx=3, ky=3, topo="hexagonal", rlen=10000, 
 		alpha=seq(0.05, 0, len=rlen), 
 		radii=seq(4, 1, len = rlen), init, metric="euclidean"){
 		standardGeneric("SOMB")
 })
 
-# a special container is provided for SOMB in INIT.R
+# a special container is provided for SOMB in somInterfaces.R
