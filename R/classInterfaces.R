@@ -90,23 +90,23 @@ setMethod("knnB", c("exprSet", "character", "integer",
 # knn.cvOut <- knn.cvB(golubMerge[101:140,], "ALL.AML")
 ####################
 
-setGeneric("knn.cvB", function(exprObj, classifLab, trainInd=NULL, k=1, l=1, prob=TRUE, use.all=TRUE, metric="euclidean"){
-		standardGeneric("knn.cvB")
-})
-
-setMethod("knn.cvB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
-			function(exprObj, classifLab, trainInd=NULL, k, l, prob, use.all, metric){
-			if (!is.null(trainInd)) warning("disregarding trainInd for knn.cvB")
-			cl <- exprObj[[classifLab]]
-			dat <- t(exprs(exprObj))
-			dis <- dist(dat, method=metric)
-			out <- class::knn.cv(dat, cl, k, l, prob, use.all)
-                new("classifOutput", method="knn.cv", 
-			predLabels=newPredClass(as.character(out)), 
-			trainInds=integer(0), allClass=as.character(exprObj[[classifLab]]),
-			predScores=newQualScore(attr(out,"prob")),
-                        RObject=out, call=match.call(), distMat=dis)
-})
+#setGeneric("knn.cvB", function(exprObj, classifLab, trainInd=NULL, k=1, l=1, prob=TRUE, use.all=TRUE, metric="euclidean"){
+#		standardGeneric("knn.cvB")
+#})
+#
+#setMethod("knn.cvB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+#			function(exprObj, classifLab, trainInd=NULL, k, l, prob, use.all, metric){
+#			if (!is.null(trainInd)) warning("disregarding trainInd for knn.cvB")
+#			cl <- exprObj[[classifLab]]
+#			dat <- t(exprs(exprObj))
+#			dis <- dist(dat, method=metric)
+#			out <- class::knn.cv(dat, cl, k, l, prob, use.all)
+#                new("classifOutput", method="knn.cv", 
+##			predLabels=newPredClass(as.character(out)), 
+#			trainInds=integer(0), allClass=as.character(exprObj[[classifLab]]),
+#			predScores=newQualScore(attr(out,"prob")),
+#                        RObject=out, call=match.call(), distMat=dis)
+#})
 
 #####################
 # title: knn1B

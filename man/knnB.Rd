@@ -5,7 +5,6 @@
  \alias{confuMat}
  \alias{cvB}
  \alias{knn1B}
- \alias{knn.cvB}
  \alias{knnP}
  \alias{lcaB}
  \alias{logitboostB}
@@ -54,7 +53,6 @@
   \alias{ipredknnB,exprSet,character,integer-method}
   \alias{knn1B,exprSet,character,integer-method}
   \alias{knnB,exprSet,character,integer-method}
-  \alias{knn.cvB,exprSet,character-method}
   \alias{lcaB,exprSet,numeric-method}
   \alias{ldaB,exprSet,character,integer-method}
   \alias{logitboostB,exprSet,character,integer,numeric-method}
@@ -117,7 +115,6 @@ library(golubEsets)
 data(golubMerge)
 smallG <- golubMerge[1:60,]
 knnB( smallG, "ALL.AML", 1:40 )
-knn.cvB( smallG, "ALL.AML" )
 set.seed(1234) # needed for nnet initialization
 nnetB( smallG, "ALL.AML", 1:40, size=5, decay=.01 )
 lvq1B( smallG, "ALL.AML", 1:40 )
@@ -136,7 +133,7 @@ sldaB( smallG, "ALL.AML", 1:40 )
 ldaB( smallG, "ALL.AML", 1:40 )
 qdaB( smallG[1:10,], "ALL.AML", 1:40 )
 pamrB( smallG, "ALL.AML", 1:40 )
-LOO1 <- xval(smallG, "ALL.AML", knnB, "LOO", 0:0)
+LOO1 <- xval(smallG, "ALL.AML", knnB, "LOO" ) # same as knn.cv
 LOO2 <- xval(smallG, "ALL.AML", knnB, "FUN", 0:0, function(x,y,i) {
   (1:ncol(exprs(x)))[-i] }, niter=72 )
 table(LOO1, LOO2)

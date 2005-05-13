@@ -16,7 +16,7 @@ chkMLInterfaceProc <- function(x) {
  else return(TRUE)
 }
 
-setMethod("xval", c("exprSet", "character", "nonstandardGeneric", "character", "integer", "ANY", "ANY", "ANY"),
+setMethod("xval", c("exprSet", "character", "genericFunction", "character", "integer", "ANY", "ANY", "ANY"),
 	function(data, classLab, proc, xvalMethod=c("LOO","LOG", "FUN")[1], group=0:0, indFun, niter, ...) {
 		if (!(xvalMethod %in% c("LOO","LOG","FUN"))) stop("unrecognized xvalMethod")
 		if (chkMLInterfaceProc(proc))
@@ -67,7 +67,7 @@ balKfold <- function(K) function( data, clab, iternum ) {
  (1:narr)[ - which( unlist(grpinds)==iternum ) ]
 }
 
-setMethod("xval", c("exprSet", "character", "nonstandardGeneric", "character", "missing", "ANY", "ANY", "ANY"),
+setMethod("xval", c("exprSet", "character", "genericFunction", "character", "missing", "ANY", "ANY", "ANY"),
 	function(data, classLab, proc, xvalMethod=c("LOO","LOG", "FUN")[1], group=0:0, indFun, niter, ...) 
 		xval(data=data, classLab=classLab, proc=proc, 
 			xvalMethod=xvalMethod, group=0:0, indFun=function(){},
