@@ -79,7 +79,7 @@
  This document describes a family of
 wrappers of calls to machine learning classifiers
 distributed through various R packages.
-For example \code{knnB} is a wrapper for a call to \code{\link{knn}} for objects
+For example \code{knnB} is a wrapper for a call to \code{\link[class]{knn}} for objects
  of class \code{exprSet}. These interfaces, of the form \code{[f]B} provide a common calling
  sequence and common return value for machine learning code in function \code{[f]}.
 For details on the additional arguments that may be passed to any covered
@@ -102,7 +102,7 @@ knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
   \item{metric}{ See \code{knn} for a complete description. }
 }
 \details{
-  See \code{\link{knn}} for a complete description.
+  See \code{\link[class]{knn}} for a complete description.
 }
 \value{
  An object of class \code{\link{classifOutput-class}}.
