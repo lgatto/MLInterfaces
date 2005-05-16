@@ -1,5 +1,6 @@
 \name{classifOutput-class}
 \docType{class}
+\alias{classifOutput}
 \alias{classifOutput-class}
 \alias{agnes-class}
 \alias{bagging-class}
