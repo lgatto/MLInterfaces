@@ -14,6 +14,7 @@ is built on a ``training'' subset of the input data, and the ``test'' subset's
 true class labels are available.  This method cross-tabulates the true labels
 of the test set against the predictions of the fitted classifier.
 }}
+}
 \examples{
 library(golubEsets)
 smallG <- golubMerge[1:50,]
