@@ -16,7 +16,7 @@ analogous to \code{\link{kmeans}} but with a constraint
 on the complexity of the subspace in which the cluster-defining
 prototypes are identified.
 
-The outputs of \code{\link[som]{som}} and \code{\link{[class]SOM}} are
+The outputs of \code{\link[som]{som}} and \code{\link[class]{SOM}} are
 not easily formulated as \code{\link{clustOutput-class}} instances,
 so classes that extend \code{list} are used as output containers.
 
