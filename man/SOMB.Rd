@@ -16,7 +16,7 @@ analogous to \code{\link{kmeans}} but with a constraint
 on the complexity of the subspace in which the cluster-defining
 prototypes are identified.
 
-The outputs of \code{\link{som}} and \code{\link{SOM}} are
+The outputs of \code{\link[som]{som}} and \code{\link{[class]SOM}} are
 not easily formulated as \code{\link{clustOutput-class}} instances,
 so classes that extend \code{list} are used as output containers.
 
@@ -29,11 +29,11 @@ somB(exprObj, classifLab)
   \item{classifLab}{A vector of class labels. }
 }
 \details{
-You may pass additional parameters, see \code{\link{SOM}}
-or \code{\link{som}} for details.
+You may pass additional parameters, see \code{\link[class]{SOM}}
+or \code{\link[som]{som}} for details.
 }
 \value{
- An object of class \code{SOMBoutput} or {somBoutput}
+ An object of class \code{SOMBoutput} or \code{somBoutput}
 }
 
 \author{Jess Mar, VJ Carey <stvjc@channing.harvard.edu>}
