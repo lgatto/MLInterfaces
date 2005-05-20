@@ -1,11 +1,12 @@
 Package: MLInterfaces
 Title: MLInterfaces
-Version: 1.0.10
+Version: 1.1.0
 Author: Jess Mar, Robert Gentleman, Vince Carey
-Description: A package that implements uniform interfaces to machine learning
-   code for the exprSet class from Bioconductor
+Description: A package that implements uniform interfaces to machine
+        learning code for the exprSet class from Bioconductor
 Maintainer: V. Carey <stvjc@channing.harvard.edu>
 License: LGPL
 Depends: R (>= 1.9), methods
-Suggests: cluster, e1071, ipred, randomForest, gpls, pamr, rpart, MASS, nnet,
-	ALL, gbm, mlbench, hgu95av2, som
+Suggests: cluster, e1071, ipred, randomForest, gpls, pamr, rpart,
+        MASS, nnet, ALL, gbm, mlbench, hgu95av2, som
+
