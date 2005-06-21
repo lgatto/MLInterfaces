@@ -35,7 +35,6 @@
   \alias{distMat,MLOutput-method}
   \alias{RObject,MLOutput-method}
   \alias{trainInds,classifOutput-method}
-  \alias{xval,exprSet,character,nonstandardGeneric,character,missing-method}
   \alias{show,probMat-method}
   \alias{show,probArray-method}
   \alias{show,membMat-method}
@@ -132,13 +131,6 @@ randomForestB( smallG, "ALL.AML", 1:35 )
 gbmB( smallG, "ALL.AML", 1:40, n.minobsinnode=3 , n.trees=6000)
 if (require(LogitBoost)) logitboostB( smallG, "ALL.AML", 1:40, 200 ) # summarize won't work with polych
 stat.diag.daB( smallG, "ALL.AML", 1:40 )
-#
-# illustrate the xval method
-#
-LOO1 <- xval(smallG, "ALL.AML", knnB, "LOO" ) # same as knn.cv
-LOO2 <- xval(smallG, "ALL.AML", knnB, "FUN", 0:0, function(x,y,i) {
-  (1:ncol(exprs(x)))[-i] }, niter=72 )
-table(LOO1, LOO2)
 }
 \keyword{ classif }
 

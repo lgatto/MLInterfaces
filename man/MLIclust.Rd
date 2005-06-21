@@ -5,7 +5,6 @@
 \alias{pamB}
 \alias{bclustB}
  \alias{trainInds}
- \alias{xval}
  \alias{silhouetteB}
  \alias{claraB}
  \alias{distMat}
