@@ -70,5 +70,5 @@ balKfold <- function(K) function( data, clab, iternum ) {
 setMethod("xval", c("exprSet", "character", "genericFunction", "character", "missing", "ANY", "ANY", "ANY"),
 	function(data, classLab, proc, xvalMethod=c("LOO","LOG", "FUN")[1], group=0:0, indFun, niter, ...) 
 		xval(data=data, classLab=classLab, proc=proc, 
-			xvalMethod=xvalMethod, group=0:0, indFun=function(){},
+			xvalMethod=xvalMethod, group=0:0, indFun=function(data, classLab, iternum){},
 			niter=0, ...))
