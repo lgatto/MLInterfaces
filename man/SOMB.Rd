@@ -46,8 +46,8 @@ smallG <- golubMerge[1:60,]
 # set a PRNG seed for reproducibilitiy
 set.seed(1234) # needed for nnet initialization
 # now run the classifiers
-somB( smallG, "ALL.AML")
-SOMB( smallG, "ALL.AML")
+#somB( smallG, "ALL.AML", 3)
+SOMB( smallG, "ALL.AML", 3)
 }
 \keyword{ cluster }
 

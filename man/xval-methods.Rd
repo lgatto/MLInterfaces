@@ -13,23 +13,22 @@
 support for cross-validatory machine learning with exprSets
 }
 \usage{
-xval( data, classLab, proc, xvalMethod, group, indFun, niter )
+xval( data, classLab, proc, xvalMethod, group, indFun, niter, ... )
 balKfold(K)
 }
-\section{Arguments}{
-\describe{
+\arguments{
  \item{data}{instance of class \code{\link{exprSet}}}
- \item{classLab}{character string identifying phenoData variable to be regarded
-as known class of the sample}
+ \item{classLab}{character string identifying phenoData variable to be regarded}
  \item{proc}{an MLInterfaces method that returns an instance of \code{\link{classifOutput}}}
  \item{xvalMethod}{character string identifying cross-validation procedure to use:
 default is "LOO" (leave one out), alternatives are "LOG" (leave group out)
 and "FUN" (user-supplied partition extraction function, see Details below)}
+ \item{group}{a vector (length equal to number of samples) enumerating groups for LOG xval method}
  \item{indFun}{a function that returns a set of indices to be saved as a test set;
 this function must have parameters \code{data}, \code{clab}, \code{iternum}; see Details}
  \item{niter}{number of iterations for user-specified partition function to be  run}
- \item{K}{number of balanced cross-validation partitions}
-}
+ \item{K}{number of partitions to be used if \code{balKfold} is used as \code{indFun}}
+ item{...}{arguments passed to the MLInterfaces generic \code{proc}}
 }
 \section{Details}{
 If \code{xvalMethod} is \code{"FUN"}, then \code{indFun} must be a function
