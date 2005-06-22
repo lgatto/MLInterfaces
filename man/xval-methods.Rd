@@ -18,13 +18,13 @@ balKfold(K)
 }
 \section{Arguments}{
 \describe{
- \item{data}{instance of class \code{\link{exprSet}}
+ \item{data}{instance of class \code{\link{exprSet}}}
  \item{classLab}{character string identifying phenoData variable to be regarded
 as known class of the sample}
- \item{proc}{an MLInterfaces method that returns an instance of \code{\link{classifOutput}}
+ \item{proc}{an MLInterfaces method that returns an instance of \code{\link{classifOutput}}}
  \item{xvalMethod}{character string identifying cross-validation procedure to use:
 default is "LOO" (leave one out), alternatives are "LOG" (leave group out)
-and "FUN" (user-supplied partition extraction function, see Details below)
+and "FUN" (user-supplied partition extraction function, see Details below)}
  \item{indFun}{a function that returns a set of indices to be saved as a test set;
 this function must have parameters \code{data}, \code{clab}, \code{iternum}; see Details}
  \item{niter}{number of iterations for user-specified partition function to be  run}
