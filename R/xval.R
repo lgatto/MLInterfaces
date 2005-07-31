@@ -1,4 +1,5 @@
-setGeneric("xval", function(data, classLab, proc, xvalMethod, group, indFun, niter, ...)
+setGeneric("xval", function(data, classLab, proc, xvalMethod, group, indFun, niter, fsFun=NULL, fsNum=NULL,
+ decreasing=TRUE, ...)
  standardGeneric("xval"))
 
 chkMLInterfaceProc <- function(x) {
@@ -16,39 +17,82 @@ chkMLInterfaceProc <- function(x) {
  else return(TRUE)
 }
 
-setMethod("xval", c("exprSet", "character", "genericFunction", "character", "integer", "ANY", "ANY", "ANY"),
-	function(data, classLab, proc, xvalMethod=c("LOO","LOG", "FUN")[1], group=0:0, indFun, niter, ...) {
-		if (!(xvalMethod %in% c("LOO","LOG","FUN"))) stop("unrecognized xvalMethod")
-		if (chkMLInterfaceProc(proc))
+setMethod("xval", c("exprSet", "character", "genericFunction", "character", "integer", "ANY", "ANY", "ANY",
+  "ANY", "ANY", "ANY" ),
+function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, ...) 
+{
+#
+# some mods by Stephen Henderson to support feature selection
+#
+	if (!(xvalMethod %in% c("LOO", "LOG", "FUN"))) 
+		stop("unrecognised xvalMethod")
+	if(!any(classLab == names(pData(data))))
+		stop("unrecognised classLab")
+
+	if (chkMLInterfaceProc(proc)) 
 		X <- t(exprs(data))
-		N <- nrow(X)
-		inds <- 1:N
-                if (xvalMethod == "LOO")
-                 {
-		 out <- rep(NA, N)
-		 for (i in 1:N)
-			out[i] <- proc( data, classLab, inds[-i], ... )@predLabels@.Data
-		 return(out)
-                 }
-		else if (xvalMethod == "LOG")
-		 {
-	 	 ug <- unique(group)
-		 Nu <- length(ug)
-		 out <- NULL
-		 for (i in 1:Nu)
-		    out <- c(out, proc(data, classLab, inds[group != ug[i]], ...)@predLabels@.Data)
-		 return(out)
-	         }
-		else if (xvalMethod == "FUN")
-                 {
-		 out <- NULL
-		 for (i in 1:niter)
+	N <- nrow(X)
+    	inds <- 1:N
+	fs.inds<-1:ncol(X)
+	fs.memory<-vector()
+	
+    	if (xvalMethod == "LOO") 
+	{
+       	out <- rep(NA, N)
+        	for (i in 1:N)
+		{
+			if (is.function(fsFun))
 			{
-                        tinds <- indFun( data, classLab, i )
-			out <- c(out, proc( data, classLab, tinds, ...)@predLabels@.Data)
+				fs.scores<-fsFun(data[,-i], classLab)
+				fs.inds<-sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
+	 			fs.memory<-c(fs.memory, fs.inds)
 			}
-		 return(out)
-		 }
+			out[i] <- proc(data[fs.inds,], classLab, inds[-i])@predLabels@.Data
+        	}
+		
+    	}
+    	else if (xvalMethod == "LOG")
+	{
+        	ug <- unique(group)
+        	Nu <- length(ug)
+        	out <- NULL
+        	for (i in 1:Nu)
+		{			
+			if (is.function(fsFun))
+			{
+				fs.scores<-fsFun(data[,group !=ug[i]], classLab, ...)
+				fs.inds<-sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
+	 			fs.memory<-c(fs.memory, fs.inds)
+			}
+			out <- c(out, proc(data[fs.inds,], classLab, inds[group != ug[i]])@predLabels@.Data)
+        	}
+#		if (is.function(fsFun)) return(list(fs.memory=fs.memory, out=out))
+#		else return(out)
+    	}
+    	else if (xvalMethod == "FUN")
+	{
+        	out <- NULL
+        	for (i in 1:niter) 
+		{
+			tinds <- indFun(data, classLab, i)
+			if (is.function(fsFun))
+			{
+				fs.scores<-fsFun(data[,tinds], classLab)
+				fs.inds<-sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
+	 			fs.memory<-c(fs.memory, fs.inds)
+			}
+			
+            	out <- c(out, proc(data[fs.inds,], classLab, tinds)@predLabels@.Data)
+      		}
+	}
+	if (is.function(fsFun))
+	{
+		return(list(fs.memory=fs.memory, out=out))
+	}
+	else
+	{
+		return(out)
+	}
 })
 		
 
@@ -67,8 +111,3 @@ balKfold <- function(K) function( data, clab, iternum ) {
  (1:narr)[ - which( unlist(grpinds)==iternum ) ]
 }
 
-setMethod("xval", c("exprSet", "character", "genericFunction", "character", "missing", "ANY", "ANY", "ANY"),
-	function(data, classLab, proc, xvalMethod=c("LOO","LOG", "FUN")[1], group=0:0, indFun, niter, ...) 
-		xval(data=data, classLab=classLab, proc=proc, 
-			xvalMethod=xvalMethod, group=0:0, indFun=function(data, classLab, iternum){},
-			niter=0, ...))

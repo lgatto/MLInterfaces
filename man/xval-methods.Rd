@@ -13,7 +13,7 @@
 support for cross-validatory machine learning with exprSets
 }
 \usage{
-xval( data, classLab, proc, xvalMethod, group, indFun, niter, ... )
+xval( data, classLab, proc, xvalMethod, group, indFun, niter, fsFun=NULL, fsNum=NULL, decreasing=TRUE, ... )
 balKfold(K)
 }
 \arguments{
@@ -28,7 +28,12 @@ and "FUN" (user-supplied partition extraction function, see Details below)}
 this function must have parameters \code{data}, \code{clab}, \code{iternum}; see Details}
  \item{niter}{number of iterations for user-specified partition function to be  run}
  \item{K}{number of partitions to be used if \code{balKfold} is used as \code{indFun}}
- item{...}{arguments passed to the MLInterfaces generic \code{proc}}
+ \item{fsFun}{function computing ranks of features for feature selection}
+ \item{fsNum}{number of features to be kept for learning in each iteration}
+ \item{decreasing}{logical, should be TRUE if \code{fsFun} provides high scores for high-performing features
+(e.g., is absolute value of a test statistics) and false if it provides low scores
+for high-performing features (e.g., p-value of a test).}
+ item{\dots}{arguments passed to the MLInterfaces generic \code{proc}}
 }
 \section{Details}{
 If \code{xvalMethod} is \code{"FUN"}, then \code{indFun} must be a function
@@ -37,6 +42,15 @@ This function returns
 indices that identify the training set for a given
 cross-validation iteration passed as the value of \code{iternum}.  An example
 function is printed out when the example of this page is executed.
+
+if \code{fsFun} is not \code{NULL}, then it must be a function with two
+arguments: the first can be transformed to a feature matrix (rows are objects,
+columns are features) and the second is a vector of class labels.
+The function returns a vector of scores, one for each object.  The
+scores will be interpreted according to the value of \code{decreasing},
+to select \code{fsNum} features.  Thanks to Stephen Henderson of University
+College London for
+this functionality.
 }
 %\section{Methods}{
 %\describe{
@@ -69,5 +83,17 @@ table(lk3, smallG$ALL.AML)
 LOO2 <- xval(smallG, "ALL.AML", knnB, "FUN", 0:0, function(x,y,i) {
   (1:ncol(exprs(x)))[-i] }, niter=72 )
 table(lk1, LOO2)
+#
+# use Stephen Henderson's feature selection extensions
+#
+t.fun<-function(data, fac)
+{
+	require(genefilter)
+	# deal with the integer storage of golubTrain@exprs!
+	xd <- matrix(as.double(exprs(data)), nrow=nrow(exprs(data)))
+        return(abs(rowttests(xd,data[[fac]], tstatOnly=FALSE)$statistic))
+}
+lk3f <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 0:0, fsFun=t.fun)
+table(lk3f$out, smallG$ALL.AML)
 }
 \keyword{methods}
