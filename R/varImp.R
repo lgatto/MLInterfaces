@@ -6,12 +6,13 @@ if(!isGeneric("getVarImp"))setGeneric("getVarImp",
  function(object)standardGeneric("getVarImp"))
 
 setMethod("getVarImp", "classifOutput", function(object) {
-	if (is(object@RObject,"randomForest")) {
+# watch out, people are using compound S3 classes c("randomForest.formula", "randomForest")
+	if (any(class(object@RObject) == "randomForest")) {
 		imp <- object@RObject$importance
 		return(new("varImpStruct", data.matrix(imp[,-1]), 
 			method="randomForest", varnames= row.names(imp)))
 		}
-	else if (is(object@RObject,"gbm")) {
+	else if (any(class(object@RObject) == "gbm")) {
 		imp <- summary(object@RObject, plotit=FALSE)
 		return(new("varImpStruct", data.matrix(imp[,-1]), 
                          method="gbm", varnames=as.character(imp[,1])))

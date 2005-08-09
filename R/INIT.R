@@ -54,8 +54,10 @@ setClass("clustOutput", representation(
 ########################################################
 
 setMethod("show", "probMat", function(object) {
-	cat("summary of class membership probabilities:\n")
-	print(apply(object,2,summary))
+	if (length(object)>0) {
+		cat("summary of class membership probabilities:\n")
+		print(apply(object,2,summary))
+	}
 })
 setMethod("show", "probArray", function(object) {
 	cat("dimensions of (threshold-based) class membership probabilities:\n")

@@ -28,6 +28,7 @@ setGeneric("nnetB", function(exprObj, classifLab, trainInd, weights, size=2, Wts
 		standardGeneric("nnetB")
 })
 
+
 setMethod("nnetB", c("exprSet", "character", "integer", "ANY", "ANY", 
 		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
 		"ANY", "ANY", "ANY", "ANY", "ANY"),
