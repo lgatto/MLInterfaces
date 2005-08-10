@@ -34,7 +34,7 @@ setMethod("planarPlot", c("classifOutput", "exprSet", "character"),
     }
  else
     ps <- predict( clo@RObject, newdata=ff )
- if (method == "lda") ps <- ps[[1]]
+ if (clo@method == "lda") ps <- ps[[1]]
  plot( ff[,1], ff[,2], col=pal[as.numeric(factor(ps))], pch=19,
  xlab = names(ff)[1], ylab=names(ff)[2] )
  #text( exprs(eset)[1,], exprs(eset)[2,], lab=eset[[classifLab]])
