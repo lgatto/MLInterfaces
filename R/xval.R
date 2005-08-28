@@ -47,7 +47,7 @@ function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NUL
 				fs.inds<-sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
 	 			fs.memory<-c(fs.memory, fs.inds)
 			}
-			out[i] <- proc(data[fs.inds,], classLab, inds[-i])@predLabels@.Data
+			out[i] <- proc(data[fs.inds,], classLab, inds[-i], ...)@predLabels@.Data
         	}
 		
     	}
@@ -60,11 +60,11 @@ function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NUL
 		{			
 			if (is.function(fsFun))
 			{
-				fs.scores<-fsFun(data[,group !=ug[i]], classLab, ...)
+				fs.scores<-fsFun(data[,group !=ug[i]], classLab)
 				fs.inds<-sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
 	 			fs.memory<-c(fs.memory, fs.inds)
 			}
-			out <- c(out, proc(data[fs.inds,], classLab, inds[group != ug[i]])@predLabels@.Data)
+			out <- c(out, proc(data[fs.inds,], classLab, inds[group != ug[i]], ...)@predLabels@.Data)
         	}
 #		if (is.function(fsFun)) return(list(fs.memory=fs.memory, out=out))
 #		else return(out)
@@ -82,7 +82,7 @@ function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NUL
 	 			fs.memory<-c(fs.memory, fs.inds)
 			}
 			
-            	out <- c(out, proc(data[fs.inds,], classLab, tinds)@predLabels@.Data)
+            	out <- c(out, proc(data[fs.inds,], classLab, tinds, ...)@predLabels@.Data)
       		}
 	}
 	if (is.function(fsFun))

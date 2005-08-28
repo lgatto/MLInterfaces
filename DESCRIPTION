@@ -8,5 +8,5 @@ Maintainer: V. Carey <stvjc@channing.harvard.edu>
 License: LGPL
 Depends: R (>= 1.9), methods
 Suggests: cluster, e1071, ipred, randomForest, gpls, pamr, rpart,
-        MASS, nnet, ALL, gbm, mlbench, hgu95av2, som
+        MASS, nnet, ALL, gbm, mlbench, hgu95av2, som, RColorBrewer, hu6800
 
