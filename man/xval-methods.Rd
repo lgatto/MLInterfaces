@@ -13,7 +13,7 @@
 support for cross-validatory machine learning with exprSets
 }
 \usage{
-xval( data, classLab, proc, xvalMethod, group, indFun, niter, fsFun=NULL, fsNum=NULL, decreasing=TRUE, ... )
+xval( data, classLab, proc, xvalMethod, group, indFun, niter, fsFun=NULL, fsNum=NULL, decreasing=TRUE, \dots )
 balKfold(K)
 }
 \arguments{
@@ -27,13 +27,13 @@ and "FUN" (user-supplied partition extraction function, see Details below)}
  \item{indFun}{a function that returns a set of indices to be saved as a test set;
 this function must have parameters \code{data}, \code{clab}, \code{iternum}; see Details}
  \item{niter}{number of iterations for user-specified partition function to be  run}
- \item{K}{number of partitions to be used if \code{balKfold} is used as \code{indFun}}
  \item{fsFun}{function computing ranks of features for feature selection}
  \item{fsNum}{number of features to be kept for learning in each iteration}
  \item{decreasing}{logical, should be TRUE if \code{fsFun} provides high scores for high-performing features
 (e.g., is absolute value of a test statistics) and false if it provides low scores
 for high-performing features (e.g., p-value of a test).}
- item{\dots}{arguments passed to the MLInterfaces generic \code{proc}}
+ \item{\dots}{arguments passed to the MLInterfaces generic \code{proc}}
+ \item{K}{number of partitions to be used if \code{balKfold} is used as \code{indFun}}
 }
 \section{Details}{
 If \code{xvalMethod} is \code{"FUN"}, then \code{indFun} must be a function
