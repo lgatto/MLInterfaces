@@ -17,7 +17,7 @@ xval( data, classLab, proc, xvalMethod, group, indFun, niter, fsFun=NULL, fsNum=
 balKfold(K)
 }
 \arguments{
- \item{data}{instance of class \code{\link{exprSet}}}
+ \item{data}{instance of class \code{\link[Biobase]{exprSet}}}
  \item{classLab}{character string identifying phenoData variable to be regarded}
  \item{proc}{an MLInterfaces method that returns an instance of \code{\link{classifOutput}}}
  \item{xvalMethod}{character string identifying cross-validation procedure to use:

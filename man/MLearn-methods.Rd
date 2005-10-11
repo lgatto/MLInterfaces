@@ -12,7 +12,7 @@
 Use of \code{MLInterfaces} methods to date (version 1.1.3) involves a large
 number of generics with names indicating the method to be employed.
 For example \code{knnB()} is used to apply $k$-nearest neighbors analysis
-to an instance of the \code{\link{exprSet}} class.  In this design, the generic
+to an instance of the \code{\link[Biobase]{exprSet}} class.  In this design, the generic
 has to ``know'' about the parameters to the underlying R function implementing
 the method of interest, and set defaults.  This is a somewhat fragile design,
 in that changes to the calling sequences to underlying R functions can break the
@@ -23,7 +23,7 @@ is one generic \code{MLearn}.  Its parameters are \code{formula}, \code{data},
 \code{method}, and \code{trainInd}, and additional parameters to underlying
 implementations of machine learning algorithms are passed through \dots{}.
 This new design allows use of ordinary formulas and data frames as well as
-\code{\link{exprSet}} instances.
+\code{\link[Biobase]{exprSet}} instances.
 
 The machine learning methods accommodated in the new design are described
 before the examples below.
@@ -48,13 +48,13 @@ learner.
 }
 
 \item{formula = "character", data = "exprSet", method = "character", trainInd = "numeric"}{ 
-  This method works for instances of the \code{\link{exprSet}} class.
+  This method works for instances of the \code{\link[Biobase]{exprSet}} class.
 
 Parameter \code{formula} is to be the name of a variable in the \code{pData}
-slot of the exprSet's \code{\link{phenoData}}.  In general this will be a factor
+slot of the exprSet's \code{\link[Biobase]{phenoData}}.  In general this will be a factor
 encoding a categorical variable.
 
-Parameter \code{data} is to be an instance of class \code{\link{exprSet}}.
+Parameter \code{data} is to be an instance of class \code{\link[Biobase]{exprSet}}.
 
   Possible values for \code{method} are described below, under ``Machine learning resources available''.
 

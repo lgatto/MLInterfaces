@@ -3,7 +3,7 @@
 % .tex file will get overwritten.
 %
 %\VignetteIndexEntry{MLInterfaces Primer}
-%\VignetteDepends{}
+%\VignetteDepends{golubEsets}
 %\VignetteKeywords{Genomics}
 %\VignettePackage{MLInterfaces}
 %
