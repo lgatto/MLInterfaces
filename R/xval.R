@@ -18,82 +18,57 @@ chkMLInterfaceProc <- function(x) {
 }
 
 setMethod("xval", c("exprSet", "character", "genericFunction", "character", "integer", "ANY", "ANY", "ANY",
-  "ANY", "ANY", "ANY" ),
-function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, ...) 
-{
-#
-# some mods by Stephen Henderson to support feature selection
-#
-	if (!(xvalMethod %in% c("LOO", "LOG", "FUN"))) 
-		stop("unrecognised xvalMethod")
-	if(!any(classLab == names(pData(data))))
-		stop("unrecognised classLab")
+                    "ANY", "ANY", "ANY" ),
+          function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, ...) {
 
-	if (chkMLInterfaceProc(proc)) 
-		X <- t(exprs(data))
-	N <- nrow(X)
-    	inds <- 1:N
-	fs.inds<-1:ncol(X)
-	fs.memory<-vector()
-	
-    	if (xvalMethod == "LOO") 
-	{
-       	out <- rep(NA, N)
-        	for (i in 1:N)
-		{
-			if (is.function(fsFun))
-			{
-				fs.scores<-fsFun(data[,-i], classLab)
-				fs.inds<-sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
-	 			fs.memory<-c(fs.memory, fs.inds)
-			}
-			out[i] <- proc(data[fs.inds,], classLab, inds[-i], ...)@predLabels@.Data
-        	}
-		
-    	}
-    	else if (xvalMethod == "LOG")
-	{
-        	ug <- unique(group)
-        	Nu <- length(ug)
-        	out <- NULL
-        	for (i in 1:Nu)
-		{			
-			if (is.function(fsFun))
-			{
-				fs.scores<-fsFun(data[,group !=ug[i]], classLab)
-				fs.inds<-sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
-	 			fs.memory<-c(fs.memory, fs.inds)
-			}
-			out <- c(out, proc(data[fs.inds,], classLab, inds[group != ug[i]], ...)@predLabels@.Data)
-        	}
-#		if (is.function(fsFun)) return(list(fs.memory=fs.memory, out=out))
-#		else return(out)
-    	}
-    	else if (xvalMethod == "FUN")
-	{
-        	out <- NULL
-        	for (i in 1:niter) 
-		{
-			tinds <- indFun(data, classLab, i)
-			if (is.function(fsFun))
-			{
-				fs.scores<-fsFun(data[,tinds], classLab)
-				fs.inds<-sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
-	 			fs.memory<-c(fs.memory, fs.inds)
-			}
-			
-            	out <- c(out, proc(data[fs.inds,], classLab, tinds, ...)@predLabels@.Data)
-      		}
-	}
-	if (is.function(fsFun))
-	{
-		return(list(fs.memory=fs.memory, out=out))
-	}
-	else
-	{
-		return(out)
-	}
-})
+          if (!(xvalMethod %in% c("LOO", "LOG", "FUN"))) 
+              stop("unrecognised xvalMethod")
+          if(!any(classLab == names(pData(data))))
+              stop("unrecognised classLab")
+
+          if (chkMLInterfaceProc(proc))
+              X <- t(exprs(data))
+          N <- nrow(X)
+          inds <- 1:N
+          fs.inds <- 1:ncol(X)
+          fs.memory <- vector()
+          
+          if (xvalMethod == "LOO")
+          {
+              n <- N
+              selnProc <- function(i) -i
+          }
+          else if (xvalMethod == "LOG")
+          {
+              ug <- unique(group)
+              n <- length(ug)
+              selnProc <- function(i) group != ug[i]
+          }
+          else                     # default: if (xvalMethod == "FUN")
+          {
+              n <- niter
+              selnProc <- function(i) indFun( data, classLab, i )
+          }
+          
+          xvalidator <- function(i) {
+              ## ith cross-validation
+              idx <- selnProc(i)
+              if (is.function(fsFun))
+              { ## by Stephen Henderson, to support feature selection
+                  fs.scores <- fsFun(data[,idx], classLab)
+                  fs.inds <- sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
+                  fs.memory <- c(fs.memory, fs.inds)
+              }
+              proc( data[fs.inds,], classLab, inds[idx], ... )@predLabels@.Data
+          }
+
+          out <- unlist( lapply( 1:n, xvalidator ) )
+
+          if (is.function(fsFun))
+              return(list(fs.memory=fs.memory, out=out))
+          else
+              return(out)
+      })
 
 setMethod("xval", c("exprSet", "character", "genericFunction", "character", "missing", "ANY", "ANY", "ANY",
   "ANY", "ANY", "ANY" ),
