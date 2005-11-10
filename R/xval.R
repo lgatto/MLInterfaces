@@ -57,7 +57,7 @@ setMethod("xval", c("exprSet", "character", "genericFunction", "character", "int
               { ## by Stephen Henderson, to support feature selection
                   fs.scores <- fsFun(data[,idx], classLab)
                   fs.inds <- sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
-                  fs.memory <- c(fs.memory, fs.inds)
+                  fs.memory <<- c(fs.memory, fs.inds) # intentional side-effect
               }
               proc( data[fs.inds,], classLab, inds[idx], ... )@predLabels@.Data
           }
