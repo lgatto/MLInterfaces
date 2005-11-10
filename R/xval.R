@@ -30,12 +30,11 @@ setMethod("xval", c("exprSet", "character", "genericFunction", "character", "int
               X <- t(exprs(data))
           N <- nrow(X)
           inds <- 1:N
-          fs.inds <- 1:ncol(X)
-          fs.memory <- vector()
-          
+
+          ## cross-validation selection procedure
           if (xvalMethod == "LOO")
           {
-              n <- N
+              n <- length(inds)
               selnProc <- function(i) -i
           }
           else if (xvalMethod == "LOG")
@@ -44,30 +43,41 @@ setMethod("xval", c("exprSet", "character", "genericFunction", "character", "int
               n <- length(ug)
               selnProc <- function(i) group != ug[i]
           }
-          else                     # default: if (xvalMethod == "FUN")
+          else                          # FUN
           {
               n <- niter
               selnProc <- function(i) indFun( data, classLab, i )
           }
-          
-          xvalidator <- function(i) {
-              ## ith cross-validation
-              idx <- selnProc(i)
-              if (is.function(fsFun))
-              { ## by Stephen Henderson, to support feature selection
+
+          fs.idx <- 1:ncol(X)           # feature set index
+          ## feature set selection
+          if (missing(fsFun))
+              fsProc <- function(idx, fs.idx) fs.idx
+          else
+          { ## original by Stephen Henderson, to support feature selection
+              if (!is.function(fsFun)) stop("fsFun should be a function")
+              fsProc <- function(idx, fs.idx) {
                   fs.scores <- fsFun(data[,idx], classLab)
-                  fs.inds <- sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
-                  fs.memory <<- c(fs.memory, fs.inds) # intentional side-effect
+                  sort(fs.scores, index.return=TRUE, decreasing=decreasing)$ix[1:fsNum]
               }
-              proc( data[fs.inds,], classLab, inds[idx], ... )@predLabels@.Data
           }
 
-          out <- unlist( lapply( 1:n, xvalidator ) )
+          ## cross-validator
+          xvalidator <- function(i, ...) {
+              idx <- selnProc(i)
+              fs.idx <- fsProc(idx, fs.idx)
+              list( proc( data[fs.idx,], classLab, inds[idx], ...)@predLabels@.Data, fs.idx )
+          }
 
-          if (is.function(fsFun))
-              return(list(fs.memory=fs.memory, out=out))
-          else
-              return(out)
+          out <- lapply( 1:n, xvalidator, ... )
+          classif <- unlist( sapply( out, function(x) x[[1]] ) )
+
+          if (missing(fsFun))
+              return(classif)
+          else {
+              fs.memory <- as.vector( sapply( out, function(x) x[[2]] ) )
+              return(list(fs.memory=fs.memory, out=classif))
+         }
       })
 
 setMethod("xval", c("exprSet", "character", "genericFunction", "character", "missing", "ANY", "ANY", "ANY",
