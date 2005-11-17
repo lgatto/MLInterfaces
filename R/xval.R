@@ -72,7 +72,7 @@ setMethod("xval", c("exprSet", "character", "genericFunction", "character", "int
           out <- lapply( 1:n, xvalidator, ... )
           classif <- unlist( sapply( out, function(x) x[[1]] ) )
 
-          if (missing(fsFun))
+          if (!is.function(fsFun))
               return(classif)
           else {
               fs.memory <- as.vector( sapply( out, function(x) x[[2]] ) )
