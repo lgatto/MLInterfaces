@@ -1,5 +1,5 @@
 setGeneric("xval", function(data, classLab, proc, xvalMethod, group, indFun, niter, fsFun=NULL, fsNum=NULL,
- decreasing=TRUE, ...)
+ decreasing=TRUE, cluster = NULL, ...)
  standardGeneric("xval"))
 
 chkMLInterfaceProc <- function(x) {
@@ -19,13 +19,14 @@ chkMLInterfaceProc <- function(x) {
 
 setMethod("xval", c("exprSet", "character", "genericFunction", "character", "integer", "ANY", "ANY", "ANY",
                     "ANY", "ANY", "ANY" ),
-          function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, ...) {
+          function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, cluster = NULL,...) {
 
           if (!(xvalMethod %in% c("LOO", "LOG", "FUN"))) 
               stop("unrecognised xvalMethod")
           if(!any(classLab == names(pData(data))))
               stop("unrecognised classLab")
-
+          xvalLoop <- xvalLoop(cluster)
+          
           if (chkMLInterfaceProc(proc))
               X <- t(exprs(data))
           N <- nrow(X)
@@ -69,7 +70,7 @@ setMethod("xval", c("exprSet", "character", "genericFunction", "character", "int
               list( proc( data[fs.idx,], classLab, inds[idx], ...)@predLabels@.Data, fs.idx )
           }
 
-          out <- lapply( 1:n, xvalidator, ... )
+          out <- xvalLoop( 1:n, xvalidator, ... )
           classif <- unlist( sapply( out, function(x) x[[1]] ) )
 
           if (!is.function(fsFun))
@@ -82,7 +83,7 @@ setMethod("xval", c("exprSet", "character", "genericFunction", "character", "int
 
 setMethod("xval", c("exprSet", "character", "genericFunction", "character", "missing", "ANY", "ANY", "ANY",
   "ANY", "ANY", "ANY" ),
-function(data, classLab, proc, xvalMethod="LOO", group=0:0, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, ...) 
+function(data, classLab, proc, xvalMethod="LOO", group=0:0, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, cluster = NULL, ...) 
 {
     xval(data, classLab, proc, xvalMethod="LOO", group=0:0)
 })
@@ -103,3 +104,10 @@ balKfold <- function(K) function( data, clab, iternum ) {
  (1:narr)[ - which( unlist(grpinds)==iternum ) ]
 }
 
+## xvalLoop is a 'hook' to customize how xval execute. The default is
+## a simple lapply
+
+setGeneric("xvalLoop", function( cluster, ... ) standardGeneric("xvalLoop") )
+
+setMethod("xvalLoop", signature( cluster = "ANY" ), # default method -- return function 'lapply'
+          function( cluster, ... ) lapply )
