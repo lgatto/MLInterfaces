@@ -13,7 +13,8 @@
 support for cross-validatory machine learning with exprSets
 }
 \usage{
-xval( data, classLab, proc, xvalMethod, group, indFun, niter, fsFun=NULL, fsNum=NULL, decreasing=TRUE, \dots )
+xval( data, classLab, proc, xvalMethod, group, indFun, niter,
+fsFun=NULL, fsNum=NULL, decreasing=TRUE, cluster=NULL, \dots )
 balKfold(K)
 }
 \arguments{
@@ -32,6 +33,10 @@ this function must have parameters \code{data}, \code{clab}, \code{iternum}; see
  \item{decreasing}{logical, should be TRUE if \code{fsFun} provides high scores for high-performing features
 (e.g., is absolute value of a test statistics) and false if it provides low scores
 for high-performing features (e.g., p-value of a test).}
+  \item{cluster}{NULL or an S4-class object with a defined
+\code{\link{xvalLoop}} method. Use this to execute \code{xval} on
+several nodes in a computer cluster. See documentation for
+\code{\link{xvalLoop}} for more information}
  \item{\dots}{arguments passed to the MLInterfaces generic \code{proc}}
  \item{K}{number of partitions to be used if \code{balKfold} is used as \code{indFun}}
 }
