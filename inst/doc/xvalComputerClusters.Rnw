@@ -1,0 +1,300 @@
+
+% NOTE -- ONLY EDIT .Rnw!!!
+% .tex file will get overwritten.
+%
+%\VignetteIndexEntry{MLInterfaces Computer Cluster}
+%\VignetteDepends{golubEsets}
+%\VignetteKeywords{Genomics}
+%\VignettePackage{MLInterfaces}
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+
+\documentclass{article}
+
+\usepackage[colorlinks,linkcolor=blue]{hyperref}
+\usepackage{graphicx,hthtml}
+
+\newcommand{\R}{\texttt{R}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+ 
+\begin{document}
+
+\title{Using \Rfunction{xval} and  clusters of computers for cross-validation}
+\author{MT Morgan (\htmailto{mtmorgan@fhcrc.org})}
+\maketitle
+
+<<echo=FALSE>>=
+options(width=60)
+@ 
+
+\section{Introduction}
+
+Cross-validation and other methods like the bootstrap can be `embarrassingly parallel'.
+Embarrassingly parallel means that the same calculation is repeated independently for different data sets.
+One way to decrease the execution time of embarrassingly parallel computations is to use a cluster of computers.
+Each node in the cluster performs part of the computation, dividing the execution time by 1 over the number of nodes in the cluster.
+
+This document illustrates how clusters can perform cross-validation calculations, using the \Rfunction{xval} method from the \Rpackage{MLInterfaces} package.
+The document starts with a brief overview of what a cluster computation might look like, with some essential details swept `under the rug'; this is the `end-user' experience.
+Delving deeper into the steps required for this experience is the `R programmer' experience.
+This section outlines the implementation required (not provided in \Rpackage{MLInterfaces}!) for clustered computing, the likely performance gains, and directions for developing more effective parallelization strategies.
+The section concludes with a summary of steps taken to make \Rfunction{xval} more amenable to clustered evaluation; these may be useful guides for exposing other functions to parallelization.
+
+\section{Overview -- the `end user' experience}
+
+A non-clustered cross-validation might involve the following \R{} commands, taken from the \Rfunction{xval} documentation examples:
+<<init>>=
+library(MLInterfaces)
+library(golubEsets)
+smallG <- golubMerge[200:250,]
+@ 
+The first three statements load the \Rpackage{MLInterfaces} package and a data set.
+The next line extracts a portion of the data set for use in the example.
+We then perform a ``leave one out'' (LOO) cross-validation, and summarize the results in a table:
+<<xval>>=
+lk1 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 
+            group=as.integer(0))
+table(lk1,smallG$ALL.AML)
+@ 
+
+A clustered version of the same calculation requires that the user have a computer cluster available for \R{} to use.
+The cluster has software libraries installed to allow communication between cluster nodes.
+Common software packages include \code{MPI} and \code{PVM}.
+\R{} also requires packages that allow communication between \R{} and the cluster software.
+Available packages include \Rpackage{Rmpi} and \Rpackage{rpvm}; usually one installs the package corresponding to the cluster library available on the system.
+Both \Rpackage{Rmpi} and \Rpackage{rpvm} provide a fairly `low-level' interface to the clusters.
+A better starting point adds the package \Rpackage{snow} as  another layer on top of \Rpackage{Rmpi} or \Rpackage{pvm}.
+\Rpackage{snow} makes it easy to start and stop clusters, and provides a uniform interface to key cluster functions.
+
+Assuming a functioning cluster with appropriate \R{} packages, and with one caveat, the clustered cross-validation might start as before\ldots{}
+<<clusterinit, eval=FALSE>>=
+library(MLInterfaces)
+library(golubEsets)
+smallG <- golubMerge[200:250,]
+@ 
+Then load \Rpackage{snow}, start the cluster (e.g., with 8 nodes), and load \Rpackage{MLInterfaces} on each node\ldots{}
+<<clusterstart, eval=FALSE>>=
+library(snow)
+cl <- makeCluster(8, "MPI")
+clusterEvalQ(cl, library(MLInterfaces))
+@ 
+Finally, perform the calculation across the cluster\ldots{}
+<<clustercalc, eval=FALSE>>=
+lk1 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 
+            group=as.integer(0), cluster = cl)
+table(lk1,smallG$ALL.AML)
+@ 
+Notice that the only change to the actual \Rfunction{xval} call is the inclusion of the \code{cluster = cl} argument.
+Easy!
+
+\section{Caveats -- the `R programmer' experience}
+
+Now the caveat.
+Someone has to tell \Rfunction{xval} how to do the calculation in clustered mode.
+This is the job of the generic function \Rfunction{xvalLoop}.
+We'll build up to a workable solution in this section.
+
+Take a peak at the code inside the \Rfunction{xval} method (e.g., typing \code{getMethods(xval)} at the \R{} command prompt).
+You will see \Rfunction{xvalLoop} appearing near the top, in a line reading \code{xvalLoop <- xvalLoop(cluster)}.
+The function \Rfunction{xvalLoop} is a generic function, and it is called with the argument \code{cluster}.
+Here's the definition of the default method of \Rfunction{xvalLoop} function:
+<<eval=FALSE>>=
+setMethod("xvalLoop", 
+          signature( cluster = "ANY" ),
+          function( cluster, ... ) lapply )
+@ 
+This code is executed when \code{cluster = NULL} (the default, when no \code{cluster} argument is provided).
+By default, then, the \Rfunction{xvalLoop} function returns the \Rfunction{lapply} function.
+The value of the \emph{variable} \code{xvalLoop} (i.e., on the left of \code{xvalLoop <- xvalLoop(cluster)} is then \Rfunction{lapply}.
+A bit confusing, but hopefully not too confusing.
+
+Look further into the \Rfunction{xval} code.
+You'll see \code{xvalLoop} appearing again, toward the base of the method, as \code{out <- xvalLoop( 1:n, xvalidator, ... )}.
+Since the value of \code{xvalLoop} is \code{lapply}, this is the same as \code{out <- lapply( 1:n, xvalidator, ... )}.
+
+We would like our clustered version of \Rfunction{xval} to behave differently, specifically to use an \code{lapply}-like function that takes advantage of the computer cluster.
+We do this by writing a method of \Rfunction{xvalLoop} that is specific to our type of cluster.
+Suppose, as in the example above, we have an MPI cluster created with \Rpackage{snow}.
+Some reading of the \Rpackage{snow} documentation leads to the \Rfunction{parLapply} function.
+This behaves just like \Rfunction{lapply}, but distributes the tasks over cluster nodes.
+In an ideal world, we would be able to write
+<<eval=FALSE>>=
+setOldClass( "spawnedMPIcluster" )
+setMethod("xvalLoop",
+          signature( cluster = "spawnedMPIcluster" ),
+          function( cluster, ... ) parLapply )
+@ 
+Suppose we provided the argument \code{cluster = cl} to the \Rfunction{xval} function.
+After \code{xvalLoop <- xvalLoop(cluster)}, the value of the variable \code{xvalLoop} is \code{parLapply}.
+Later in \Rfunction{xval}, we would execute the equivalent of \code{out <- parLapply( 1:n, xvalidator, ... )}.
+If only it were that easy!
+
+There are two problems with the approach developed so far.
+The first is that the arguments of \Rfunction{parLapply} are different from those of \Rfunction{lapply}.
+Specifically, the first argument of \Rfunction{parLapply} is the cluster.
+
+Here is one solution to this problem.
+Create a `wrapper' for \Rfunction{parLapply} inside the \Rfunction{xvalLoop} method for \code{spawnedMPIcluster} that hides the cluster argument.
+Return the wrapper function, rather than \Rfunction{parLapply}:
+<<eval=FALSE>>=
+setOldClass( "spawnedMPIcluster" )
+setMethod("xvalLoop",
+signature( cluster = "spawnedMPIcluster" ),
+function( cluster, ... ) {
+    relapply <- function(X, FUN, ...) {
+        parLapply( cluster, X, FUN, ... )
+    }
+    relapply
+})
+@ 
+Back in \Rfunction{xval}, the value of the variable \code{xvalLoop} is now \code{relapply}.
+The crucial call later in \Rfunction{xval} will be \code{out <- relapply( 1:n, xvalidator, ... )}.
+The function \Rfunction{relapply} is called with the arguments \code{1:n}, \code{xvalidator}, and \code{...}.
+\Rfunction{relapply} then calls \Rfunction{parLapply} with the arguments \code{cluster} and the other arguments from the call to \Rfunction{relapply}.
+The details of how \code{cluster} gets assigned the correct value involve the lexical scoping rules of \R{}, but what happens is that \code{cluster} takes on the value it had when the \Rfunction{xvalLoop} method was invoked -- the \Rfunction{relapply} function remembers the environment in which it was created, and the environment includes the variable \code{cluster}.
+
+And now the second problem.
+As it stands, only the computer executing \code{xval} knows about the various variables that have been defined, and are needed, for the cross-validation calls.
+We have to share these variables with all cluster nodes contributing to the cross-validation.
+\Rpackage{snow} allows us to export variables from one node to another.
+This is a slow process, because in \Rpackage{snow} a new communication channel is established for each variable.
+In addition, we would have to fully understand the \Rfunction{xval} method to know which variables needed to be exported under which circumstances.
+
+Here is a solution that makes variable export quick while removing the need for detailed knowledge of which specific variables are required:
+bundle all the `visible' variables into an environment, export the environment to each node, and unpack the environment at the receiving node.
+This turns out to be a good solution, because virtually all the visible variables will be needed in the cross-validation.
+The implementation of this solution is as follows:
+<<eval=FALSE>>=
+setMethod("xvalLoop", signature( cluster = "spawnedMPIcluster"),
+function( cluster, ... ) {
+    clusterExportEnv <- function (cl, env = .GlobalEnv)
+    {
+        unpackEnv <- function(env) {
+            for ( name in ls(env) ) assign(name, get(name, env), .GlobalEnv )
+            NULL
+        }
+        clusterCall(cl, unpackEnv, env)
+    }
+    relapply <- function(X, FUN, ...) {
+        ## send all visible variables from the parent (i.e., xval) frame
+        clusterExportEnv( cluster, parent.frame(1) )
+        parLapply( cluster, X, FUN, ... )
+    }
+    relapply
+})
+@ 
+The \Rfunction{clusterExportEnv} function is responsible for taking variables in an environment and sending them and a function to `unpack' the environment to each node.
+\Rfunction{clusterCall} is defined in \Rpackage{snow}.
+
+While tortuous in development from scratch, the end result and steps for creating new methods is straight-forward:
+create an \Rfunction{xvalLoop} method for a clustered environment that (a) exports visible variables and (b) implements and returns a parallelized \Rfunction{lapply}-like function.
+
+\subsection{Performance}
+
+\begin{figure}[htbp]
+  \centering
+<<echo=FALSE,fig=TRUE>>=
+res <- c(20.04,11.34, 9.23, 8.20, 7.87)
+plot(res,ylab="Time (seconds)", xlab="Nodes", ylim=c(0,max(res)))
+@ 
+%%   \includegraphics{clusterResults}
+  \caption{Execution time decreases asymptotically with number of nodes. The decreasing performance gain is primarily due to communication overhead.}
+  \label{fig:clusterResults}
+\end{figure}
+
+After all this work, what do we get?
+Without immediate access to a cluster, I ran \Rfunction{xval} on a collection of 64-bit x86 linux computers linked through standard ethernet switches.
+There are a variety of users on each node, so they may not perform equivalently.
+The code used is
+<<eval=FALSE>>=
+harness <- function( nodes, reps, data ) {
+    if ( nodes > 1) {
+        cl <- makeCluster(nodes, "MPI")
+        clusterEvalQ(cl, library(MLInterfaces))
+    } else cl <- NULL
+    func <- function(x)
+        res <- xval(data, "ALL.AML", knnB, xvalMethod = "LOO", 0:0, cluster = cl )
+    func()                              # warm-up
+    tm <- system.time( sapply( 1:reps, func ) )[3]
+    if (nodes > 1) stopCluster(cl)
+    tm
+}
+res <- sapply( 1:5, harness, 10, smallG )
+@ 
+
+Figure~\ref{fig:clusterResults} summarizes timings from 10 replicate calculations of the cross-validation used above.
+The details of the results are likely to be quite system- and problem-dependent.
+However, a general point emerges.
+
+A basic framework for thinking about total execution time is to recognize two components: computation, and communication.
+In an ideal world, computation time and node number are inversely related nodes, $t_{\textrm{comp}}\propto 1 /n$.
+Communication time depends on how tasks are communicated to nodes.
+In \Rpackage{snow}, communication increases linearly with node number, $t_{\textrm{comm}}\propto n$.
+The combination of these times means that there is a node number that minimizes overall execution time.
+Results in Figure~\ref{fig:clusterResults} suggest that the optimum cluster size for this problem is surprisingly small.
+
+\subsection{Improvements}
+
+This section sketches two ways to improve execution time.
+A goal is to develop this more fully with worked examples.
+
+\Rpackage{snow} and \Rfunction{clusterCall} communication scales linearly with node number.
+This is because of the way \Rpackage{snow} implements cluster-wide calls.
+Specifically, the `master' node (i.e., the node running \R{} through which interactions occur) communicates separately with each slave node.
+Both \code{MPI} and \code{PVM} allow for more efficient models of communication, through \code{broadcast} operations that synchronize data across nodes in $\log n$ time.
+
+The \code{broadcast} approach is likely to be important in large clusters, but in the example of the previous section the efficiency is not that great.
+The underlying problem is the transfer of a large volume of data; actually, the optimum node number generally \emph{decreases} as the size of the data set increases.
+One solution to this is somewhat counter-intuitive, at least to me.
+The idea is for all nodes to independently read in data and execute all code up to the location where \code{xvalLoop} is used in \Rfunction{xval}.
+The `slave' nodes then each execute a portion of the cross-validations, while the `master' node collates results from the slaves.
+At the end of \code{xvalLoop} the master has a complete collection of results and continues on; the slaves have an incomplete set of results, and can be terminated.
+The code is counter-intuitive because each node performs seemingly redundant calculations (the processing up to \code{xvalLoop}).
+Communication times should be greatly reduced, though, because each communication involves just a short set of results rather than a potentially very large data set.
+An assumption is that the clustered file system will cope well with near-simultaneous requests to initially read in data.
+
+\subsection{Making \Rfunction{xval} cluster-friendly}
+
+The implementation presented above required revision of the \Rfunction{xval} code.
+The structure of the routine is: (1) check on supplied variables; (2) preliminary set-up; (3) a loop-like call where the `work' of the function occurs; and (4) processing of the result.
+Many high-level \R{} routines have a similar structure.
+The revisions aimed to more cleanly distinguish the overall structure, and in particular to isolate and refactor part (3).
+
+A key step in the refactoring was to change a \code{for} loop into an \code{lapply}-like function call.
+The reason that this is so important is that \code{for} loops allow side-effects to seep beyond the loop.
+Side-effects are much more easily avoided in a function call.
+Here is a simple illustration, where the `side-effect' in the \code{for} loop changes the value of \code{x}:
+<<>>=
+x <- 1:10
+for (i in 1:10) x[i] <- i**2
+x # x has been modified by the for loop
+
+x <- 1:10
+res <- lapply(1:10, function(i) x[i] <- i**2)
+x # copy of x in lapply modified, not the global x
+@ 
+Avoiding side-effects is particularly important in a cluster, because side-effects are limited to the node on which the calculation occurs.
+Usually this is not what is desired.
+
+A final step in code revision is the hook, \code{xvalLoop}, provided for programmer access.
+\code{xvalLoop} provides a division-of-labor between the \Rfunction{xval} expert and the clustered computing expert.
+The \Rfunction{xval} expert needs only know that clustered computers can take advantage of \code{lapply}-like code.
+The clustered computing expert need know little about \Rfunction{xval}, just that it has an \code{lapply}-like loop to be exploited.
+Since \code{xvalLoop} is a generic function, the clustered computing expert can tailor methods to different types of clusters and even different algorithms.
+The end user need know little about either \Rfunction{xval} or clustered computing; they just provide their cluster as an argument to \Rfunction{xval}.
+
+\section{Conclusion}
+
+This document provides a guide to users wanting to make use of \Rfunction{xval} on a computer cluster.
+It also provides guidance for further parallelization of \code{xval}, and outlines how functions can be written to expose key components to parallelization.
+An emphasis is the division of labor between specialized function writers, clustered computer experts, and end users.
+
+\end{document}
+
