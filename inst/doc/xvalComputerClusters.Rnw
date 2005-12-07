@@ -13,7 +13,7 @@
 \documentclass{article}
 
 \usepackage[colorlinks,linkcolor=blue]{hyperref}
-\usepackage{graphicx,hthtml}
+\usepackage{graphicx}
 
 \newcommand{\R}{\texttt{R}}
 \newcommand{\code}[1]{\texttt{#1}}
@@ -27,7 +27,8 @@
 \begin{document}
 
 \title{Using \Rfunction{xval} and  clusters of computers for cross-validation}
-\author{MT Morgan (\htmailto{mtmorgan@fhcrc.org})}
+\author{MT Morgan (\url{mtmorgan@fhcrc.org})}
+\date{2 December, 2005}
 \maketitle
 
 <<echo=FALSE>>=
