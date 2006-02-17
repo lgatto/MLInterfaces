@@ -21,7 +21,7 @@ setGeneric("silhouetteB", function(out, ...){
 	standardGeneric("silhouetteB")
 })
 
-setMethod("silhouetteB", c("classifOutput", "ANY"), 
+setMethod("silhouetteB", c("classifOutput"), 
 	function(out, ...){
 	
 	lab <- out@predLabels@.Data

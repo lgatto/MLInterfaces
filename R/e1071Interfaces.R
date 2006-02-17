@@ -24,7 +24,7 @@ setGeneric("bclustB", function(exprObj, k, height=0, iter.base=10, minsize=0, di
 })
 
 setMethod("bclustB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY",
-		"ANY", "ANY", "ANY", "ANY", "ANY"), 
+		"ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, iter.base, minsize, dist.method, hclust.method, base.method, 
 			base.centers, verbose, final.kmeans, docmdscale, resample, weights, 
 			maxcluster, ...){
@@ -256,7 +256,7 @@ setGeneric("svmB", function(exprObj, classifLab, trainInd, scale=TRUE,
 
 setMethod("svmB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY",
 		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
-		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+		"ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, scale, type, kernel, degree, gamma, 
 		coef0, cost, nu, class.weights, cachesize, tolerance, epsilon, shrinking, 
 		cross, fitted, subset, na.action, decision.values, metric, ...){

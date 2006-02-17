@@ -3,8 +3,7 @@
 setGeneric("stat.diag.daB", function(exprObj, classifLab, trainInd, 
  pool=1, metric="euclidean", ...) standardGeneric("stat.diag.daB") )
 
-setMethod("stat.diag.daB", c("exprSet", "character", "integer", "ANY", "ANY", 
-		"ANY" ),
+setMethod("stat.diag.daB", c("exprSet", "character", "integer", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, pool,  
                        metric, ...){
 		

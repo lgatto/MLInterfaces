@@ -31,7 +31,7 @@ setGeneric("nnetB", function(exprObj, classifLab, trainInd, weights, size=2, Wts
 
 setMethod("nnetB", c("exprSet", "character", "integer", "ANY", "ANY", 
 		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
-		"ANY", "ANY", "ANY", "ANY", "ANY"),
+		"ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, weights, size, Wts, mask, 
 			skip, rang, decay, maxit, Hess, trace, MaxNWts, abstol, reltol, metric, ...){
 		

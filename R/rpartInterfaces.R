@@ -23,7 +23,7 @@ setGeneric("rpartB", function(exprObj, classifLab, trainInd, weights, subset, na
 })
 
 setMethod("rpartB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", 
-		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, weights, subset, 
 			na.action, method, model, x, y, parms, control, cost, metric, ...){
 

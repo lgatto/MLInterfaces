@@ -11,7 +11,7 @@ chkMLInterfaceProc <- function(x) {
 # by JMC is the list of formal parameters -- i need the signature
 # for a method.
 #
- tySig <- methods:::.methodSignatureMatrix(getMethod(xn, c("exprSet", "character", "integer")))[2,]
+ tySig <- methods::methodSignatureMatrix(getMethod(xn, c("exprSet", "character", "integer")))[2,]
  if( x@package != "MLInterfaces" || !all(tySig == c("exprSet", "character",
 	"integer"))) stop(paste(x, "not bearing proper signature"))
  else return(TRUE)

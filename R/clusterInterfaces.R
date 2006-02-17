@@ -21,7 +21,7 @@ setGeneric("agnesB", function(exprObj, k, height=0, stand=FALSE, method="average
 })
 
 setMethod("agnesB", c("exprSet", "numeric", "ANY", 
-                "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+                "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, stand, method, keep.diss, keep.data, metric, ...){
 
 		dat <- t(exprs(exprObj))

@@ -23,7 +23,7 @@ setGeneric("baggingB", function(exprObj, classifLab, trainInd, subset, aggregati
 		standardGeneric("baggingB")
 })
 
-setMethod("baggingB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("baggingB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, subset, aggregation, metric, ...){
 
 		if(missing(subset)){ subset <- NULL }
@@ -64,7 +64,7 @@ setGeneric("ipredknnB", function(exprObj, classifLab, trainInd, na.action, k=5, 
 		standardGeneric("ipredknnB")
 })
 
-setMethod("ipredknnB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("ipredknnB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, na.action, k, metric, ...){
 				
 		if(missing(na.action)){ na.action <- NULL }
@@ -104,7 +104,7 @@ setGeneric("sldaB", function(exprObj, classifLab, trainInd, subset, na.action=na
 		standardGeneric("sldaB")
 })
 
-setMethod("sldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("sldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, subset, na.action, metric, ...){
 
 		if(missing(subset)){ subset <- NULL }

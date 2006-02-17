@@ -24,7 +24,7 @@ setGeneric("ldaB", function(exprObj, classifLab, trainInd, prior, tol=1.0e-4,
 		standardGeneric("ldaB")
 })
 
-setMethod("ldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+setMethod("ldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, prior, tol, method, CV, nu, metric, ...){
 
 		if(missing(method)){ method <- NULL }
@@ -67,7 +67,7 @@ setGeneric("qdaB", function(exprObj, classifLab, trainInd, prior, tol=1.0e-4, me
 		standardGeneric("qdaB")
 })
 
-setMethod("qdaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+setMethod("qdaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, prior, tol, method, CV, nu, metric, ...){
 		if(missing(method)){ method <- NULL }
 		if(missing(nu)){ nu <- NULL }

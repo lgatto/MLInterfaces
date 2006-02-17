@@ -32,7 +32,7 @@ setGeneric("randomForestB", function(exprObj, classifLab, trainInd, xtest,
 
 setMethod("randomForestB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", 
 			"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
-			"ANY", "ANY", "ANY"),
+			"ANY", "ANY"),
 			function(exprObj, classifLab, trainInd, xtest, ytest, addclass, ntree, mtry, 
 			classwt, cutoff, sampsize, nodesize, importance, proximity, oob.prox, outscale, 
 			norm.votes, do.trace, keep.forest, corr.bias, metric, ...){

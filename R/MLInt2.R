@@ -1,7 +1,7 @@
 
 setGeneric("MLearn", function(formula, data, method, trainInd, ...)standardGeneric("MLearn"))
 
-setMethod("MLearn", c("character", "exprSet", "character", "numeric", "ANY"),
+setMethod("MLearn", c("character", "exprSet", "character", "numeric"),
   function(formula, data, method, trainInd, ...) {
 	switch( method ,
 		knn = knnB(data, formula, as.integer(trainInd), ...),
@@ -13,7 +13,7 @@ setMethod("MLearn", c("character", "exprSet", "character", "numeric", "ANY"),
   })
 			
     
-setMethod("MLearn", c("formula", "data.frame", "character", "numeric", "ANY"),
+setMethod("MLearn", c("formula", "data.frame", "character", "numeric"),
   function(formula, data, method, trainInd, ...) {
 #
 # extending MLInterfaces to work with formulas

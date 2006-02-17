@@ -19,7 +19,7 @@ setGeneric("cvB", function(exprObj, classifLab, algofunc, metric="euclidean", ..
 	standardGeneric("cvB")
 })
 
-setMethod("cvB", c("exprSet", "character", "ANY", "ANY", "ANY"), 
+setMethod("cvB", c("exprSet", "character", "ANY", "ANY"), 
 		function(exprObj, classifLab, algofunc, metric, ...){
 
 	cl <- exprObj[[classifLab]]

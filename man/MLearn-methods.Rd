@@ -75,13 +75,13 @@ Here we provide links to tools that may be identified in the \code{method} param
 use a string naming the method.  For each method, we may have a ``Do not pass parameters''
 clause, because the interface constructs values of these parameters on the basis of
 parameters set in the call to \code{MLearn}.  You may (and in some cases must) set
-and pass parameters not listed in the ``Do not pass'' list.}
+and pass parameters not listed in the ``Do not pass'' list.
 
 \describe{
-\item{\code{\link[class]{knn}} k-nearest neighbors.  Do not pass parameters \code{train}, \code{test}, or \code{cl};
+\item{\code{\link[class]{knn}}}{k-nearest neighbors.  Do not pass parameters \code{train}, \code{test}, or \code{cl};
 any other parameters defined in the calling sequence can be passed.}
-\item{\code{\link[nnet]{nnet}} neural nets.  Do not pass parameters \code{x}, \code{y}, \code{data} or \code{subset}.}
-\item{\code{\link[randomForest]{randomForest}} random forests.  Do not pass parameters \code{x}, \code{y}, \code{xtest} or \code{ytest}.}
+\item{\code{\link[nnet]{nnet}}}{neural nets.  Do not pass parameters \code{x}, \code{y}, \code{data} or \code{subset}.}
+\item{\code{\link[randomForest]{randomForest}}}{random forests.  Do not pass parameters \code{x}, \code{y}, \code{xtest} or \code{ytest}.}
 }}
 \examples{
 data(iris)
