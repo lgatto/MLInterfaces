@@ -89,9 +89,13 @@ tinds <- sample(1:150, 45)
 MLearn(Species~., data=iris, method="nnet", tinds, size=4, decay=.01 )
 MLearn(Species~., data=iris, method="knn", tinds )
 rfdemo <- MLearn(Species~., data=iris, method="randomForest", tinds, importance=TRUE )
+opar <- par(no.readonly=TRUE)
+par(las=2,mar=c(5,8,5,5))
 plot(getVarImp(rfdemo))
+par(opar)
 # genomics examples
 library(golubEsets)
+data(golubMerge)
 MLearn("ALL.AML", golubMerge[1:50,], "rpart", 1:36 )
 MLearn("ALL.AML", golubMerge[1:50,], "knn", 1:36 )
 }
