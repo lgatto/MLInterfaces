@@ -129,7 +129,6 @@ pamrB( smallG, "ALL.AML", 1:40 )
 rpartB( smallG, "ALL.AML", 1:35 )
 randomForestB( smallG, "ALL.AML", 1:35 )
 gbmB( smallG, "ALL.AML", 1:40, n.minobsinnode=3 , n.trees=6000)
-if (require(LogitBoost)) logitboostB( smallG, "ALL.AML", 1:40, 200 ) # summarize won't work with polych
 stat.diag.daB( smallG, "ALL.AML", 1:40 )
 }
 \keyword{ classif }
