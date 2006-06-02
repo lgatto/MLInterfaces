@@ -1,0 +1,99 @@
+Martin, Robert--
+
+Here are some notes on steps that might be taken with
+MLInterfaces to speed the incorporation of new ML
+tools into the interface, and to allow explicit use
+of formulas.  If this seems reasonable I will probably
+base the BioC2006 talk on this process.  Any comments
+appreciated.
+
+Objectives of MLInterfaces
+
+1) simplify application of machine learning software in R
+to high-throughput data
+
+2) promote use of cross-validatory assessment
+
+3) enrich and uniformize the output of ML applications
+to support downstream reuse
+
+4) permit declarations of 'doubt' and 'outlier'
+
+5) support cluster computing for embarrassingly
+parallel processes
+
+Current rough spots
+
+1) many items in Machine Learning cran task view
+not interfaced, e.g., RWeka
+
+2) maintenance of interfaces is laborious (separate
+methods for each methodology); MLearn omnibus
+interface not much used
+
+3) uniform output structures slightly obscure, maybe not
+fully exploited; no doubt/outlier outcomes yet
+
+Some proposals
+
+1) Since most modeling procedures have the form
+f( formula, data, ...) it seems that we can use
+an omnibus interface function like
+
+MLearn = function( formula, eSet, f, MLcontrol, ...) {
+   d = dfFromEset(eSet, formula, MLcontrol)
+   out = f(formula, data=d, ...)
+   as(out, "MLOutput")
+}
+
+where f is a fitting function.  this differs from the
+current MLearn which is a big switch
+
+It is intended that MLcontrol takes care of things like
+the selection of the training set indices.  ... grabs all
+the parameters required by f
+
+the interfacing job then amounts to maintaining coercions from
+the output 'classes' of the f into MLOutput structures, which
+themselves need a little work.  if developers have formal
+classes for their outputs, this is fairly well-defined.
+
+An advantage to this approach is robustness to changes to
+the front end for f.  We are agnostic about parameters required
+to f beyond formula and data.  We are still fragile to changes
+to the output structure returned by f.  I wonder whether some
+of the work on return types can help avoid mismatches (where
+MLInterfaces assumes that f returns a certain structure but
+the version of f in scope returns a different structure).
+
+2) it is in the MLOutput design that we stand a chance
+of getting some standardization among the developers of ML
+methods ... i have looked from time to time at PMML
+(predictive modeling markup language) but never got much
+inspiration to adopt their structure in any way.  may
+be worth another look
+
+Some work
+
+I haven't written dfFromEset but I did a little experimentation
+to see how hard it would be to get standard modeling tools
+to work with ExpressionSet in data:
+
+They seem to need
+
+as.data.frame.ExpressionSet = function(x, ...) as(x, "data.frame")
+
+setAs("ExpressionSet", "data.frame", function (from)
+{
+    data.frame(t(exprs(from)), pData(from))
+})
+
+then, e.g.,
+
+lm(AFFX.BioB.5_at~ALL.AML, data=Golub_Train)
+
+works, and so do things like RWeka modules.  This does not seem
+intrinsically heavier than anything already in MLInterfaces.
+
+
+
