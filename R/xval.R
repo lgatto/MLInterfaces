@@ -76,7 +76,7 @@ setMethod("xval", c("exprSet", "character", "genericFunction", "character", "int
           if (!is.function(fsFun))
               return(classif)
           else {
-              fs.memory <- as.vector( sapply( out, function(x) x[[2]] ) )
+              fs.memory <- unlist( sapply( out, function(x) x[[2]] ) )
               return(list(fs.memory=fs.memory, out=classif))
          }
       })

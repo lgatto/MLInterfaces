@@ -19,7 +19,8 @@ balKfold(K)
 }
 \arguments{
  \item{data}{instance of class \code{\link[Biobase]{exprSet}}}
- \item{classLab}{character string identifying phenoData variable to be regarded}
+ \item{classLab}{character string identifying phenoData variable to
+   label classifications}
  \item{proc}{an MLInterfaces method that returns an instance of \code{\link{classifOutput}}}
  \item{xvalMethod}{character string identifying cross-validation procedure to use:
 default is "LOO" (leave one out), alternatives are "LOG" (leave group out)
@@ -70,6 +71,16 @@ this functionality.
 %and predictions are made for them together on the basis of the
 %fit from which they were excluded.
 %}}}
+\value{
+  For fixed feature sets (\code{fsFun} not specified),
+  a vector or matrix with length equal to the number of cross-validation
+  assignments. Each element contains the label resulting from the
+  cross-validation.
+
+  For dynamic feature sets (\code{fsFun} specified), a list with element
+  \code{out} containing labels from cross-validations, and element
+  \code{fs.memory} recording features used in each cross-validation.
+  }
 \examples{
 library(golubEsets)
 data(golubMerge)
