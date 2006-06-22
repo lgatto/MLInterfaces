@@ -87,7 +87,7 @@ knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
 
 \arguments{
   \item{exprObj}{An instance of the \code{exprset} class. }
-  \item{classifLab}{A vector of class labels. }
+  \item{classifLab}{The name of the phenotype variable to use for classification. }
   \item{trainInd}{ integer vector: Which elements are the training set. }
   \item{k}{The number of nearest neighbors. }
   \item{l}{See \code{knn} for a complete description. }
