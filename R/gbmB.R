@@ -40,28 +40,29 @@ require(gbm) # no namespace
                         RObject=out, call=match.call(), distMat=dis)
 })
 
-setGeneric("logitboostB",
- function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean")
- standardGeneric("logitboostB"))
-setMethod("logitboostB", 
- c("exprSet", "character", "integer", "numeric", "ANY", "ANY", "ANY", "ANY"),
- function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean") {
-require(LogitBoost)
-#warning("version 1.1 of LogitBoost has bugs.  consult with authors of that package if you run into problems with this method.")
-		cl <- exprObj[[classifLab]][trainInd]				
-		trainDat <- t(exprs(exprObj)[,trainInd])
-		testDat <- t(exprs(exprObj)[,-trainInd])
-		dis <- dist(testDat, method=metric)
-                out <- logitboost(trainDat, as.numeric(as.factor(cl))-1, 
-			testDat, mfinal, presel=presel, 
-			estimate=estimate, verbose=verbose)
-                if (length(dim(out$probs))==3)
-                  predcat <- apply(apply(out$probs,c(1,3),mean),1,which.max)
-	 	else predcat <- 1*(apply(out$probs,1,mean)>.5)+1
-
-                new("classifOutput", method="logitboost", 
-			predLabels=newPredClass(levels(as.factor(cl))[predcat]),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
-#			predScores=newQualScore(attr(out,"prob")),
-                        RObject=out, call=match.call(), distMat=dis)
-})
+# the API for logitboost has changed and this will need nontrivial revision
+#setGeneric("logitboostB",
+# function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean")
+# standardGeneric("logitboostB"))
+#setMethod("logitboostB", 
+# c("exprSet", "character", "integer", "numeric", "ANY", "ANY", "ANY", "ANY"),
+# function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean") {
+#require(boost)
+##warning("version 1.1 of LogitBoost has bugs.  consult with authors of that package if you run into problems with this method.")
+#		cl <- exprObj[[classifLab]][trainInd]				
+#		trainDat <- t(exprs(exprObj)[,trainInd])
+#		testDat <- t(exprs(exprObj)[,-trainInd])
+#		dis <- dist(testDat, method=metric)
+#                out <- logitboost(trainDat, as.numeric(as.factor(cl))-1, 
+#			testDat, mfinal, presel=presel, 
+#			estimate=estimate, verbose=verbose)
+#                if (length(dim(out$probs))==3)
+#                  predcat <- apply(apply(out$probs,c(1,3),mean),1,which.max)
+#	 	else predcat <- 1*(apply(out$probs,1,mean)>.5)+1
+#
+#                new("classifOutput", method="logitboost", 
+#			predLabels=newPredClass(levels(as.factor(cl))[predcat]),
+#			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+##			predScores=newQualScore(attr(out,"prob")),
+#                        RObject=out, call=match.call(), distMat=dis)
+#})
