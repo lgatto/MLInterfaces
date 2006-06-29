@@ -33,10 +33,13 @@ ng <- nrow(exprs(all2))
 pick <- sample(1:ng, size=2, replace=FALSE)
 library(hgu95av2)
 gg <- all2[pick,]
-sym <- unlist(mget(geneNames(gg), hgu95av2SYMBOL))
-geneNames(gg) <- sym
+sym <- unlist(mget(featureNames(gg), hgu95av2SYMBOL))
+featureNames(gg) <- sym
 class <- as.character(all2$mol.biol)
-gg@phenoData@pData$class <- factor(class)
+gg@phenoData@data$class <- factor(class)
+gg@phenoData@varMetadata = rbind(gg@phenoData@varMetadata,class="class" )
+newpd = new("phenoData", pData=pData(gg), varLabels=varMetadata(gg)[,1])
+gg = new("exprSet", exprs=exprs(gg), phenoData=newpd)
 cl1 <- which( class == "NEG" )
 cl2 <- which( class != "NEG" )
 #
