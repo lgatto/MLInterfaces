@@ -6,7 +6,7 @@
 # title: pamrB
 # description: interface to pamr {pamr}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -26,7 +26,7 @@ setGeneric("pamrB", function(exprObj, classifLab, trainInd, thresholdp=1, thresh
 			standardGeneric("pamrB")
 })
 		
-setMethod("pamrB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", 
+setMethod("pamrB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", 
 			"ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 			function(exprObj, classifLab, trainInd, thresholdp, threshold, n.threshold, 
 			scale.sd, threshold.scale, se.scale, offset.percent, prior, remove.zeros, 
@@ -37,7 +37,7 @@ setMethod("pamrB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 			if(missing(threshold.scale)){ threshold.scale <- NULL }
 			if(missing(se.scale)){ se.scale <- NULL }
 
-			cl <- exprObj[[classifLab]][trainInd]
+			cl <- pData(exprObj)[[classifLab]][trainInd]
 			trainDat <- list(x=exprs(exprObj)[,trainInd], y = cl)
 			testDat <- exprs(exprObj)[,-trainInd]
 				
@@ -51,7 +51,7 @@ require(pamr)
 			res <- pamr.predict(out, testDat, thresholdp)
                 new("classifOutput", method="pamr",
                         predLabels=newPredClass(as.character(res)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
                         predScores=newProbArray(out$prob),
                         RObject=out, call=match.call(), distMat=dis)
 

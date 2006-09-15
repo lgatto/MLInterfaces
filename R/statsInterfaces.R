@@ -22,7 +22,7 @@ return(list(clinds=clinds, clsco=clsco))
 # title: hclustB
 # description: interface to hclust {stats}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -36,16 +36,16 @@ return(list(clinds=clinds, clsco=clsco))
 setGeneric("hclustB", function(exprObj, k, height, method="complete", members, metric="euclidean"){
 			standardGeneric("hclustB")
 })
-setMethod("hclustB", c("exprSet", "numeric", "missing", "ANY", "ANY", "ANY"), 
+setMethod("hclustB", c("ExpressionSet", "numeric", "missing", "ANY", "ANY", "ANY"), 
 			function(exprObj, k, height, method, members, metric)
 			hclustB(exprObj=exprObj, k=k, height=0, method=method , 
 				members=members, metric=metric))
-setMethod("hclustB", c("exprSet", "missing", "numeric", "ANY", "ANY", "ANY"), 
+setMethod("hclustB", c("ExpressionSet", "missing", "numeric", "ANY", "ANY", "ANY"), 
 			function(exprObj, k, height, method, members, metric)
 			hclustB(exprObj=exprObj, k=0, height=height, method=method , 
 				members=members, metric=metric))
 
-setMethod("hclustB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("hclustB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY"), 
 			function(exprObj, k, height, method, members, metric){
 
 			if(missing(members)){ members <- NULL }
@@ -77,7 +77,7 @@ setMethod("hclustB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY"),
 # title: kmeansB
 # description: interface to kmeans {stats}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -91,7 +91,7 @@ setGeneric("kmeansB", function(exprObj, k, iter.max=10, metric="euclidean"){
 			standardGeneric("kmeansB")
 })
 
-setMethod("kmeansB", c("exprSet", "numeric", "ANY", "ANY"), 
+setMethod("kmeansB", c("ExpressionSet", "numeric", "ANY", "ANY"), 
 			function(exprObj, k, iter.max, metric){
 
 			dat <- t(exprs(exprObj))
@@ -109,7 +109,7 @@ setMethod("kmeansB", c("exprSet", "numeric", "ANY", "ANY"),
 # title: prcompB
 # description: interface to prcomp {stats}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -124,7 +124,7 @@ setMethod("kmeansB", c("exprSet", "numeric", "ANY", "ANY"),
 #			standardGeneric("prcompB")
 #})
 #
-#setMethod("prcompB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+#setMethod("prcompB", c("ExpressionSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 #			function(exprObj, classifLab, retx, center, scale., tol, metric){
 #
 #			if(missing(tol)){ tol <- NULL }

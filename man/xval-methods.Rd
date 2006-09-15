@@ -2,15 +2,15 @@
 \docType{methods}
 \alias{xval-methods}
 \alias{xval}
-\alias{xval,exprSet,character,nonstandardGeneric,character,missing-method}
-\alias{xval,exprSet,character,nonstandardGeneric,character,integer-method}
+\alias{xval,ExpressionSet,character,nonstandardGeneric,character,missing-method}
+\alias{xval,ExpressionSet,character,nonstandardGeneric,character,integer-method}
 \alias{balKfold}
-\alias{xval,exprSet,character,genericFunction,character,integer-method}
-\alias{xval,exprSet,character,genericFunction,character,missing-method}
+\alias{xval,ExpressionSet,character,genericFunction,character,integer-method}
+\alias{xval,ExpressionSet,character,genericFunction,character,missing-method}
 
-\title{ support for cross-validatory machine learning with exprSets}
+\title{ support for cross-validatory machine learning with ExpressionSets}
 \description{
-support for cross-validatory machine learning with exprSets
+support for cross-validatory machine learning with ExpressionSets
 }
 \usage{
 xval( data, classLab, proc, xvalMethod, group, indFun, niter,
@@ -18,7 +18,7 @@ fsFun=NULL, fsNum=NULL, decreasing=TRUE, cluster=NULL, \dots )
 balKfold(K)
 }
 \arguments{
- \item{data}{instance of class \code{\link[Biobase]{exprSet}}}
+ \item{data}{instance of class \code{\link[Biobase]{ExpressionSet}}}
  \item{classLab}{character string identifying phenoData variable to
    label classifications}
  \item{proc}{an MLInterfaces method that returns an instance of \code{\link{classifOutput}}}
@@ -61,8 +61,8 @@ this functionality.
 %\section{Methods}{
 %\describe{
 %
-%\item{data = "exprSet", classLab = "character", proc = "nonstandardGeneric", xvalMethod = "character", group = "integer"}{ \code{classLab} is the name of
-%a component of the phenoData of the exprSet passed as \code{data}.
+%\item{data = "ExpressionSet", classLab = "character", proc = "nonstandardGeneric", xvalMethod = "character", group = "integer"}{ \code{classLab} is the name of
+%a component of the phenoData of the ExpressionSet passed as \code{data}.
 %\code{proc} is an actual MLInterfaces method (not the name of
 %a method).  \code{xvalMethod} may have value "LOO" for leave-one-out
 %or "LOG" for leave-group-out.  The latter makes use of the
@@ -83,8 +83,8 @@ this functionality.
   }
 \examples{
 library(golubEsets)
-data(golubMerge)
-smallG <- golubMerge[200:250,]
+data(Golub_Merge)
+smallG <- Golub_Merge[200:250,]
 lk1 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", group=as.integer(0))
 table(lk1,smallG$ALL.AML)
 lk2 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOG", group=as.integer(
@@ -107,7 +107,7 @@ t.fun<-function(data, fac)
 	require(genefilter)
 	# deal with the integer storage of golubTrain@exprs!
 	xd <- matrix(as.double(exprs(data)), nrow=nrow(exprs(data)))
-        return(abs(rowttests(xd,data[[fac]], tstatOnly=FALSE)$statistic))
+        return(abs(rowttests(xd,pData(data)[[fac]], tstatOnly=FALSE)$statistic))
 }
 lk3f <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 0:0, fsFun=t.fun)
 table(lk3f$out, smallG$ALL.AML)

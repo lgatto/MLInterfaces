@@ -17,8 +17,8 @@ of the test set against the predictions of the fitted classifier.
 }
 \examples{
 library(golubEsets)
-data(golubMerge)
-smallG <- golubMerge[1:50,]
+data(Golub_Merge)
+smallG <- Golub_Merge[1:50,]
 k1 <- knnB(smallG, "ALL.AML", 1:30)
 confuMat(k1)
 }

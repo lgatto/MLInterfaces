@@ -57,19 +57,19 @@ setGeneric("knnB", function(exprObj, classifLab, trainInd,
 			standardGeneric("knnB")
 		})
 
-setMethod("knnB", c("exprSet", "character", "integer", 
+setMethod("knnB", c("ExpressionSet", "character", "integer", 
 			"ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, k, l, 
 			prob, use.all, metric){
 
-		cl <- exprObj[[classifLab]][trainInd]				
+		cl <- pData(exprObj)[[classifLab]][trainInd]				
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
 		dis <- dist(testDat, method=metric)
 		out <- knnP(trainDat, testDat, cl, k, l, prob, use.all)
                 new("classifOutput", method="knn", 
 			predLabels=newPredClass(as.character(out)), 
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
                                                                                 
@@ -80,7 +80,7 @@ setMethod("knnB", c("exprSet", "character", "integer",
 # title: knn.cvB
 # description: interface to knn.cv {class}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -94,16 +94,16 @@ setMethod("knnB", c("exprSet", "character", "integer",
 #		standardGeneric("knn.cvB")
 #})
 #
-#setMethod("knn.cvB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+#setMethod("knn.cvB", c("ExpressionSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 #			function(exprObj, classifLab, trainInd=NULL, k, l, prob, use.all, metric){
 #			if (!is.null(trainInd)) warning("disregarding trainInd for knn.cvB")
-#			cl <- exprObj[[classifLab]]
+#			cl <- pData(exprObj)[[classifLab]]
 #			dat <- t(exprs(exprObj))
 #			dis <- dist(dat, method=metric)
 #			out <- class::knn.cv(dat, cl, k, l, prob, use.all)
 #                new("classifOutput", method="knn.cv", 
 ##			predLabels=newPredClass(as.character(out)), 
-#			trainInds=integer(0), allClass=as.character(exprObj[[classifLab]]),
+#			trainInds=integer(0), allClass=as.character(pData(exprObj)[[classifLab]]),
 #			predScores=newQualScore(attr(out,"prob")),
 #                        RObject=out, call=match.call(), distMat=dis)
 #})
@@ -112,7 +112,7 @@ setMethod("knnB", c("exprSet", "character", "integer",
 # title: knn1B
 # description: interface to knn1 {class}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -129,17 +129,17 @@ setGeneric("knn1B", function(exprObj, classifLab, trainInd, metric="euclidean"){
 		standardGeneric("knn1B")
 })
 
-setMethod("knn1B", c("exprSet", "character", "integer", "ANY"), 
+setMethod("knn1B", c("ExpressionSet", "character", "integer", "ANY"), 
 		function(exprObj, trainInd, classifLab, metric){
 				
-		cl <- exprObj[[classifLab]][trainInd]
+		cl <- pData(exprObj)[[classifLab]][trainInd]
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
 		dis <- dist(testDat, method=metric)
 		out <- class::knn1(trainDat, testDat, cl)
                 new("classifOutput", method="knn1", 
 			predLabels=newPredClass(as.character(out)), 
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -148,7 +148,7 @@ setMethod("knn1B", c("exprSet", "character", "integer", "ANY"),
 # title: lvq1B
 # description: interface to lvq1 {class}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -165,11 +165,11 @@ setGeneric("lvq1B", function(exprObj, classifLab, trainInd, size, prior, k=5, ni
 		standardGeneric("lvq1B")
 })
 
-setMethod("lvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("lvq1B", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, size, prior, k, niter, alpha, metric){
 
 		if(missing(size)){ size <- NULL }
-		cl <- exprObj[[classifLab]][trainInd]
+		cl <- pData(exprObj)[[classifLab]][trainInd]
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
 		dis <- dist(testDat, method=metric)
@@ -180,7 +180,7 @@ setMethod("lvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="lvq1", 
 			predLabels=newPredClass(as.character(out)), 
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 			#predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 })	
@@ -189,7 +189,7 @@ setMethod("lvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 # title: lvq2B
 # description: interface to lvq2 {class}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -207,13 +207,13 @@ setGeneric("lvq2B", function(exprObj, classifLab, trainInd, size,
 		standardGeneric("lvq2B")
 })
 
-setMethod("lvq2B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", 
+setMethod("lvq2B", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", 
 		"ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, size, prior, k, 
 			niter, alpha, win, metric){
 
 		if(missing(size)){ size <- NULL }
-		cl <- exprObj[[classifLab]][trainInd]
+		cl <- pData(exprObj)[[classifLab]][trainInd]
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
 		dis <- dist(testDat, method=metric)
@@ -224,7 +224,7 @@ setMethod("lvq2B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="lvq2", 
 			predLabels=newPredClass(as.character(out)), 
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 	
@@ -234,7 +234,7 @@ setMethod("lvq2B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 # title: lvq3B
 # description: interface to lvq3 {class}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -252,11 +252,11 @@ setGeneric("lvq3B", function(exprObj, classifLab, trainInd, size, prior, k=5,
 		standardGeneric("lvq3B")
 })
 
-setMethod("lvq3B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+setMethod("lvq3B", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, size, prior, k, niter, alpha, win, epsilon, metric){
 
 		if(missing(size)){ size <- NULL }
-		cl <- exprObj[[classifLab]][trainInd]			
+		cl <- pData(exprObj)[[classifLab]][trainInd]			
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])	
 		dis <- dist(testDat, method=metric)
@@ -267,7 +267,7 @@ setMethod("lvq3B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="lvq3", 
 			predLabels=newPredClass(as.character(out)), 
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 	
@@ -277,7 +277,7 @@ setMethod("lvq3B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "AN
 # title: olvq1B
 # description: interface to olvq1 {class}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -294,11 +294,11 @@ setGeneric("olvq1B", function(exprObj, classifLab, trainInd, size, prior, k=5, n
 		standardGeneric("olvq1B")
 })
 
-setMethod("olvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+setMethod("olvq1B", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, size, prior, k, niter, alpha, metric){
 
 		if(missing(size)){ size <- NULL }
-		cl <- exprObj[[classifLab]][trainInd]
+		cl <- pData(exprObj)[[classifLab]][trainInd]
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
 		dis <- dist(testDat, method=metric)
@@ -308,7 +308,7 @@ setMethod("olvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "A
 		out <- class::lvqtest(cbkTrain, testDat)
                 new("classifOutput", method="olvq1", 
 			predLabels=newPredClass(as.character(out)), 
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 			predScores=newQualScore(attr(out,"prob")),
                         RObject=cbkTrain, call=match.call(), distMat=dis)
 
@@ -318,7 +318,7 @@ setMethod("olvq1B", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "A
 # title: SOMB
 # description: interface to SOM {class}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	kx		x dimension
 #	ky		y dimension
 # 	topo		grid topology 

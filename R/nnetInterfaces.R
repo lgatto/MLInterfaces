@@ -6,7 +6,7 @@
 # title: nnetB
 # description: interface to nnet {nnet}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -29,13 +29,13 @@ setGeneric("nnetB", function(exprObj, classifLab, trainInd, weights, size=2, Wts
 })
 
 
-setMethod("nnetB", c("exprSet", "character", "integer", "ANY", "ANY", 
+setMethod("nnetB", c("ExpressionSet", "character", "integer", "ANY", "ANY", 
 		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
 		"ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, weights, size, Wts, mask, 
 			skip, rang, decay, maxit, Hess, trace, MaxNWts, abstol, reltol, metric, ...){
 		
-			cl <- exprObj[[classifLab]][trainInd]
+			cl <- pData(exprObj)[[classifLab]][trainInd]
 
 			trainDat <- data.frame(t(exprs(exprObj)[,trainInd]), sampLab = cl)
 			testDat <- data.frame(t(exprs(exprObj)[,-trainInd]))
@@ -51,7 +51,7 @@ setMethod("nnetB", c("exprSet", "character", "integer", "ANY", "ANY",
 
 			new("classifOutput", method="nnet",
 	predLabels=newPredClass(as.character(predict(out, testDat, type="class"))), 
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
         predScores=newProbMat(predict(out, newdata=testDat)), call=match.call(),
         distMat=dis, RObject=out)	
 })		  

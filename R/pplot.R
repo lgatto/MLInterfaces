@@ -20,7 +20,7 @@ getGrid <- function (eset2)
 
 setGeneric("planarPlot", function(clo, eset, classifLab ) standardGeneric("planarPlot"))
 
-setMethod("planarPlot", c("classifOutput", "exprSet", "character"), 
+setMethod("planarPlot", c("classifOutput", "ExpressionSet", "character"), 
 	function(clo, eset, classifLab) {
  require(RColorBrewer)
  pal <- brewer.pal("Set2", n=8)
@@ -37,5 +37,5 @@ setMethod("planarPlot", c("classifOutput", "exprSet", "character"),
  if (clo@method == "lda") ps <- ps[[1]]
  plot( ff[,1], ff[,2], col=pal[as.numeric(factor(ps))], pch=19,
  xlab = names(ff)[1], ylab=names(ff)[2] )
- #text( exprs(eset)[1,], exprs(eset)[2,], lab=eset[[classifLab]])
+ #text( exprs(eset)[1,], exprs(eset)[2,], lab=pData(eset)[[classifLab]])
 })

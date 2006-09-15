@@ -6,7 +6,7 @@
 # title: agnesB
 # description: interface to agnes {cluster} 
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data to use for classification
 # value:
 # 	object of class "classifPred"
@@ -20,13 +20,13 @@ setGeneric("agnesB", function(exprObj, k, height=0, stand=FALSE, method="average
 		standardGeneric("agnesB")
 })
 
-setMethod("agnesB", c("exprSet", "numeric", "ANY", 
+setMethod("agnesB", c("ExpressionSet", "numeric", "ANY", 
                 "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, stand, method, keep.diss, keep.data, metric, ...){
 
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
-#		row.names(dat) <- exprObj[[classifLab]]
+#		row.names(dat) <- pData(exprObj)[[classifLab]]
 		
 		out <- cluster::agnes(dat, metric=metric, stand=stand, method=method, 
 					keep.diss=keep.diss, keep.data=keep.data)
@@ -42,7 +42,7 @@ setMethod("agnesB", c("exprSet", "numeric", "ANY",
 # title: claraB
 # description: interface to clara {cluster}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -57,7 +57,7 @@ setGeneric("claraB", function(exprObj, k, height=0, stand=FALSE,
 		standardGeneric("claraB")
 })
 
-setMethod("claraB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
+setMethod("claraB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
 		"ANY", "ANY"), function(exprObj, k, height, stand, samples, sampsize,
 		trace, keep.data, keepdata, rngR, metric){
 
@@ -79,7 +79,7 @@ setMethod("claraB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "
 # title: dianaB
 # description: interface to diana {cluster}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data to use for classification
 # value:
 # 	object of class "classifPred"
@@ -93,7 +93,7 @@ setGeneric("dianaB", function(exprObj, k, height=0, diss, stand=FALSE,
 		standardGeneric("dianaB")
 })
 
-setMethod("dianaB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("dianaB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, diss, stand, keep.diss, keep.data, metric){
 
 		dat <- t(exprs(exprObj))
@@ -114,7 +114,7 @@ setMethod("dianaB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "
 # title: fannyB
 # description: interface to fanny {cluster}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -128,7 +128,7 @@ setGeneric("fannyB", function(exprObj, k, height=0, diss, stand=FALSE, metric="e
 		standardGeneric("fannyB")
 }) 
 
-setMethod("fannyB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("fannyB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, diss, stand, metric){
 		if (height > 0) warning("ignoring height parameter")
 
@@ -150,7 +150,7 @@ setMethod("fannyB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY"),
 # title: pamB
 # description: interface to pam {cluster}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -165,7 +165,7 @@ setGeneric("pamB", function(exprObj, k, height=0, diss, stand=FALSE,
 		standardGeneric("pamB")
 })
 
-setMethod("pamB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("pamB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, diss, stand, keep.diss, keep.data, metric){
 
 		
@@ -190,7 +190,7 @@ setMethod("pamB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "AN
 # title: monaB
 # description: interface to mona {cluster}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 # value:
@@ -209,13 +209,13 @@ setMethod("pamB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "AN
 #		standardGeneric("monaB")
 #})
 #
-#setMethod("monaB", c("exprSet", "character", "ANY"), 
+#setMethod("monaB", c("ExpressionSet", "character", "ANY"), 
 #		function(exprObj, classifLab, metric){
 #
 #		dat <- t(exprs(exprObj))
 #		dis <- dist(dat, method=metric)
-#		row.names(dat) <- exprObj[[classifLab]]
+#		row.names(dat) <- pData(exprObj)[[classifLab]]
 #		out <- cluster::mona(dat)
 #
-#		new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
+#		new("classifPred", sampLabels=pData(exprObj)[[classifLab]], distMat=dis, classifObj=out)
 ##})

@@ -2,15 +2,15 @@
 \docType{methods}
 \alias{planarPlot}
 \alias{planarPlot-methods}
-\alias{planarPlot,classifOutput,exprSet,character-method}
+\alias{planarPlot,classifOutput,ExpressionSet,character-method}
 \title{ Methods for Function planarPlot in Package `MLInterfaces' }
 \description{
 show the classification boundaries on the plane dictated
-by two genes in an exprSet
+by two genes in an ExpressionSet
 }
 \section{Methods}{
 \describe{
-\item{clo = "classifOutput", eset = "exprSet", classifLab = "character"}{ ~~describe this method here }
+\item{clo = "classifOutput", eset = "ExpressionSet", classifLab = "character"}{ ~~describe this method here }
 }}
 \examples{
 library(ALL)
@@ -39,7 +39,7 @@ class <- as.character(all2$mol.biol)
 gg@phenoData@data$class <- factor(class)
 gg@phenoData@varMetadata = rbind(gg@phenoData@varMetadata,class="class" )
 newpd = new("phenoData", pData=pData(gg), varLabels=varMetadata(gg)[,1])
-gg = new("exprSet", exprs=exprs(gg), phenoData=newpd)
+gg = new("ExpressionSet", exprs=exprs(gg), phenoData=newpd)
 cl1 <- which( class == "NEG" )
 cl2 <- which( class != "NEG" )
 #

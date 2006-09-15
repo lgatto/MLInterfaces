@@ -1,7 +1,7 @@
 
 setGeneric("MLearn", function(formula, data, method, trainInd, ...)standardGeneric("MLearn"))
 
-setMethod("MLearn", c("character", "exprSet", "character", "numeric"),
+setMethod("MLearn", c("character", "ExpressionSet", "character", "numeric"),
   function(formula, data, method, trainInd, ...) {
 	switch( method ,
 		knn = knnB(data, formula, as.integer(trainInd), ...),

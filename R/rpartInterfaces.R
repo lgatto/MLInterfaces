@@ -5,7 +5,7 @@
 # title: rpartB
 # description: interface to rpart {rpart} 
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -22,7 +22,7 @@ setGeneric("rpartB", function(exprObj, classifLab, trainInd, weights, subset, na
 		standardGeneric("rpartB")
 })
 
-setMethod("rpartB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", 
+setMethod("rpartB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", 
 		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, weights, subset, 
 			na.action, method, model, x, y, parms, control, cost, metric, ...){
@@ -31,7 +31,7 @@ setMethod("rpartB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY",
 			if(missing(control)){ control <- NULL }
 			if(missing(parms)){ parms <- NULL }
       		
-			cl <- exprObj[[classifLab]]
+			cl <- pData(exprObj)[[classifLab]]
 			trainDat <- data.frame(grouping=cl[trainInd], t(exprs(exprObj)[,trainInd]))
 			testDat <- data.frame(t(exprs(exprObj)[,-trainInd]))
 
@@ -53,7 +53,7 @@ setMethod("rpartB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY",
 		preds <- predict(out, testDat, type="class")
                 new("classifOutput", method="rpart",
                         predLabels=newPredClass(as.character(preds)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 #                        predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })

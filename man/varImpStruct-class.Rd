@@ -53,9 +53,9 @@ of variable importance structure}
 %}
 \examples{
 library(golubEsets)
-data(golubMerge)
+data(Golub_Merge)
 library(hu6800)
-smallG <- golubMerge[1:60,]
+smallG <- Golub_Merge[1:60,]
 rf <- randomForestB( smallG, "ALL.AML", 1:40, importance=TRUE )
 plot( getVarImp( rf ), n=10, resolveenv=hu6800SYMBOL )
 gb <- gbmB( smallG, "ALL.AML", 1:40 , n.minobsinnode=3 , n.trees=6000)

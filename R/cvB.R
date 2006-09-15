@@ -2,7 +2,7 @@
 # title: cvB
 # description: leave one out cross-validation classification
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	algofunc	function object that calls the classification algorithm 
@@ -19,10 +19,10 @@ setGeneric("cvB", function(exprObj, classifLab, algofunc, metric="euclidean", ..
 	standardGeneric("cvB")
 })
 
-setMethod("cvB", c("exprSet", "character", "ANY", "ANY"), 
+setMethod("cvB", c("ExpressionSet", "character", "ANY", "ANY"), 
 		function(exprObj, classifLab, algofunc, metric, ...){
 
-	cl <- exprObj[[classifLab]]
+	cl <- pData(exprObj)[[classifLab]]
 	dat <- exprs(exprObj)
 	dis <- dist(t(dat), method=metric)
 	n <- ncol(dat)
@@ -39,7 +39,7 @@ setMethod("cvB", c("exprSet", "character", "ANY", "ANY"),
                 #out <- class::knn(trainDat, testDat, cl, k, l, prob, use.all)
                 new("classifOutput", method="knn",
                         predLabels=newPredClass(as.character(predCV)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 #                        predScores=newQualScore(attr(out,"prob")),
                         RObject=err, call=match.call(), distMat=dis)
                                                                                 

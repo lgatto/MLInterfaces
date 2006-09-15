@@ -6,7 +6,7 @@
 # title: baggingB
 # description: interface to bagging {ipred} 
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -23,12 +23,12 @@ setGeneric("baggingB", function(exprObj, classifLab, trainInd, subset, aggregati
 		standardGeneric("baggingB")
 })
 
-setMethod("baggingB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY"), 
+setMethod("baggingB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, subset, aggregation, metric, ...){
 
 		if(missing(subset)){ subset <- NULL }
 
-		cl <- exprObj[[classifLab]][trainInd]		
+		cl <- pData(exprObj)[[classifLab]][trainInd]		
 		trainDat <- data.frame(y=cl, t(exprs(exprObj)[,trainInd]))
 		testDat <- data.frame(t(exprs(exprObj)[,-trainInd]))
 		dis <- dist(testDat, method=metric)
@@ -37,7 +37,7 @@ library(ipred)
 		out <- predict(tmp, newdata=testDat)
                 new("classifOutput", method="bagging",
                         predLabels=newPredClass(as.character(out)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 #                        predScores=newQualScore(attr(out,"prob")),
                         RObject=tmp, call=match.call(), distMat=dis)
 })
@@ -46,7 +46,7 @@ library(ipred)
 # title: ipredknnB
 # description: interface to ipredknn {ipred} 
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -64,11 +64,11 @@ setGeneric("ipredknnB", function(exprObj, classifLab, trainInd, na.action, k=5, 
 		standardGeneric("ipredknnB")
 })
 
-setMethod("ipredknnB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY"), 
+setMethod("ipredknnB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, na.action, k, metric, ...){
 				
 		if(missing(na.action)){ na.action <- NULL }
-		cl <- exprObj[[classifLab]][trainInd]		
+		cl <- pData(exprObj)[[classifLab]][trainInd]		
 		trainDat <- data.frame(y = cl, t(exprs(exprObj)[,trainInd]))
 		testDat <- data.frame(t(exprs(exprObj)[,-trainInd]))
 		dis <- dist(testDat, method=metric)
@@ -78,7 +78,7 @@ library(ipred)
 		prob <- predict(tmp, newdata=testDat, type="prob")
                 new("classifOutput", method="ipredknn",
                         predLabels=newPredClass(as.character(out)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
                         predScores=newQualScore(prob),
                         RObject=tmp, call=match.call(), distMat=dis)
 })
@@ -87,7 +87,7 @@ library(ipred)
 # title: sldaB
 # description: interface to slda {ipred} 
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -104,11 +104,11 @@ setGeneric("sldaB", function(exprObj, classifLab, trainInd, subset, na.action=na
 		standardGeneric("sldaB")
 })
 
-setMethod("sldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY"), 
+setMethod("sldaB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, subset, na.action, metric, ...){
 
 		if(missing(subset)){ subset <- NULL }
-		cl <- exprObj[[classifLab]][trainInd]		
+		cl <- pData(exprObj)[[classifLab]][trainInd]		
 		trainDat <- data.frame(y=cl, t(exprs(exprObj)[,trainInd]))			
 		dat <- data.frame(t(exprs(exprObj)[,trainInd]))
 		testDat <- data.frame(t(exprs(exprObj)[,-trainInd]))
@@ -119,7 +119,7 @@ library(ipred)
 		out <- predict(tmp, newdata=testDat)
                 new("classifOutput", method="slda",
                         predLabels=newPredClass(as.character(out$class)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
                         predScores=newProbMat(out$posterior),
                         RObject=tmp, call=match.call(), distMat=dis)
 })
@@ -128,7 +128,7 @@ library(ipred)
 # title: inbaggB
 # description: interface to inbagg {ipred} 
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	trainInd	vector of indices for the columns to be 
@@ -147,19 +147,19 @@ library(ipred)
 #		standardGeneric("inbaggB")
 #})
 #
-#setMethod("inbaggB", c("exprSet", "character", "integer", "character", "ANY", "ANY", "ANY", "ANY"), 
+#setMethod("inbaggB", c("ExpressionSet", "character", "integer", "character", "ANY", "ANY", "ANY", "ANY"), 
 #		function(exprObj, classifLab, trainInd, intLab, pFUN, cFUN, metric, ...){
 #
 ##		if(missing(pFUN)){ pFUN <- list(list(model=lm)) }
 #		if(missing(pFUN)){ pFUN <- NULL }
 #		if(missing(cFUN)){ cFUN <- NULL }
 #
-#		cl <- exprObj[[classifLab]]
+#		cl <- pData(exprObj)[[classifLab]]
 #		
 #		if(length(intLab) > 1){ 
-#			intDat <- exprObj[[intLab[1]]]
+#			intDat <- pData(exprObj)[[intLab[1]]]
 #			for( v in intLab[-1] ){
-#				intDat <- cbind(intDat, exprObj[[v]])
+#				intDat <- cbind(intDat, pData(exprObj)[[v]])
 #			}
 #
 #			intNam <- paste("i", ".", 1:length(intLab), sep="")
@@ -173,7 +173,7 @@ library(ipred)
 #		}
 #
 #		else{
-#			intDat <- exprObj[[intLab]]
+#			intDat <- pData(exprObj)[[intLab]]
 #			trainDat <- data.frame(intVar=intDat[trainInd], y=cl[trainInd], t(exprs(exprObj)[,trainInd]))
 #			testDat <- data.frame(intVar=intDat[-trainInd], y=cl[-trainInd], t(exprs(exprObj)[,-trainInd]))
 #			
@@ -186,7 +186,7 @@ library(ipred)
 #		out <- predict(tmp, newdata=testDat)
 #                new("classifOutput", method="inbagg",
 #                        predLabels=newPredClass(as.character(out)),
-#			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+#			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 #                        predScores=newProbMat(out$posterior),
 #                        RObject=tmp, call=match.call(), distMat=dis)
 #})
@@ -195,7 +195,7 @@ library(ipred)
 ## title: inclassB
 ## description: interface to inclass {ipred} 
 ## arguments:
-##	exprObj		exprSet
+##	exprObj		ExpressionSet
 ##	classifLab	character string specifying what covariate data 
 ##			to use for classification
 ##	trainInd	
@@ -229,18 +229,18 @@ library(ipred)
 #		standardGeneric("inclassB")
 #}) 
 #
-#setMethod("inclassB", c("exprSet", "character", "integer", "character", "ANY", "ANY", "ANY", "ANY"), 
+#setMethod("inclassB", c("ExpressionSet", "character", "integer", "character", "ANY", "ANY", "ANY", "ANY"), 
 #			function(exprObj, classifLab, trainInd, intLab, pFUN, cFUN, metric, ...){
 #
 #		if(missing(pFUN)){ pFUN <- list(list(model=lm)) }
 #	
-#		cl <- exprObj[[classifLab]]
+#		cl <- pData(exprObj)[[classifLab]]
 #	
 #		if(length(intLab) > 1){ 
 #
-#			intDat <- exprObj[[intLab[1]]]
+#			intDat <- pData(exprObj)[[intLab[1]]]
 #			for( v in intLab[-1] ){
-#				intDat <- cbind(intDat, exprObj[[v]])
+#				intDat <- cbind(intDat, pData(exprObj)[[v]])
 #			}
 #
 #			intNam <- paste("i", ".", 1:length(intLab), sep="")
@@ -255,7 +255,7 @@ library(ipred)
 #		}
 #
 #		else{
-#			intDat <- exprObj[[intLab]]
+#			intDat <- pData(exprObj)[[intLab]]
 #			trainDat <- data.frame(intVar=intDat[trainInd], y=cl[trainInd], t(exprs(exprObj)[,trainInd]))
 #			testDat <- data.frame(intVar=intDat[-trainInd], y=cl[-trainInd], t(exprs(exprObj)[,-trainInd]))
 #			equ <- as.formula(y ~ intVar ~ .)

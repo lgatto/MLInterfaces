@@ -6,7 +6,7 @@
 # title: randomForestB
 # description: interface to randomForest {randomForest}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -30,15 +30,15 @@ setGeneric("randomForestB", function(exprObj, classifLab, trainInd, xtest,
 			standardGeneric("randomForestB")
 			})
 
-setMethod("randomForestB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", 
+setMethod("randomForestB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", 
 			"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
 			"ANY", "ANY"),
 			function(exprObj, classifLab, trainInd, xtest, ytest, addclass, ntree, mtry, 
 			classwt, cutoff, sampsize, nodesize, importance, proximity, oob.prox, outscale, 
 			norm.votes, do.trace, keep.forest, corr.bias, metric, ...){
 
-			trainDat <- t(exprObj@exprs[,trainInd])
-			cl <- exprObj[[classifLab]][trainInd]
+			trainDat <- t(exprs(exprObj)[,trainInd])
+			cl <- pData(exprObj)[[classifLab]][trainInd]
 			if(missing(xtest)){ xtest <- NULL }
 			if(missing(ytest)){ ytest <- NULL }
 			if(missing(mtry)){ mtry <- sqrt(ncol(trainDat)) }
@@ -46,7 +46,7 @@ setMethod("randomForestB", c("exprSet", "character", "integer", "ANY", "ANY", "A
 			if(missing(nodesize)){ nodesize <- 1 }
 			if(missing(sampsize)){ sampsize <- table(cl) }
 
-			testDat <- t(exprObj@exprs[ ,-trainInd])
+			testDat <- t(exprs(exprObj)[ ,-trainInd])
 			dis <- dist(testDat, method=metric)
 
 			out <- randomForest::randomForest(trainDat, y=cl, xtest=xtest, ytest=ytest, addclass=addclass, 
@@ -59,7 +59,7 @@ setMethod("randomForestB", c("exprSet", "character", "integer", "ANY", "ANY", "A
                 preds <- predict(out, testDat)
                 new("classifOutput", method="randomForest",
                         predLabels=newPredClass(as.character(preds)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 #                        predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })

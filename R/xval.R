@@ -11,13 +11,13 @@ chkMLInterfaceProc <- function(x) {
 # by JMC is the list of formal parameters -- i need the signature
 # for a method.
 #
- tySig <- methods::methodSignatureMatrix(getMethod(xn, c("exprSet", "character", "integer")))[2,]
- if( x@package != "MLInterfaces" || !all(tySig == c("exprSet", "character",
+ tySig <- methods::methodSignatureMatrix(getMethod(xn, c("ExpressionSet", "character", "integer")))[2,]
+ if( x@package != "MLInterfaces" || !all(tySig == c("ExpressionSet", "character",
 	"integer"))) stop(paste(x, "not bearing proper signature"))
  else return(TRUE)
 }
 
-setMethod("xval", c("exprSet", "character", "genericFunction", "character", "integer", "ANY", "ANY", "ANY",
+setMethod("xval", c("ExpressionSet", "character", "genericFunction", "character", "integer", "ANY", "ANY", "ANY",
                     "ANY", "ANY", "ANY" ),
           function(data, classLab, proc, xvalMethod="LOO", group, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, cluster = NULL,...) {
 
@@ -81,7 +81,7 @@ setMethod("xval", c("exprSet", "character", "genericFunction", "character", "int
          }
       })
 
-setMethod("xval", c("exprSet", "character", "genericFunction", "character", "missing", "ANY", "ANY", "ANY",
+setMethod("xval", c("ExpressionSet", "character", "genericFunction", "character", "missing", "ANY", "ANY", "ANY",
   "ANY", "ANY", "ANY" ),
 function(data, classLab, proc, xvalMethod="LOO", group=0:0, indFun, niter, fsFun=NULL, fsNum=10, decreasing=TRUE, cluster = NULL, ...) 
 {
@@ -90,7 +90,7 @@ function(data, classLab, proc, xvalMethod="LOO", group=0:0, indFun, niter, fsFun
 
 
 balKfold <- function(K) function( data, clab, iternum ) {
- clabs <- data[[clab]]
+ clabs <- pData(data)[[clab]]
  narr <- nrow(pData(data))
  cnames <- unique(clabs)
  ilist <- list()

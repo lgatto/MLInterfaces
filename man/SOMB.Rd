@@ -1,14 +1,14 @@
 \name{SOMB}
 \alias{SOMB}
 \alias{somB}
-  \alias{somB,exprSet,character-method}
-  \alias{SOMB,exprSet,character-method}
+  \alias{somB,ExpressionSet,character-method}
+  \alias{SOMB,ExpressionSet,character-method}
   \alias{show,SOMBout-method}
   \alias{show,somout-method}
   \alias{somout-class}
 
 
-\title{An interface to self-organizing map methods for exprSets }
+\title{An interface to self-organizing map methods for ExpressionSets }
 \description{
 Self-organizing maps are covered in various machine learning
 reviews.  These can be viewed as clustering procedures
@@ -25,7 +25,7 @@ somB(exprObj, classifLab)
 }
 
 \arguments{
-  \item{exprObj}{An instance of the \code{exprset} class. }
+  \item{exprObj}{An instance of the \code{ExpressionSet} class. }
   \item{classifLab}{A vector of class labels. }
 }
 \details{
@@ -39,10 +39,10 @@ or \code{\link[som]{som}} for details.
 \author{Jess Mar, VJ Carey <stvjc@channing.harvard.edu>}
 
 \examples{
-# access and trim an exprSet
+# access and trim an ExpressionSet
 library(golubEsets)
-data(golubMerge)
-smallG <- golubMerge[1:60,]
+data(Golub_Merge)
+smallG <- Golub_Merge[1:60,]
 # set a PRNG seed for reproducibilitiy
 set.seed(1234) # needed for nnet initialization
 # now run the classifiers

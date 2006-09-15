@@ -1,6 +1,6 @@
 # description: interface to som {som} 
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	xdim		x dimension
 #	ydim		y dimension
 #	metric		for distance matrix 
@@ -24,7 +24,7 @@ setGeneric("somB", function(exprObj, classifLab, xdim=3, ydim=3, init="linear", 
 		standardGeneric("somB")
 })
 
-setMethod("somB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
+setMethod("somB", c("ExpressionSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
 		"ANY", "ANY"), 
 		function(exprObj, classifLab, xdim, ydim, init, alpha, alphaType, neigh, topol, 
 		radius, rlen, err.radius, inv.alp.c, metric){
@@ -52,14 +52,14 @@ setMethod("show", "SOMBout", function(object) {
  print(names(object))
 })
 
-setMethod("SOMB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("SOMB", c("ExpressionSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, kx, ky, topo, rlen, alpha, radii, init, metric){
 
 		dat <- t(exprs(exprObj))
 		dis <- dist(dat, method=metric)
 		sgrid <- class::somgrid(xdim=kx, ydim=ky, topo=topo)
 		out <- class::SOM(dat, sgrid, rlen=rlen, alpha=alpha, radii=radii, init)
-#		new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
+#		new("classifPred", sampLabels=pData(exprObj)[[classifLab]], distMat=dis, classifObj=out)
 # this function has no commonality with the others, just return a list for now
 		new("SOMBout", list(method="SOM", SOMout=out, SOMgrid=sgrid, distMat=dis,
 			call=match.call()))

@@ -7,7 +7,7 @@ setGeneric("gbmB", function(exprObj, classifLab, trainInd,
  bag.fraction=0.5, train.fraction=1, keep.data=TRUE, verbose=TRUE, metric="euclidean")
  standardGeneric("gbmB"))
 
-setMethod("gbmB", c("exprSet", "character", "integer", 
+setMethod("gbmB", c("ExpressionSet", "character", "integer", 
 			"ANY", "ANY", "ANY", "ANY", "ANY", 
 			"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
  function(exprObj, classifLab, trainInd, 
@@ -18,7 +18,7 @@ setMethod("gbmB", c("exprSet", "character", "integer",
   bag.fraction=0.5, train.fraction=1, keep.data=TRUE, verbose=FALSE,
   metric = "euclidean") {
 require(gbm) # no namespace
-		cl <- exprObj[[classifLab]][trainInd]				
+		cl <- pData(exprObj)[[classifLab]][trainInd]				
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
 		dis <- dist(testDat, method=metric)
@@ -35,7 +35,7 @@ require(gbm) # no namespace
                 
                 new("classifOutput", method="gbm", 
 			predLabels=newPredClass(levels(cl)[(ps>0.5)+1]),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 #			predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -45,11 +45,11 @@ require(gbm) # no namespace
 # function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean")
 # standardGeneric("logitboostB"))
 #setMethod("logitboostB", 
-# c("exprSet", "character", "integer", "numeric", "ANY", "ANY", "ANY", "ANY"),
+# c("ExpressionSet", "character", "integer", "numeric", "ANY", "ANY", "ANY", "ANY"),
 # function(exprObj, classifLab, trainInd, mfinal=100, presel=0, estimate=0, verbose=FALSE, metric="euclidean") {
 #require(boost)
 ##warning("version 1.1 of LogitBoost has bugs.  consult with authors of that package if you run into problems with this method.")
-#		cl <- exprObj[[classifLab]][trainInd]				
+#		cl <- pData(exprObj)[[classifLab]][trainInd]				
 #		trainDat <- t(exprs(exprObj)[,trainInd])
 #		testDat <- t(exprs(exprObj)[,-trainInd])
 #		dis <- dist(testDat, method=metric)
@@ -62,7 +62,7 @@ require(gbm) # no namespace
 #
 #                new("classifOutput", method="logitboost", 
 #			predLabels=newPredClass(levels(as.factor(cl))[predcat]),
-#			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+#			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 ##			predScores=newQualScore(attr(out,"prob")),
 #                        RObject=out, call=match.call(), distMat=dis)
 #})

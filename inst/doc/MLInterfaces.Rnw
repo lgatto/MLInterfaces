@@ -109,8 +109,8 @@ from Golub's data.
 library(MLInterfaces)
 library(golubEsets)
 <<redu>>=
-data(golubMerge)
-smallG <- golubMerge[200:259,]
+data(Golub_Merge)
+smallG <- Golub_Merge[200:259,]
 smallG
 @
 Here is how $k$-nearest neighbors is used

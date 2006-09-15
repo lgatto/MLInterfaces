@@ -6,7 +6,7 @@
 # title: ldaB
 # description: interface to lda {MASS}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -24,12 +24,12 @@ setGeneric("ldaB", function(exprObj, classifLab, trainInd, prior, tol=1.0e-4,
 		standardGeneric("ldaB")
 })
 
-setMethod("ldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+setMethod("ldaB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, prior, tol, method, CV, nu, metric, ...){
 
 		if(missing(method)){ method <- NULL }
 		if(missing(nu)){ nu <- NULL }
-		cl <- exprObj[[classifLab]][trainInd]
+		cl <- pData(exprObj)[[classifLab]][trainInd]
 		if(missing(prior)){ prior <- as.numeric(table(cl))/length(cl) }
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
@@ -39,7 +39,7 @@ setMethod("ldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 		res <- predict(out, testDat, ...)
                 new("classifOutput", method="lda",
                         predLabels=newPredClass(as.character(res$class)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
                         predScores=newProbMat(res$posterior),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -48,7 +48,7 @@ setMethod("ldaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 # title: qdaB
 # description: interface to qda {MASS}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -67,11 +67,11 @@ setGeneric("qdaB", function(exprObj, classifLab, trainInd, prior, tol=1.0e-4, me
 		standardGeneric("qdaB")
 })
 
-setMethod("qdaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+setMethod("qdaB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, prior, tol, method, CV, nu, metric, ...){
 		if(missing(method)){ method <- NULL }
 		if(missing(nu)){ nu <- NULL }
-		cl <- exprObj[[classifLab]][trainInd]
+		cl <- pData(exprObj)[[classifLab]][trainInd]
 		if(missing(prior)){ prior <- as.numeric(table(cl))/length(cl) }
 		trainDat <- t(exprs(exprObj)[,trainInd])
 		testDat <- t(exprs(exprObj)[,-trainInd])
@@ -81,7 +81,7 @@ setMethod("qdaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 		res <- predict(out, testDat, ...)
                 new("classifOutput", method="qda",
                         predLabels=newPredClass(as.character(res$class)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
                         predScores=newProbMat(res$posterior),
                         RObject=out, call=match.call(), distMat=dis)
 })
@@ -90,7 +90,7 @@ setMethod("qdaB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 # title: isoMDSB
 # description: interface to isoMDS {MASS}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -106,10 +106,10 @@ setGeneric("isoMDSB", function(exprObj, classifLab, y, k=2, maxit=50, trace=TRUE
 		standardGeneric("isoMDSB")
 })
 
-#setMethod("isoMDSB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+#setMethod("isoMDSB", c("ExpressionSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 #		function(exprObj, classifLab, y, k, maxit, trace, tol, p, metric){
 #
-#		cl <- exprObj[[classifLab]]
+#		cl <- pData(exprObj)[[classifLab]]
 #		dat <- exprs(exprObj)
 #		colnames(dat) <- cl
 #		dmat <- dist(t(dat), method=metric)
@@ -120,7 +120,7 @@ setGeneric("isoMDSB", function(exprObj, classifLab, y, k=2, maxit=50, trace=TRUE
 #		res <- predict(out, testDat, ...)
 #                new("classifOutput", method="qda",
 #                        predLabels=newPredClass(as.character(res$class)),
-#			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+#			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
 #                        predScores=newProbMat(res$posterior),
 #                        RObject=out, call=match.call(), distMat=dis)
 #		new("classifPred", sampLabels=cl, distMat=dmat, classifObj=out)
@@ -130,7 +130,7 @@ setGeneric("isoMDSB", function(exprObj, classifLab, y, k=2, maxit=50, trace=TRUE
 # title: sammonB
 # description: interface to sammon {MASS}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	metric		for distance matrix 
@@ -146,10 +146,10 @@ setGeneric("isoMDSB", function(exprObj, classifLab, y, k=2, maxit=50, trace=TRUE
 #		standardGeneric("sammonB")
 #})
 #
-#setMethod("sammonB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
+#setMethod("sammonB", c("ExpressionSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 #		function(exprObj, classifLab, y, k, niter, trace, magic, tol, metric){
 #
-#		cl <- exprObj[[classifLab]]
+#		cl <- pData(exprObj)[[classifLab]]
 #		dat <- exprs(exprObj)
 #		colnames(dat) <- cl
 #		dmat <- dist(t(dat), method=metric)

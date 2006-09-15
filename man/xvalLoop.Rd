@@ -34,8 +34,8 @@
 \examples{
 \dontrun{
 library(golubEsets)
-data(golubMerge)
-smallG <- golubMerge[200:250,]
+data(Golub_Merge)
+smallG <- Golub_Merge[200:250,]
 
 # Evaluation on one node
 

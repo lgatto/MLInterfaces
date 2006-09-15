@@ -14,26 +14,26 @@
 \alias{cmeansB}
 \alias{cshellB}
 \alias{kmeansB}
- \alias{agnesB,exprSet,numeric-method}
-  \alias{bclustB,exprSet,numeric-method}
-  \alias{claraB,exprSet,numeric-method}
-  \alias{cmeansB,exprSet,numeric-method}
-  \alias{hclustB,exprSet,numeric,missing-method}
-  \alias{hclustB,exprSet,numeric,ANY-method}
-  \alias{hclustB,exprSet,missing,numeric-method}
-  \alias{cshellB,exprSet,numeric-method}
-  \alias{dianaB,exprSet,numeric-method}
-  \alias{fannyB,exprSet,numeric-method}
-  \alias{kmeansB,exprSet,numeric-method}
-  \alias{pamB,exprSet,numeric-method}
+ \alias{agnesB,ExpressionSet,numeric-method}
+  \alias{bclustB,ExpressionSet,numeric-method}
+  \alias{claraB,ExpressionSet,numeric-method}
+  \alias{cmeansB,ExpressionSet,numeric-method}
+  \alias{hclustB,ExpressionSet,numeric,missing-method}
+  \alias{hclustB,ExpressionSet,numeric,ANY-method}
+  \alias{hclustB,ExpressionSet,missing,numeric-method}
+  \alias{cshellB,ExpressionSet,numeric-method}
+  \alias{dianaB,ExpressionSet,numeric-method}
+  \alias{fannyB,ExpressionSet,numeric-method}
+  \alias{kmeansB,ExpressionSet,numeric-method}
+  \alias{pamB,ExpressionSet,numeric-method}
 
-\title{An interface to various unsupervised machine learning methods for exprSets }
+\title{An interface to various unsupervised machine learning methods for ExpressionSets }
 \description{
 This document describes a family of wrappers to R functions
 that perform clustering of multivariate datasets.
  For example, the
 \code{kmeansB} function is a wrapper for a call to \code{\link{kmeans}} for objects
- of class \code{exprSet}. The interfaces of \code{MLInterfaces} provide a common calling
+ of class \code{ExpressionSet}. The interfaces of \code{MLInterfaces} provide a common calling
  sequence and common return value for machine learning code.
 }
 \usage{
@@ -60,8 +60,8 @@ functions named [f]B, see the documentation on \code{f}.
 \examples{
 ##get these from the source files
 library(golubEsets)
-data(golubMerge)
-smallG <- golubMerge[1:60,]
+data(Golub_Merge)
+smallG <- Golub_Merge[1:60,]
 set.seed(1234) # needed for nnet initialization
 kmeansB( smallG, k=4 )
 agnesB( smallG, k=5, height=0, FALSE )

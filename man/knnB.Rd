@@ -1,7 +1,7 @@
 \name{knnB}
 \alias{allClass}
  \alias{stat.diag.daB}
- \alias{stat.diag.daB,exprSet,character,integer-method}
+ \alias{stat.diag.daB,ExpressionSet,character,integer-method}
  \alias{cvB}
  \alias{knn1B}
  \alias{knnP}
@@ -28,7 +28,7 @@
 \alias{gbmB}
 
   \alias{allClass,classifOutput-method}
-  \alias{cvB,exprSet,character-method}
+  \alias{cvB,ExpressionSet,character-method}
   \alias{predLabels,MLOutput-method}
   \alias{predLabels,classifOutput-method}
 \alias{last.warning}
@@ -42,29 +42,29 @@
   \alias{show,silhouetteVec-method}
   \alias{show,MLOutput-method}
 
-  \alias{baggingB,exprSet,character,integer-method}
-  \alias{gbmB,exprSet,character,integer-method}
-  \alias{ipredknnB,exprSet,character,integer-method}
-  \alias{knn1B,exprSet,character,integer-method}
-  \alias{knnB,exprSet,character,integer-method}
-  \alias{lcaB,exprSet,numeric-method}
-  \alias{ldaB,exprSet,character,integer-method}
-  \alias{logitboostB,exprSet,character,integer,numeric-method}
-  \alias{lvq1B,exprSet,character,integer-method}
-  \alias{lvq2B,exprSet,character,integer-method}
-  \alias{lvq3B,exprSet,character,integer-method}
-  \alias{naiveBayesB,exprSet,character,integer-method}
-  \alias{nnetB,exprSet,character,integer-method}
-  \alias{olvq1B,exprSet,character,integer-method}
-  \alias{pamrB,exprSet,character,integer-method}
-  \alias{qdaB,exprSet,character,integer-method}
-  \alias{randomForestB,exprSet,character,integer-method}
-  \alias{rpartB,exprSet,character,integer-method}
-  \alias{sldaB,exprSet,character,integer-method}
-  \alias{svmB,exprSet,character,integer-method}
+  \alias{baggingB,ExpressionSet,character,integer-method}
+  \alias{gbmB,ExpressionSet,character,integer-method}
+  \alias{ipredknnB,ExpressionSet,character,integer-method}
+  \alias{knn1B,ExpressionSet,character,integer-method}
+  \alias{knnB,ExpressionSet,character,integer-method}
+  \alias{lcaB,ExpressionSet,numeric-method}
+  \alias{ldaB,ExpressionSet,character,integer-method}
+  \alias{logitboostB,ExpressionSet,character,integer,numeric-method}
+  \alias{lvq1B,ExpressionSet,character,integer-method}
+  \alias{lvq2B,ExpressionSet,character,integer-method}
+  \alias{lvq3B,ExpressionSet,character,integer-method}
+  \alias{naiveBayesB,ExpressionSet,character,integer-method}
+  \alias{nnetB,ExpressionSet,character,integer-method}
+  \alias{olvq1B,ExpressionSet,character,integer-method}
+  \alias{pamrB,ExpressionSet,character,integer-method}
+  \alias{qdaB,ExpressionSet,character,integer-method}
+  \alias{randomForestB,ExpressionSet,character,integer-method}
+  \alias{rpartB,ExpressionSet,character,integer-method}
+  \alias{sldaB,ExpressionSet,character,integer-method}
+  \alias{svmB,ExpressionSet,character,integer-method}
 
 
-\title{An interface to various machine learning methods for exprSets }
+\title{An interface to various machine learning methods for ExpressionSets }
 \description{
  This document describes a family of
 wrappers of calls to machine learning classifiers
@@ -73,7 +73,7 @@ This particular document concerns the classifiers
 for which training-vs-test set application makes sense.
 
 For example, \code{knnB} is a wrapper for a call to \code{\link[class]{knn}} for objects
- of class \code{exprSet}. These interfaces, of the form \code{[f]B} provide a common calling
+ of class \code{ExpressionSet}. These interfaces, of the form \code{[f]B} provide a common calling
  sequence and common return value for machine learning code in function \code{[f]}.
 
 For details on the additional arguments that may be passed to any covered
@@ -108,10 +108,10 @@ in the \code{class} package.
 
 \seealso{ \code{\link{ldaB}} }
 \examples{
-# access and trim an exprSet
+# access and trim an ExpressionSet
 library(golubEsets)
-data(golubMerge)
-smallG <- golubMerge[1:60,]
+data(Golub_Merge)
+smallG <- Golub_Merge[1:60,]
 # set a PRNG seed for reproducibilitiy
 set.seed(1234) # needed for nnet initialization
 # now run the classifiers

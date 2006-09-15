@@ -6,7 +6,7 @@
 # title: bclustB
 # description: interface to bclust {e1071}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	dist.method	for distance matrix (equivalent to the "metric" argument in other 
@@ -23,7 +23,7 @@ setGeneric("bclustB", function(exprObj, k, height=0, iter.base=10, minsize=0, di
 		standardGeneric("bclustB")
 })
 
-setMethod("bclustB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY",
+setMethod("bclustB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY",
 		"ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, iter.base, minsize, dist.method, hclust.method, base.method, 
 			base.centers, verbose, final.kmeans, docmdscale, resample, weights, 
@@ -57,7 +57,7 @@ setMethod("bclustB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", 
 # title: cmeansB
 # description: interface to cmeans {e1071}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	classifLab	character string specifying what covariate data 
 #			to use for classification
 #	dist		for distance matrix (equivalent to the "metric" argument in other 
@@ -73,7 +73,7 @@ setGeneric("cmeansB", function(exprObj, k, height=0, iter.max=100, verbose=FALSE
 		standardGeneric("cmeansB")
 })
 
-setMethod("cmeansB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("cmeansB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height=0, iter.max, verbose, dist, method, m, rate.par){
 
 			dat <- t(exprs(exprObj))
@@ -95,7 +95,7 @@ setGeneric("cshellB", function(exprObj, k, height=0, iter.max=20, verbose=FALSE,
 		standardGeneric("cshellB")
 })
 
-setMethod("cshellB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("cshellB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, k, height, iter.max, verbose, dist, method, m, radius){
 
 		dat <- t(exprs(exprObj))
@@ -123,7 +123,7 @@ setMethod("cshellB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", 
 ## title: icaB
 ## description: interface to ica {e1071}
 ## arguments:
-##	exprObj		exprSet
+##	exprObj		ExpressionSet
 ##	metric		for distance matrix 
 ## value:
 ## 	object of class "classifPred"
@@ -139,21 +139,21 @@ setMethod("cshellB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY", "ANY", 
 #		standardGeneric("icaB")
 #})
 
-#setMethod("icaB", c("exprSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
+#setMethod("icaB", c("ExpressionSet", "character", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 #			function(exprObj, classifLab, lrate, epochs, ncomp, fun, metric){
 #			
 #			dat <- t(exprs(exprObj))
 #			dis <- dist(dat, method=metric)
 #			out <- e1071::ica(dat, lrate, epochs=epochs, ncomp=dim(dat)[2], fun=fun)
 #
-#			new("classifPred", sampLabels=exprObj[[classifLab]], distMat=dis, classifObj=out)
+#			new("classifPred", sampLabels=pData(exprObj)[[classifLab]], distMat=dis, classifObj=out)
 #})
 #
 ######################
 ## title: lcaB
 ## description: interface to lca {e1071}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	metric		for distance matrix 
 # value:
 # 	object of class "classifPred"
@@ -173,7 +173,7 @@ setGeneric("lcaB", function(exprObj, k, niter=100, matchdata=TRUE, verbose=FALSE
 	standardGeneric("lcaB")
 })
 
-setMethod("lcaB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY"), 
+setMethod("lcaB", c("ExpressionSet", "numeric", "ANY", "ANY", "ANY", "ANY"), 
 			function(exprObj, k, niter, matchdata, verbose, metric){
 
 			dat <- t(exprs(exprObj))
@@ -192,7 +192,7 @@ setMethod("lcaB", c("exprSet", "numeric", "ANY", "ANY", "ANY", "ANY"),
 # title: naiveBayesB
 # description: interface to naiveBayes {e1071}
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -212,10 +212,10 @@ setGeneric("naiveBayesB", function(exprObj, classifLab, trainInd,	na.action=na.p
 		standardGeneric("naiveBayesB")
 })
 
-setMethod("naiveBayesB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY"),
+setMethod("naiveBayesB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, na.action, threshold, metric){
 
-		cl <- exprObj[[classifLab]][trainInd]		
+		cl <- pData(exprObj)[[classifLab]][trainInd]		
 		trainDat <- data.frame(y=cl, t(exprs(exprObj)[,trainInd]))
 		testDat <- data.frame(t(exprs(exprObj)[,-trainInd]))	
 		dis <- dist(testDat, method=metric)
@@ -223,7 +223,7 @@ setMethod("naiveBayesB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY
 		out <- predict( model, newdata=testDat )
                 new("classifOutput", method="naiveBayes",
                         predLabels=newPredClass(as.character(out)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
                 #        predScores=newQualScore(attr(out,"prob")),
                         RObject=model, call=match.call(), distMat=dis)
                                                                                 
@@ -233,7 +233,7 @@ setMethod("naiveBayesB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY
 # title: svmB
 # description: interface to svm {e1071} 
 # arguments:
-#	exprObj		exprSet
+#	exprObj		ExpressionSet
 #	trainInd	vector of indices for the columns to be 
 #			included in the training set
 #	classifLab	character string specifying what covariate data 
@@ -254,7 +254,7 @@ setGeneric("svmB", function(exprObj, classifLab, trainInd, scale=TRUE,
 		standardGeneric("svmB")
 })
 
-setMethod("svmB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY",
+setMethod("svmB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY",
 		"ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", 
 		"ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, scale, type, kernel, degree, gamma, 
@@ -264,7 +264,7 @@ setMethod("svmB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 			trainDat <- t(exprs(exprObj)[,trainInd])
 			testDat <- t(exprs(exprObj)[,-trainInd])
 			dis <- dist(testDat, method=metric)
-			cl <- exprObj[[classifLab]][trainInd]
+			cl <- pData(exprObj)[[classifLab]][trainInd]
 
 			if(missing(type)){ type <- NULL }
 			if(missing(class.weights)){ class.weights <- NULL }
@@ -279,7 +279,7 @@ setMethod("svmB", c("exprSet", "character", "integer", "ANY", "ANY", "ANY", "ANY
 				decision.values=decision.values, na.action=na.action)
                 new("classifOutput", method="svm",
                         predLabels=newPredClass(as.character(ans)),
-			trainInds=trainInd, allClass=as.character(exprObj[[classifLab]]),
+			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
                 #        predScores=newQualScore(attr(out,"prob")),
                         RObject=out, call=match.call(), distMat=dis)
 			

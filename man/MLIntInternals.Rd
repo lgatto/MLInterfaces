@@ -35,7 +35,7 @@ wrapClust(out, k, height, dis)
 
 \arguments{
   \item{x}{a vector or matrix}
-  \item{eset2}{instance of class \code{\link[Biobase]{exprSet}}}
+  \item{eset2}{instance of class \code{\link[Biobase]{ExpressionSet}}}
   \item{algorithm}{ function }
   \item{out}{output of cluster procedure}
   \item{k}{number of clusters}
