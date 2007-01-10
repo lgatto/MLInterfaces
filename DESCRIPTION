@@ -11,4 +11,3 @@ Suggests: class, cluster, e1071, ipred, randomForest, gpls, pamr, rpart,
         MASS, nnet, ALL, gbm, mlbench, hgu95av2, som, RColorBrewer, hu6800,
         golubEsets, sma
 SaveImage: yes
-Packaged: Fri Dec  2 10:42:42 2005; mtmorgan
