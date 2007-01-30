@@ -46,7 +46,9 @@ setMethod("MLearn", c("formula", "data.frame", "character", "numeric"),
 	dometh <- switch( method ,
 		knn = { sdata <- model.frame(formula,data=sdata)[,-1] # drop intercept
 				tdata <- model.frame(formula,data=tdata)[,-1]
-				list( rob = ROB <- class::knn( train=sdata, test=tdata, cl = allClass[trainInd], ...),
+				list( 
+#rob = ROB <- class::knn( train=sdata, test=tdata, cl = allClass[trainInd], ...),
+rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep training classes?
 				pred = newPredClass(as.character(OUT <- knnP(sdata, tdata, allClass[trainInd], ...))),
 				pScores = newQualScore(attr(OUT,"prob"))
                         	) },
