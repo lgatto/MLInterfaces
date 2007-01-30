@@ -3,6 +3,7 @@
 \alias{planarPlot}
 \alias{planarPlot-methods}
 \alias{planarPlot,classifOutput,ExpressionSet,character-method}
+\alias{planarPlot,classifOutput,data.frame,character-method}
 \title{ Methods for Function planarPlot in Package `MLInterfaces' }
 \description{
 show the classification boundaries on the plane dictated
@@ -10,8 +11,12 @@ by two genes in an ExpressionSet
 }
 \section{Methods}{
 \describe{
-\item{clo = "classifOutput", eset = "ExpressionSet", classifLab = "character"}{ ~~describe this method here }
-}}
+\item{clo = "classifOutput", eset = "ExpressionSet", classifLab = "character"}{ uses two genes in the ExpressionSet
+to exhibit the decision boundaries in the plane}
+\item{clo = "classifOutput", eset = "data.frame", classifLab = "character"}{ uses two columns in the data.frame
+to exhibit the decision boundaries in the plane}
+}
+}
 \examples{
 library(ALL)
 data(ALL)

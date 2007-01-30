@@ -1,6 +1,8 @@
 \name{MLIntInternals}
  \alias{chkMLInterfaceProc}
  \alias{getGrid}
+ \alias{getGrid,data.frame-method}
+ \alias{getGrid,ExpressionSet-method}
  \alias{makeCVFunc}
  \alias{newGroupIndex}
  \alias{newMembMat}
@@ -19,7 +21,7 @@ Users will generally not call these functions directly.
 }
 \usage{
 chkMLInterfaceProc(x)
-getGrid(eset2)
+getGrid(x)
 makeCVFunc(algorithm, ...)
 newGroupIndex(x)
 newMembMat(x)
@@ -34,8 +36,7 @@ wrapClust(out, k, height, dis)
 }
 
 \arguments{
-  \item{x}{a vector or matrix}
-  \item{eset2}{instance of class \code{\link[Biobase]{ExpressionSet}}}
+  \item{x}{a vector or matrix or ExpressionSet}
   \item{algorithm}{ function }
   \item{out}{output of cluster procedure}
   \item{k}{number of clusters}

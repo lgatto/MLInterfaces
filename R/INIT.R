@@ -11,9 +11,10 @@
 #
 #
 
+
 setOldClass("dist")
 setClass("MLLabel", "VIRTUAL")
-setClass("predClass", contains=c("MLLabel", "character"),
+setClass("predClass", contains=c("MLLabel", "character", "factor"),
 	prototype=prototype(""))
 setClass("groupIndex", contains=c("MLLabel", "integer"),
 	prototype=prototype(integer(0)))
