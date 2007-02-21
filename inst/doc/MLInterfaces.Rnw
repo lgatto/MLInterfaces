@@ -91,15 +91,15 @@ of a general class \Rclass{MLOutput}, described in Section
 \ref{mlosec} below.
 @
 
-Several other concerns will be addressed as the
-project matures.  Among these are:
-\begin{itemize}
-\item generic interfaces for cross-validation (exploiting
-native resources when available)
-\item simplified specification of criteria for outlier
-and doubt predictions
-\item appropriate visualizations.
-\end{itemize}
+%Several other concerns will be addressed as the
+%project matures.  Among these are:
+%\begin{itemize}
+%\item generic interfaces for cross-validation (exploiting
+%native resources when available)
+%\item simplified specification of criteria for outlier
+%and doubt predictions
+%\item appropriate visualizations.
+%\end{itemize}
 
 To give a flavor of the current implementation, we
 perform a few runs with different machine learning
@@ -223,6 +223,71 @@ getClass("classifOutput")
 Container for clustering results.
 <<>>=
 getClass("clustOutput")
+@
+
+\section{Cross-validation}
+
+The prevalent interfaces make it difficult to rely on resubstitution
+to evaluate performance: the [f]B interfaces demand that the user
+supply an index set for a training data subset, and \Rfunction{confuMat} computes
+the confusion matrix on the complementary test subset.
+
+Calls to [f]B interfaces can be wrapped to facilitate cross-validation.
+Several illustrations follow.
+\begin{itemize}
+\item straight leave-one-out (LOO) -- note the group parameter must be integer; it
+is irrelevant for the LOO method.
+<<dox>>=
+library(golubEsets)
+data(Golub_Merge)
+smallG <- Golub_Merge[200:250,]
+lk1 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", group=as.integer(0))
+table(lk1,smallG$ALL.AML)
+@
+\item Now do an 8-fold cross-validation using the sequence of records to define groups:
+<<dox2>>=
+lk2 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOG", group=as.integer(
+ rep(1:8,each=9)))
+table(lk2,smallG$ALL.AML)
+@
+\item A helper function \Rfunction{balKfold} allows the user to create
+partitions that are approximately balanced with respect to class
+representation.
+<<doba>>=
+balKfold
+lk3 <- xval(smallG, "ALL.AML", knnB, xvalMethod="FUN", 0:0, indFun=balKfold(5), niter=5)
+table(lk3, smallG$ALL.AML)
+@
+\item A function can be supplied to define allocation of records to partitions.  Here
+we supply a function that implements LOO:
+<<doloo2>>=
+LOO2 <- xval(smallG, "ALL.AML", knnB, "FUN", 0:0, function(x,y,i) {
+  (1:ncol(exprs(x)))[-i] }, niter=72 )
+table(lk1, LOO2)
+@
+\end{itemize}
+
+\section{Cross validation with feature selection}
+
+Stephen Henderson of UC London supplied infrastructure to allow
+embedding of feature selection in the cross-validation process.
+See the manual page on xval for more details.
+<<dofs>>=
+#
+# use Stephen Henderson's feature selection extensions
+#
+t.fun<-function(data, fac)
+{
+        require(genefilter)
+        # deal with the integer storage of golubTrain@exprs!
+        xd <- matrix(as.double(exprs(data)), nrow=nrow(exprs(data)))
+        return(abs(rowttests(xd,pData(data)[[fac]], tstatOnly=FALSE)$statistic))
+}
+lk3f <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 0:0, fsFun=t.fun)
+table(lk3f$out, smallG$ALL.AML)
+
+@
+
 @
 \section{A sketch of a `doubt' computation}
 
