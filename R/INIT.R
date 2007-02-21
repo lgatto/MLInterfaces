@@ -37,12 +37,13 @@ setClass("MLOutput", representation(method="character",
 			RObject="ANY", call="call", distMat="dist"), "VIRTUAL")
 
 setClass("classifOutput", representation(
-	predLabels="MLLabel", predScores="MLScore",
+	predLabels="MLLabel", predScores="MLScore", predLabelsTr="MLLabel",
 	trainInds="integer", allClass="character"), contains="MLOutput",
 		prototype=prototype(method="", RObject=NULL,
 			call=match.call(), distMat=dist(0), 
 			allClass=character(0), trainInds=integer(0),
 			predLabels=newPredClass(character(0)),
+			predLabelsTr=newPredClass(character(0)),
 			predScores=newQualScore(numeric(0))))
 
 setClass("clustOutput", representation(
@@ -112,8 +113,12 @@ setMethod("show", "MLOutput", function(object) {
 
 setGeneric("predLabels", function(obj) standardGeneric("predLabels"))
 setMethod("predLabels", "MLOutput", function(obj) obj@predLabels@.Data)
+setGeneric("predLabelsTr", function(obj) standardGeneric("predLabelsTr"))
+setMethod("predLabelsTr", "MLOutput", function(obj) obj@predLabelsTr@.Data)
 setGeneric("predLabels", function(obj) standardGeneric("predLabels"))
 setMethod("predLabels", "classifOutput", function(obj) obj@predLabels@.Data)
+setGeneric("predLabelsTr", function(obj) standardGeneric("predLabelsTr"))
+setMethod("predLabelsTr", "classifOutput", function(obj) obj@predLabelsTr@.Data)
 setGeneric("allClass", function(obj) standardGeneric("allClass"))
 setMethod("allClass", "classifOutput", function(obj) obj@allClass)
 setGeneric("trainInds", function(obj) standardGeneric("trainInds"))
@@ -121,3 +126,10 @@ setMethod("trainInds", "classifOutput", function(obj) obj@trainInds)
 setGeneric("confuMat", function(obj) standardGeneric("confuMat"))
 setMethod("confuMat", "classifOutput", function(obj) 
 table(given=allClass(obj)[-trainInds(obj)], predicted=predLabels(obj) ) )
+setGeneric("confuMatTrain", function(obj) standardGeneric("confuMatTrain"))
+setMethod("confuMatTrain", "classifOutput", function(obj) {
+acal = function(x) as.character(as.list(x))
+maker = acal(obj@call) # test for MLearn origin
+if (maker[1] != "MLearn") stop("confuMatTrain only applicable to outputs of MLearn interface.  See help(MLearn).")
+table(given=allClass(obj)[trainInds(obj)], predicted=predLabelsTr(obj) ) 
+ })

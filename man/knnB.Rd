@@ -83,6 +83,10 @@ This will require loading the package in which \code{f} is found.
 \usage{
 knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
   use.all = TRUE, metric = "euclidean") 
+#
+# for such functions as nnetB, use the same first three
+# parameters, and then add optional parameters from the nnet API
+#
 }
 
 \arguments{
@@ -99,14 +103,27 @@ knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
   See \code{\link[class]{knn}} for a complete description of
 parameters to and details of the k-nearest neighbor procedure
 in the \code{class} package.
+
+For other interfaces, such as ldaB, nnetB, rpartB, gbmB,
+randomForestB, and so on, see the usage note above and
+also see the man pages for those functions.  For each
+of these functions you will need to attach the appropriate package
+in order to examine the man page.
+
+The \code{\link{MLearn}}
+interface is a more unified approach but is still maturing.
 }
 \value{
- An object of class \code{\link{classifOutput-class}}.
+ An object of class \code{\link{classifOutput}}.
+This class unifies the representation of results of machine
+learning algorithms implemented by different designers.
 }
 
 \author{Jess Mar, VJ Carey <stvjc@channing.harvard.edu>}
 
-\seealso{ \code{\link{ldaB}} }
+\seealso{ \code{\link{xval}} for information on how
+to obtain various cross-validated fits, and \code{\link{MLearn}}
+for a less fragmented implementation of the interface. }
 \examples{
 # access and trim an ExpressionSet
 library(golubEsets)

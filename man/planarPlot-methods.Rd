@@ -61,23 +61,27 @@ opar <- par(no.readonly=TRUE)
 par(mfrow=c(2,2))
 planarPlot( tgg, gg, "class" )
 title("rpart")
+points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(class[trainInds]=="NEG", "yellow", "black"), pch=16)
 #
 # run nnet
 #
 ngg <- nnetB( gg, "class", trainInds, size=8 )
 planarPlot( ngg, gg, "class" )
+points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("nnet")
 #
 # run knn
 #
 kgg <- knnB( gg, "class", trainInds, k=3, l=1 )
 planarPlot( kgg, gg, "class" )
+points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("3-nn")
 #
 # run svm
 #
 sgg <- svmB( gg, "class", trainInds )
 planarPlot( sgg, gg, "class" )
+points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("svm")
 par(opar)
 }

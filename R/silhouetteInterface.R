@@ -29,6 +29,20 @@ setMethod("silhouetteB", c("classifOutput"),
 	if(is.factor(lab)){ 
 		lab <- as.integer(lab)
 	}
+        else if (is(lab, "character"))
+ 		lab = as.integer(factor(lab))
 	cluster::silhouette(lab, out@distMat, ...)
 })
 
+setMethod("silhouetteB", c("clustOutput"), 
+	function(out, ...){
+	
+	lab <- out@clustIndices@.Data
+
+	if(is.factor(lab)){ 
+		lab <- as.integer(lab)
+	}
+        else if (is(lab, "character"))
+ 		lab = as.integer(factor(lab))
+	cluster::silhouette(lab, out@distMat, ...)
+})

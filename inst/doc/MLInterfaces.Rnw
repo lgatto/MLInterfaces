@@ -76,11 +76,11 @@ specifications and implementations for a uniform interface.
 (The {\tt tune} procedures in \Rpackage{e1071} also
 pursue more uniform interface to machine learning procedures.)
 At present, we want to simplify use of machine learning
-with microarray data, assumed to take the form of {\tt exprSet}s.
+with microarray data, assumed to take the form of {\tt ExpressionSet}s.
 The present implementation addresses the following concerns:
 \begin{itemize}
 \item simplify the selection of the predictand from
-{\tt exprSet} structure;
+{\tt ExpressionSet} structure;
 \item simplify (in fact, require) decomposition of
 input data into training and test set, with output
 emphasizing test set results;
@@ -138,7 +138,7 @@ confuMat(nns)
 @
 \section{Usage}
 The basic call sequence for supervised learning
-for {\tt exprSet}s is
+for {\tt ExpressionSet}s is
 \begin{verbatim}
 methB(eset, tag, trainInd, ...)
 \end{verbatim}

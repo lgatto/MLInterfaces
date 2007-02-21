@@ -5,7 +5,11 @@
 \alias{MLearn-methods}
 \alias{MLearn,formula,ExpressionSet,character,numeric-method}
 \alias{MLearn,formula,data.frame,character,numeric-method}
-\title{ ~~ Methods for Function MLearn in Package `MLInterfaces' ~~}
+\alias{confuMatTrain,classifOutput-method}
+\alias{confuMatTrain}
+\alias{predLabelsTr}
+\alias{predLabelsTr,classifOutput-method}
+\title{ Methods for Function MLearn in Package `MLInterfaces' }
 \description{
 test version of more lightweight interface
 }
@@ -25,18 +29,23 @@ the \code{data} parameter.  The ExpressionSet and phenoData will be converted
 to a data.frame instance using the internal \code{es2df} function, and this can be large.  Typically the genes will
 be filtered before applying this procedure.
 
+For this interface, one can obtain the training data confusion matrix using
+\code{confuMatTrain}.  A slot \code{predLabelsTr} is populated for
+this purpose, and an extractor method exists.
  }
 }
 \examples{
 library(MASS)
 data(Pima.tr)
 pm = MLearn(type~., data=Pima.tr, "lda", 1:150 )
-confuMat(pm)
+confuMatTrain(pm)  # on training data
+confuMat(pm)  # on held-out test data
 library(golubEsets)
 data(Golub_Merge)
 rp = MLearn(ALL.AML~., Golub_Merge[1:200,], "rpart", 1:35 )
 confuMat(rp)
 sv = MLearn(ALL.AML~., Golub_Merge[1:200,], "svm", 1:35 )
 confuMat(sv)
+confuMatTrain(sv)
 }
 \keyword{methods}

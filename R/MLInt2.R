@@ -50,29 +50,39 @@ setMethod("MLearn", c("formula", "data.frame", "character", "numeric"),
 #rob = ROB <- class::knn( train=sdata, test=tdata, cl = allClass[trainInd], ...),
 rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep training classes?
 				pred = newPredClass(as.character(OUT <- knnP(sdata, tdata, allClass[trainInd], ...))),
+				predTr = newPredClass(as.character(OUT <- knnP(sdata, sdata, allClass[trainInd], ...))),
 				pScores = newQualScore(attr(OUT,"prob"))
                         	) },
 		lda = { list( rob = ROB <- MASS::lda( formula =formula, data=sdata, ...),
-				pred = newPredClass(as.character(predict( ROB, tdata)$class))
+				pred = newPredClass(as.character(predict( ROB, tdata)$class)),
+				predTr = newPredClass(as.character(predict( ROB, sdata)$class))
+                        	) },
+		qda = { list( rob = ROB <- MASS::qda( formula =formula, data=sdata, ...),
+				pred = newPredClass(as.character(predict( ROB, tdata)$class)),
+				predTr = newPredClass(as.character(predict( ROB, sdata)$class))
                         	) },
 		nnet = { list( rob = ROB <- nnet::nnet( formula =formula, data=sdata, ...),
 				pred = newPredClass(predict( ROB, tdata, type="class")),
+				predTr = newPredClass(predict( ROB, sdata, type="class")),
 				pScores = newProbMat(predict(ROB, newdata=tdata))
                         	) },
 		randomForest = { list( rob = ROB <- randomForest::randomForest( formula =formula, data=sdata, ...),
-				pred = newPredClass(as.character(predict(ROB, tdata)))
+				pred = newPredClass(as.character(predict(ROB, tdata))),
+				predTr = newPredClass(as.character(predict(ROB, sdata)))
 				) },
 		rpart = { list( rob = ROB <- rpart::rpart( formula =formula, data=sdata, ...),
 				pred = newPredClass(as.character(predict(ROB, tdata, type="class"))),
+				predTr = newPredClass(as.character(predict(ROB, sdata, type="class"))),
 				pScores = newQualScore(attr(ROB,"prob"))
 				) },
 		svm = { list( rob = ROB <- e1071::svm( formula =formula, data=sdata, ...),
-				pred = newPredClass(as.character(predict(ROB, tdata, decision.values=FALSE)))
+				pred = newPredClass(as.character(predict(ROB, tdata, decision.values=FALSE))),
+				predTr = newPredClass(as.character(predict(ROB, sdata, decision.values=FALSE)))
 				) }
 	      	) # end  switch
 	if (is.null( dometh$pScores )) dometh$pScores <- new("probMat") # placeholder
    	new("classifOutput", method=method, predLabels=dometh$pred, trainInds=trainInd,
-		allClass=as.character(allClass),
+		allClass=as.character(allClass), predLabelsTr=dometh$predTr,
 		predScores=dometh$pScores, call=match.call(),
 		RObject=dometh$rob)
   })

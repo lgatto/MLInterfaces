@@ -4,16 +4,12 @@
 \alias{classifOutput-class}
 \alias{agnes-class}
 \alias{bagging-class}
-\alias{bclust-class}
 \alias{classbagg-class}
-\alias{clustOutput-class}
 \alias{cshell-class}
 \alias{diana-class}
 \alias{dist-class}
-\alias{fclust-class}
 \alias{gbm-class}
 \alias{groupIndex-class}
-\alias{hclust-class}
 \alias{ica-class}
 \alias{ipredknn-class}
 \alias{kmeans-class}
@@ -24,7 +20,10 @@
 \alias{membMat-class}
 \alias{MLLabel-class}
 \alias{MLOutput-class}
+\alias{MLLabel}
+\alias{MLOutput}
 \alias{MLScore-class}
+\alias{MLScore}
 \alias{naiveBayes-class}
 \alias{nnet.formula-class}
 \alias{nsc-class}
@@ -39,11 +38,10 @@
 \alias{randomForest-class}
 \alias{rpart-class}
 \alias{silhouetteVec-class}
+\alias{silhouetteB,classifOutput-method}
 \alias{slda-class}
 \alias{SOMBout-class}
 \alias{svm-class}
-\alias{show,classifOutput-method}
-\alias{silhouetteB,classifOutput-method}
 
 \title{Class "classifOutput": container for output of
 classification procedures in R }
@@ -80,8 +78,18 @@ of test set feature vectors }
 }
 \author{ VJ Carey <stvjc@channing.harvard.edu> }
 
-\seealso{
-}
+%\seealso{
+%}
 \examples{
+# access and trim an ExpressionSet
+library(golubEsets)
+data(Golub_Merge)
+smallG <- Golub_Merge[1:60,]
+# set a PRNG seed for reproducibilitiy
+set.seed(1234) # needed for nnet initialization
+# now run the classifiers
+f1 = knnB( smallG, "ALL.AML", 1:40 )
+f1
+confuMat(f1)
 }
 \keyword{classes}
