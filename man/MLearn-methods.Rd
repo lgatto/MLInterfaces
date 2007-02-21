@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{MLearn}
 \alias{es2df}
+\alias{tellMLearnMethods}
 \alias{MLearn-methods}
 \alias{MLearn,formula,ExpressionSet,character,numeric-method}
 \alias{MLearn,formula,data.frame,character,numeric-method}
@@ -24,6 +25,11 @@ applies a machine learning algorithm identified by \code{method}, specifying
 the training set indices for the training run.  An instance of \code{\link{MLOutput-class}}
 is returned.
 
+\code{MLearn} is an evolving interface.  To determine what 
+values for \code{method} are currently supported, issue
+the command \code{tellMLearnMethods()}.  This looks at the \code{MLearn}
+code in real time and describes branch points in a switch statement.
+
 An adaptation allows an \code{\link[Biobase]{ExpressionSet}} instance to be bound to
 the \code{data} parameter.  The ExpressionSet and phenoData will be converted
 to a data.frame instance using the internal \code{es2df} function, and this can be large.  Typically the genes will
@@ -35,6 +41,7 @@ this purpose, and an extractor method exists.
  }
 }
 \examples{
+tellMLearnMethods()
 library(MASS)
 data(Pima.tr)
 pm = MLearn(type~., data=Pima.tr, "lda", 1:150 )

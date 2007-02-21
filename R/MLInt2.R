@@ -83,7 +83,6 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
                             # we will use its CV interface to get approximately optimal alpha and delta
                             # for the data specified by trainInds
 			 rdaOpt = function(...) {
- 			        require(rda)
 			 	x1 = rda(...)
                                 dots = list(...)
                                 dots = dots[ - which(names(dots) %in% c("xnew", "ynew", "genelist")) ]
@@ -136,6 +135,12 @@ print(opt$separms)
 		predScores=dometh$pScores, call=match.call(),
 		RObject=dometh$rob)
   })
+
+tellMLearnMethods = function() {
+  tmp = body(getMethod("MLearn", c("formula", "data.frame", "character", "numeric"))@.Data)
+  sw = as.list(as.list(tmp)[[5]])[[3]]
+  names(sw)[-c(1,2)]
+}
 
 
 #
