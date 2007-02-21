@@ -78,7 +78,57 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
 		svm = { list( rob = ROB <- e1071::svm( formula =formula, data=sdata, ...),
 				pred = newPredClass(as.character(predict(ROB, tdata, decision.values=FALSE))),
 				predTr = newPredClass(as.character(predict(ROB, sdata, decision.values=FALSE)))
-				) }
+				) },
+		rdacv = {   # the API for rda involves x (GxN), y (Nx1 1-based class index), xnew, ynew 
+                            # we will use its CV interface to get approximately optimal alpha and delta
+                            # for the data specified by trainInds
+			 rdaOpt = function(...) {
+ 			        require(rda)
+			 	x1 = rda(...)
+                                dots = list(...)
+                                dots = dots[ - which(names(dots) %in% c("xnew", "ynew", "genelist")) ]
+				nargl = list(fit=x1)
+				dn = names(dots)
+				for (j in 1:length(dots)) 
+					nargl[[dn[j]]] = dots[[j]]
+			 	x = do.call("rda.cv", nargl)
+			 	minerr <- min(x$cv.err)/x$n
+			 	one.se <- ceiling((sqrt(minerr * (1 - minerr)/x$n) *
+					1.645 + minerr) * x$n)
+                         pos = NULL
+		         while( length(pos) < 1) {
+			 	pos <- which(x$cv.err == one.se, TRUE)
+				if (length(pos)<1) print("could not relax one full S.E., diminish by 1")
+				one.se = one.se-1
+                         }
+#if (length(pos) < 1) {
+#  print(pos)
+#  print(x$cv.err)
+#  print(one.se)
+#stop("can't pick alpha/delta")
+#}
+				if (is.matrix(pos)) pos=pos[1,]
+			 	minpos <- which(x$cv.err == min(x$cv.err), TRUE)
+ 			 	opt = list(separms=c(alpha=x$alpha[pos[1]], delta=x$delta[pos[2]]), inds.se=pos)
+			        postop = rda(..., alpha=opt$separms["alpha"], delta=opt$separms["delta"])
+				opt[["base"]] = postop
+				opt
+				}
+                           #set up the data
+		         X <- t(data.matrix(model.frame(formula,data=sdata)[,-1])) # drop intercept
+			 NEWX <- t(data.matrix(model.frame(formula,data=tdata)[,-1]))
+                         Y = as.numeric(factor(allClass))[trainInd]
+                         NEWY = as.numeric(factor(allClass))[-trainInd]
+                           # choose alpha and delta, and get a fit
+                         opt = rdaOpt( x=X, y=Y, xnew=NEWX, ynew=NEWY, genelist=TRUE, ...)
+print("Using CV-optimal parameters relaxed by one SE")
+print(opt$separms)
+                         tmp = predict( opt$base, x=X, y=Y, xnew=NEWX, alpha=opt$separms["alpha"], delta=opt$separms["delta"] )
+                         trtmp = predict( opt$base, x=X, y=Y, xnew=X, alpha=opt$separms["alpha"], delta=opt$separms["delta"] )
+                         preds = levels(allClass)[tmp]
+                         list(rob = ROB <- opt$base, pred=newPredClass(preds), predTr=newPredClass(preds)
+                          ) }
+       
 	      	) # end  switch
 	if (is.null( dometh$pScores )) dometh$pScores <- new("probMat") # placeholder
    	new("classifOutput", method=method, predLabels=dometh$pred, trainInds=trainInd,
