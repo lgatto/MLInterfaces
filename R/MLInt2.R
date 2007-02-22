@@ -1,5 +1,5 @@
 
-setGeneric("MLearn", function(formula, data, method, trainInd, isOne, ...)standardGeneric("MLearn"))
+setGeneric("MLearn", function(formula, data, method, trainInd, isOne, thresh, ...)standardGeneric("MLearn"))
 
 #setMethod("MLearn", c("character", "ExpressionSet", "character", "numeric"),
 #  function(formula, data, method, trainInd, ...) {
@@ -25,19 +25,19 @@ es2df = function(x,keep=NULL) {
 }
 
 setMethod("MLearn", c("formula", "ExpressionSet", "character", "numeric",
-   "ANY"),
-  function(formula, data, method, trainInd, isOne=NULL, ...) {
+   "ANY", "ANY"),
+  function(formula, data, method, trainInd, isOne=NULL, thresh=NULL, ...) {
 #
 # the keep setting below says just keep the response variable
 # from pData
 #
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
-        MLearn( formula, data, method, trainInd, isOne, ... )
+        MLearn( formula, data, method, trainInd, isOne, thresh, ... )
   })
     
 setMethod("MLearn", c("formula", "data.frame", "character", "numeric",
-   "ANY"),
-  function(formula, data, method, trainInd, isOne=NULL,...) {
+   "ANY", "ANY"),
+  function(formula, data, method, trainInd, isOne=NULL, thresh=NULL, ...) {
 #
 # extending MLInterfaces to work with formulas
 #
@@ -62,6 +62,18 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
 				predTr = newPredClass(as.character(OUT <- knnP(sdata, sdata, allClass[trainInd], ...))),
 				pScores = newQualScore(attr(OUT,"prob"))
                         	) },
+		dlda = { require(sma) # no namespace and no formula interface
+			        sdata <- data.matrix(model.frame(formula,data=sdata)[,-1]) # drop intercept
+				tdata <- data.matrix(model.frame(formula,data=tdata)[,-1])
+				ncl = as.numeric(allClass[trainInd])
+				if (is(allClass,"factor")) lcl = levels(allClass)
+				else lcl = sort(unique(allClass))
+				tmp = stat.diag.da( sdata, as.numeric(allClass[trainInd]), tdata, ... )
+				tmptr = stat.diag.da( sdata, as.numeric(allClass[trainInd]), sdata, ... )
+				list( rob = ROB <- tmp ,
+					pred = newPredClass(as.character(lcl[tmp$pred])),
+					predTr = newPredClass(as.character(lcl[tmptr$pred])) 
+				) },
 		lda = { list( rob = ROB <- MASS::lda( formula =formula, data=sdata, ...),
 				pred = newPredClass(as.character(predict( ROB, tdata)$class)),
 				predTr = newPredClass(as.character(predict( ROB, sdata)$class))
@@ -75,6 +87,12 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
 				predTr = newPredClass(predict( ROB, sdata, type="class")),
 				pScores = newProbMat(predict(ROB, newdata=tdata))
                         	) },
+		logistic = { if (is.null(thresh)) stop("logistic learning requires thresh parm passed")
+				list( rob = ROB <- glm( formula = formula, data=sdata, fam=binomial ),
+				pred = newPredClass( predict( ROB, tdata, type="response") > thresh ),
+				predTr = newPredClass( predict( ROB, sdata, type="response") > thresh ),
+				pScores = newProbMat(matrix(predict(ROB, newdata=tdata, type="response"),,1))
+				) },
 		randomForest = { list( rob = ROB <- randomForest::randomForest( formula =formula, data=sdata, ...),
 				pred = newPredClass(as.character(predict(ROB, tdata))),
 				predTr = newPredClass(as.character(predict(ROB, sdata)))
@@ -104,9 +122,6 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
     			tdata = data.frame(tdata, ttmp)
     			names(sdata)[ncol(sdata)] = respn
     			names(tdata)[ncol(tdata)] = respn
-			rob = ROB <- RAB( formula=formula, data=sdata, ...)
-			print(rob)
-
 			list( rob = ROB <- RAB( formula=formula, data=sdata, ...),
                                 pred = newPredClass(as.character(Predict(ROB, newdata=tdata))),
                                 predTr = newPredClass(as.character(Predict(ROB, newdata=sdata)))
@@ -158,7 +173,8 @@ print(opt$separms)
                          tmp = predict( opt$base, x=X, y=Y, xnew=NEWX, alpha=opt$separms["alpha"], delta=opt$separms["delta"] )
                          trtmp = predict( opt$base, x=X, y=Y, xnew=X, alpha=opt$separms["alpha"], delta=opt$separms["delta"] )
                          preds = levels(allClass)[tmp]
-                         list(rob = ROB <- opt$base, pred=newPredClass(preds), predTr=newPredClass(preds)
+                         trpreds = levels(allClass)[trtmp]
+                         list(rob = ROB <- opt$base, pred=newPredClass(preds), predTr=newPredClass(trpreds)
                           ) }
        
 	      	) # end  switch

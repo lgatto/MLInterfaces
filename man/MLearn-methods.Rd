@@ -49,6 +49,10 @@ data(Pima.tr)
 pm = MLearn(type~., data=Pima.tr, "lda", 1:150 )
 confuMatTrain(pm)  # on training data
 confuMat(pm)  # on held-out test data
+#
+pm2 = MLearn(type~., data=Pima.tr, "logistic", 1:150, thresh=.2 )
+confuMat(pm2)
+#
 library(golubEsets)
 data(Golub_Merge)
 rp = MLearn(ALL.AML~., Golub_Merge[1:200,], "rpart", 1:35 )
@@ -57,9 +61,13 @@ sv = MLearn(ALL.AML~., Golub_Merge[1:200,], "svm", 1:35 )
 confuMat(sv)
 confuMatTrain(sv)
 # illustrate real adaboost
-rab = MLearn(ALL.AML~., Golub_Merge[1:200,], "RAB", 1:35, isOne="AML",
+rab = MLearn(ALL.AML~., Golub_Merge[1:200,], "RAB", 1:35, isOne="ALL",
    maxiter=20, maxdepth=2)
 confuMatTrain(rab)
 confuMat(rab)
+# illustrate regularized discriminant analysis
+rda = MLearn(ALL.AML~., Golub_Merge[1:2000,], "rdacv", 1:35 )
+confuMatTrain(rda)
+confuMat(rda)
 }
 \keyword{methods}
