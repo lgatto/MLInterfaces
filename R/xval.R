@@ -168,6 +168,8 @@ setMethod("xvalML", c("formula", "ExpressionSet", "character",
           ## cross-validator
           allGN = rownames(exprs(data))
           xvalidator <- function(i, ...) {
+	      if (i == 1) print("xval iteration:")
+              cat(i)
               idx <- selnProc(i)
               fs.idx <- fsProc(idx, fs.idx)
               newfmla = mkfmla(respn, allGN[fs.idx])
