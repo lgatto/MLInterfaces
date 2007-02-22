@@ -13,6 +13,9 @@ setGeneric("MLearn", function(formula, data, method, trainInd, isOne, ...)standa
 #  })
 			
 es2df = function(x,keep=NULL) {
+#
+# the keep parameter says which pData vars are kept in
+#
    if (is.null(keep)) return(data.frame(t(exprs(x)),pData(x)))
    else {
         tmp = data.frame(t(exprs(x)),pData(x)[[keep]])
@@ -24,6 +27,10 @@ es2df = function(x,keep=NULL) {
 setMethod("MLearn", c("formula", "ExpressionSet", "character", "numeric",
    "ANY"),
   function(formula, data, method, trainInd, isOne=NULL, ...) {
+#
+# the keep setting below says just keep the response variable
+# from pData
+#
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
         MLearn( formula, data, method, trainInd, isOne, ... )
   })

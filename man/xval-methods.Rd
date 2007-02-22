@@ -7,6 +7,8 @@
 \alias{balKfold}
 \alias{xval,ExpressionSet,character,genericFunction,character,integer-method}
 \alias{xval,ExpressionSet,character,genericFunction,character,missing-method}
+\alias{xvalML,formula,ExpressionSet,character,character,numeric-method}
+\alias{xvalML,formula,ExpressionSet,character,character,missing-method}
 
 \title{ support for cross-validatory machine learning with ExpressionSets}
 \description{
@@ -16,9 +18,13 @@ support for cross-validatory machine learning with ExpressionSets
 xval( data, classLab, proc, xvalMethod, group, indFun, niter,
 fsFun=NULL, fsNum=NULL, decreasing=TRUE, cluster=NULL, \dots )
 balKfold(K)
+xvalML( formula, data, proc, xvalMethod, group, indFun, niter,
+fsFun=NULL, fsNum=NULL, decreasing=TRUE, cluster=NULL, \dots )
 }
 \arguments{
  \item{data}{instance of class \code{\link[Biobase]{ExpressionSet}}}
+ \item{formula}{a model formula, typically with a dot on the RHS,
+and response variable chosen from \code{pData} columns.}
  \item{classLab}{character string identifying phenoData variable to
    label classifications}
  \item{proc}{an MLInterfaces method that returns an instance of \code{\link{classifOutput}}}
@@ -111,5 +117,13 @@ t.fun<-function(data, fac)
 }
 lk3f <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 0:0, fsFun=t.fun)
 table(lk3f$out, smallG$ALL.AML)
+# use MLearn xval
+XXml = xvalML(ALL.AML~., smallG, "knn", "LOO")
+# show that it agrees with the fB approach
+table(XXml, lk1)
+# use MLearn xval with feature selection
+XXmlfs = xvalML(ALL.AML~., smallG, "knn", "LOO", fsFun=t.fun)
+# show that it agrees with the previous approach
+table(XXmlfs$out, lk3f$out)
 }
 \keyword{methods}
