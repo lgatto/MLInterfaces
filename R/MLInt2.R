@@ -79,6 +79,12 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
 				pred = newPredClass(as.character(predict(ROB, tdata, decision.values=FALSE))),
 				predTr = newPredClass(as.character(predict(ROB, sdata, decision.values=FALSE)))
 				) },
+
+		RAB = { list( rob = ROB <- RAB( formula=formula, data=sdata, ...),
+                                pred = newPredClass(as.character(Predict(ROB, newdata=tdata))),
+                                predTr = newPredClass(as.character(Predict(ROB, newdata=sdata)))
+                                ) },
+
 		rdacv = {   # the API for rda involves x (GxN), y (Nx1 1-based class index), xnew, ynew 
                             # we will use its CV interface to get approximately optimal alpha and delta
                             # for the data specified by trainInds
