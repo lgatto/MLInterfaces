@@ -4,6 +4,8 @@
 \alias{es2df}
 \alias{tellMLearnMethods}
 \alias{MLearn-methods}
+\alias{MLearn,formula,ExpressionSet,character,numeric,ANY-method}
+\alias{MLearn,formula,data.frame,character,numeric,ANY-method}
 \alias{MLearn,formula,ExpressionSet,character,numeric-method}
 \alias{MLearn,formula,data.frame,character,numeric-method}
 \alias{confuMatTrain,classifOutput-method}
@@ -54,5 +56,10 @@ confuMat(rp)
 sv = MLearn(ALL.AML~., Golub_Merge[1:200,], "svm", 1:35 )
 confuMat(sv)
 confuMatTrain(sv)
+# illustrate real adaboost
+rab = MLearn(ALL.AML~., Golub_Merge[1:200,], "RAB", 1:35, isOne="AML",
+   maxiter=20, maxdepth=2)
+confuMatTrain(rab)
+confuMat(rab)
 }
 \keyword{methods}

@@ -1,6 +1,8 @@
 \name{raboostCont-class}
 \docType{class}
 \alias{raboostCont-class}
+\alias{daboostCont-class}
+\alias{show,raboostCont-method}
 
 \title{Class "raboostCont" ~~~ }
 \description{	 ~~ A concise (1-5 lines) description of what the class is.  ~~}
@@ -11,7 +13,7 @@ Objects can be created by calls of the form \code{new("raboostCont", ...)}.
 \section{Slots}{
 	 \describe{
     \item{\code{.Data}:}{Object of class \code{"list"} ~~ }
-    \item{\code{fmla}:}{Object of class \code{"formula"} ~~ }
+    \item{\code{formula}:}{Object of class \code{"formula"} ~~ }
     \item{\code{call}:}{Object of class \code{"call"} ~~ }
   }
 }

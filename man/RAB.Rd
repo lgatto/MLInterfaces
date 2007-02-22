@@ -1,13 +1,20 @@
 \name{RAB}
 \alias{RAB}
-\title{real adaboost (Friedman et al)  }
+\alias{RAB4es}
+\alias{DAB}
+\alias{Predict}
+\alias{tonp}
+\alias{mkfmla}
+\alias{Predict,raboostCont-method}
+\alias{Predict,daboostCont-method}
+\title{real adaboost (Friedman et al) (and discrete adaboost (DAB))  }
 \description{
 }
 \usage{
-RAB(fmla, data, maxiter=200, maxdepth=1)
+RAB(formula, data, maxiter=200, maxdepth=1)
 }
 \arguments{
-  \item{fmla}{ fmla -- the response variable must be coded -1, 1}
+  \item{formula}{ formula -- the response variable must be coded -1, 1}
   \item{data}{ data}
   \item{maxiter}{ maxiter}
   \item{maxdepth}{ maxdepth -- passed to rpart}

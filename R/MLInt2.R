@@ -1,5 +1,5 @@
 
-setGeneric("MLearn", function(formula, data, method, trainInd, ...)standardGeneric("MLearn"))
+setGeneric("MLearn", function(formula, data, method, trainInd, isOne, ...)standardGeneric("MLearn"))
 
 #setMethod("MLearn", c("character", "ExpressionSet", "character", "numeric"),
 #  function(formula, data, method, trainInd, ...) {
@@ -21,14 +21,16 @@ es2df = function(x,keep=NULL) {
         }
 }
 
-setMethod("MLearn", c("formula", "ExpressionSet", "character", "numeric"),
-  function(formula, data, method, trainInd, ...) {
+setMethod("MLearn", c("formula", "ExpressionSet", "character", "numeric",
+   "ANY"),
+  function(formula, data, method, trainInd, isOne=NULL, ...) {
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
-        MLearn( formula, data, method, trainInd, ... )
+        MLearn( formula, data, method, trainInd, isOne, ... )
   })
     
-setMethod("MLearn", c("formula", "data.frame", "character", "numeric"),
-  function(formula, data, method, trainInd, ...) {
+setMethod("MLearn", c("formula", "data.frame", "character", "numeric",
+   "ANY"),
+  function(formula, data, method, trainInd, isOne=NULL,...) {
 #
 # extending MLInterfaces to work with formulas
 #
@@ -80,7 +82,25 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
 				predTr = newPredClass(as.character(predict(ROB, sdata, decision.values=FALSE)))
 				) },
 
-		RAB = { list( rob = ROB <- RAB( formula=formula, data=sdata, ...),
+		RAB = { 
+# caller must supply isOne = [level of response that codes to 1 vs -1]
+			if (missing(isOne)) stop("a parameter named isOne must be supplied, bound to string encoding factor value that maps to 1 (vs -1)")
+			nn = names(sdata)
+			respn = as.character(as.list(formula)[[2]])
+			nn = nn[ which(nn != respn) ]
+    			formula = mkfmla(respn, nn)
+    			tmp = tonp(sdata[[respn]], isOne)
+    			ttmp = tonp(tdata[[respn]], isOne)
+			sdata = sdata[, -which(names(sdata) == respn) ]
+			tdata = tdata[, -which(names(tdata) == respn) ]
+    			sdata = data.frame(sdata, tmp)
+    			tdata = data.frame(tdata, ttmp)
+    			names(sdata)[ncol(sdata)] = respn
+    			names(tdata)[ncol(tdata)] = respn
+			rob = ROB <- RAB( formula=formula, data=sdata, ...)
+			print(rob)
+
+			list( rob = ROB <- RAB( formula=formula, data=sdata, ...),
                                 pred = newPredClass(as.character(Predict(ROB, newdata=tdata))),
                                 predTr = newPredClass(as.character(Predict(ROB, newdata=sdata)))
                                 ) },
@@ -143,7 +163,7 @@ print(opt$separms)
   })
 
 tellMLearnMethods = function() {
-  tmp = body(getMethod("MLearn", c("formula", "data.frame", "character", "numeric"))@.Data)
+  tmp = body(getMethod("MLearn", c("formula", "data.frame", "character", "numeric", "ANY"))@.Data)
   sw = as.list(as.list(tmp)[[5]])[[3]]
   names(sw)[-c(1,2)]
 }
