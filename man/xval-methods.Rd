@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{xval-methods}
 \alias{xval}
+\alias{xvalML}
 \alias{xval,ExpressionSet,character,nonstandardGeneric,character,missing-method}
 \alias{xval,ExpressionSet,character,nonstandardGeneric,character,integer-method}
 \alias{balKfold}
@@ -9,7 +10,11 @@
 \alias{xval,ExpressionSet,character,genericFunction,character,missing-method}
 \alias{xvalML,formula,ExpressionSet,character,character,numeric-method}
 \alias{xvalML,formula,ExpressionSet,character,character,missing-method}
-
+\alias{xvalML,formula,ExpressionSet,character,character,numeric,ANY,ANY,ANY,ANY,ANY-method}
+\alias{xvalML,formula,ExpressionSet,character,character,numeric,ANY,ANY,ANY,ANY,ANY,ANY-method}
+\alias{xvalML,formula,ExpressionSet,character,character,missing,missing,missing,missing,missing,missing-method}
+\alias{xvalML,formula,ExpressionSet,character,character,missing,missing,missing,missing,missing,missing,missing-method}
+\alias{xvalML,formula,ExpressionSet,character,character,missing,missing,missing,function,missing,missing,missing-method}
 \title{ support for cross-validatory machine learning with ExpressionSets}
 \description{
 support for cross-validatory machine learning with ExpressionSets
@@ -18,8 +23,8 @@ support for cross-validatory machine learning with ExpressionSets
 xval( data, classLab, proc, xvalMethod, group, indFun, niter,
 fsFun=NULL, fsNum=NULL, decreasing=TRUE, cluster=NULL, \dots )
 balKfold(K)
-xvalML( formula, data, proc, xvalMethod, group, indFun, niter,
-fsFun=NULL, fsNum=NULL, decreasing=TRUE, cluster=NULL, \dots )
+xvalML( formula, data, proc, xvalMethod="LOO", group, indFun, niter,
+fsFun=NULL, fsNum=10, decreasing=TRUE, cluster=NULL, \dots )
 }
 \arguments{
  \item{data}{instance of class \code{\link[Biobase]{ExpressionSet}}}

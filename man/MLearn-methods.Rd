@@ -50,7 +50,8 @@ pm = MLearn(type~., data=Pima.tr, "lda", 1:150 )
 confuMatTrain(pm)  # on training data
 confuMat(pm)  # on held-out test data
 #
-pm2 = MLearn(type~., data=Pima.tr, "logistic", 1:150, thresh=.2 )
+pm2 = MLearn(type~., data=Pima.tr, "logistic", 1:150, mlSpecials=
+  list(thresh=.2) )
 confuMat(pm2)
 #
 library(golubEsets)
@@ -61,7 +62,7 @@ sv = MLearn(ALL.AML~., Golub_Merge[1:200,], "svm", 1:35 )
 confuMat(sv)
 confuMatTrain(sv)
 # illustrate real adaboost
-rab = MLearn(ALL.AML~., Golub_Merge[1:200,], "RAB", 1:35, isOne="ALL",
+rab = MLearn(ALL.AML~., Golub_Merge[1:200,], "RAB", 1:35, 
    maxiter=20, maxdepth=2)
 confuMatTrain(rab)
 confuMat(rab)

@@ -1,5 +1,5 @@
 
-setGeneric("MLearn", function(formula, data, method, trainInd, isOne, thresh, ...)standardGeneric("MLearn"))
+setGeneric("MLearn", function(formula, data, method, trainInd, mlSpecials, ...)standardGeneric("MLearn"))
 
 #setMethod("MLearn", c("character", "ExpressionSet", "character", "numeric"),
 #  function(formula, data, method, trainInd, ...) {
@@ -25,19 +25,19 @@ es2df = function(x,keep=NULL) {
 }
 
 setMethod("MLearn", c("formula", "ExpressionSet", "character", "numeric",
-   "ANY", "ANY"),
-  function(formula, data, method, trainInd, isOne=NULL, thresh=NULL, ...) {
+   "ANY"),
+  function(formula, data, method, trainInd, mlSpecials=NULL, ...) {
 #
 # the keep setting below says just keep the response variable
 # from pData
 #
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
-        MLearn( formula, data, method, trainInd, isOne, thresh, ... )
+        MLearn( formula, data, method, trainInd, mlSpecials, ... )
   })
     
 setMethod("MLearn", c("formula", "data.frame", "character", "numeric",
-   "ANY", "ANY"),
-  function(formula, data, method, trainInd, isOne=NULL, thresh=NULL, ...) {
+   "ANY" ),
+  function(formula, data, method, trainInd, mlSpecials, ...) {
 #
 # extending MLInterfaces to work with formulas
 #
@@ -87,10 +87,11 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
 				predTr = newPredClass(predict( ROB, sdata, type="class")),
 				pScores = newProbMat(predict(ROB, newdata=tdata))
                         	) },
-		logistic = { if (is.null(thresh)) stop("logistic learning requires thresh parm passed")
+		logistic = { if (missing("mlSpecials") || is.null(mlSpecials$thresh)) 
+                                stop("logistic learning requires thresh parm passed\nas element in mlSpecials list")
 				list( rob = ROB <- glm( formula = formula, data=sdata, fam=binomial ),
-				pred = newPredClass( predict( ROB, tdata, type="response") > thresh ),
-				predTr = newPredClass( predict( ROB, sdata, type="response") > thresh ),
+				pred = newPredClass( predict( ROB, tdata, type="response") > mlSpecials$thresh ),
+				predTr = newPredClass( predict( ROB, sdata, type="response") > mlSpecials$thresh ),
 				pScores = newProbMat(matrix(predict(ROB, newdata=tdata, type="response"),,1))
 				) },
 		randomForest = { list( rob = ROB <- randomForest::randomForest( formula =formula, data=sdata, ...),
@@ -108,14 +109,28 @@ rob = ROB <- knnP(sdata, tdata, allClass[trainInd], ...),  # should keep trainin
 				) },
 
 		RAB = { 
-# caller must supply isOne = [level of response that codes to 1 vs -1]
-			if (missing(isOne)) stop("a parameter named isOne must be supplied, bound to string encoding factor value that maps to 1 (vs -1)")
-			nn = names(sdata)
+## caller must supply mlSpecials$isOne = [level of response that codes to 1 vs -1]
 			respn = as.character(as.list(formula)[[2]])
+#          emsg1 = "a parameter named isOne must be supplied"
+#          emsg2 = "as an element of mlSpecials list."
+#	  emsg3 = "isOne must be bound to a string naming a variable"
+#	  emsg4 = "that will be mapped to 1 (as opposed to -1)"
+#          emsg = paste(emsg1, emsg2, emsg3, emsg4, collapse="\n")
+#			if (missing(mlSpecials)) stop(emsg)
+#			if (length(mlSpecials$isOne) == 0) stop(emsg)
+#			if (!(mlSpecials$isOne %in% data[[respn]] )) stop(emsg)
+			nn = names(sdata)
+# exclude the response variable from the RHS of formula
 			nn = nn[ which(nn != respn) ]
     			formula = mkfmla(respn, nn)
-    			tmp = tonp(sdata[[respn]], isOne)
-    			ttmp = tonp(tdata[[respn]], isOne)
+#    			tmp = tonp(sdata[[respn]], mlSpecials$isOne)
+#    			ttmp = tonp(tdata[[respn]], mlSpecials$isOne)
+# create the -1,1 coding
+			resp = sdata[[respn]]
+			if (is.factor(resp))  targ = max(levels(resp))
+			else targ = max(resp)
+    			tmp = tonp(sdata[[respn]], targ)
+    			ttmp = tonp(tdata[[respn]], targ)
 			sdata = sdata[, -which(names(sdata) == respn) ]
 			tdata = tdata[, -which(names(tdata) == respn) ]
     			sdata = data.frame(sdata, tmp)
