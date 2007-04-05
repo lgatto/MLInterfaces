@@ -30,9 +30,12 @@ setMethod("show", "varImpStruct", function(object) {
 
 setMethod("plot", "varImpStruct", function(x, y, ..., n=20, resolveenv=NULL) {
         vn <- x@varnames
+	vn = gsub("^X", "", vn) # undo formula mangling -- very hokey
+	vn = gsub("AFFX\\.", "AFFX-", vn) # undo formula mangling -- very hokey
+# but the key thing is to get ifnotfound right below, once you have done these steps
         if (!is.null(resolveenv))
 		{
-		nn <- unlist(mget(vn, resolveenv))
+		nn <- unlist(mget(vn, resolveenv, ifnotfound=list(function(x)x)))
 		nn[is.na(nn)] <- vn[is.na(nn)]
 		vn <- nn
 		}
@@ -47,6 +50,5 @@ setMethod("plot", "varImpStruct", function(x, y, ..., n=20, resolveenv=NULL) {
                 omda <- order(-mda)[n:1]
 		barplot(mda[omda], names=vn[omda], horiz=TRUE,
 			xlab="Mean decrease in accuracy")
-		}
-})
+		} })
            

@@ -208,3 +208,14 @@ setMethod("xvalML", c("formula", "ExpressionSet", "character",
 xvalML( formula, data, proc, xvalMethod, 0, , , fsFun ,
 		...)
 })
+
+setMethod("xvalML", c("formula", "ExpressionSet", "character", 
+                    "character", "missing", "missing", "missing", "function",
+                    "numeric", "missing", "missing" ),
+          function(formula, data, proc, 
+                     xvalMethod="LOO", group, 
+                     indFun, niter, fsFun=NULL, fsNum=10, 
+                     decreasing=TRUE, cluster = NULL,...) {
+xvalML( formula, data, proc, xvalMethod, 0, , , fsFun , fsNum,
+		...)
+})
