@@ -42,7 +42,6 @@
 \alias{slda-class}
 \alias{SOMBout-class}
 \alias{svm-class}
-
 \title{Class "classifOutput": container for output of
 classification procedures in R }
 \description{  container with uniform contents for classifier outputs }

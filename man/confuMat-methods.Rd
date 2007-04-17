@@ -9,7 +9,7 @@ compute the confusion matrix for a classifier's output
 }
 \section{Methods}{
 \describe{
-\item{obj = "classifOutput"}{ Typically, an instance of class \code{\link{classifOutput}}
+\item{obj = "classifOutput"}{ Typically, an instance of class \code{"\linkS4class{classifOutput}"}
 is built on a ``training'' subset of the input data, and the ``test'' subset's
 true class labels are available.  This method cross-tabulates the true labels
 of the test set against the predictions of the fitted classifier.

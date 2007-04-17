@@ -42,7 +42,7 @@ object corresponding to the partition }
 
 
 \seealso{
-	\code{\linkS4class{"classifOutput"}}
+	\code{"\linkS4class{classifOutput}"}
 }
 \examples{
 showClass("clustOutput")

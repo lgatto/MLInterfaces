@@ -114,7 +114,7 @@ The \code{\link{MLearn}}
 interface is a more unified approach but is still maturing.
 }
 \value{
- An object of class \code{\link{classifOutput}}.
+ An object of class \code{"\linkS4class{classifOutput}"}
 This class unifies the representation of results of machine
 learning algorithms implemented by different designers.
 }

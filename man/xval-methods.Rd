@@ -15,6 +15,7 @@
 \alias{xvalML,formula,ExpressionSet,character,character,missing,missing,missing,missing,missing,missing-method}
 \alias{xvalML,formula,ExpressionSet,character,character,missing,missing,missing,missing,missing,missing,missing-method}
 \alias{xvalML,formula,ExpressionSet,character,character,missing,missing,missing,function,missing,missing,missing-method}
+\alias{xvalML,formula,ExpressionSet,character,character,missing,missing,missing,function,numeric,missing,missing-method}
 \title{ support for cross-validatory machine learning with ExpressionSets}
 \description{
 support for cross-validatory machine learning with ExpressionSets
@@ -32,13 +33,16 @@ fsFun=NULL, fsNum=10, decreasing=TRUE, cluster=NULL, \dots )
 and response variable chosen from \code{pData} columns.}
  \item{classLab}{character string identifying phenoData variable to
    label classifications}
- \item{proc}{an MLInterfaces method that returns an instance of \code{\link{classifOutput}}}
+ \item{proc}{an MLInterfaces method that returns an instance of 
+    \code{"\linkS4class{classifOutput}"}}
  \item{xvalMethod}{character string identifying cross-validation procedure to use:
 default is "LOO" (leave one out), alternatives are "LOG" (leave group out)
 and "FUN" (user-supplied partition extraction function, see Details below)}
- \item{group}{a vector (length equal to number of samples) enumerating groups for LOG xval method}
+ \item{group}{a vector (length equal to number of samples) enumerating groups for 
+    LOG xval method}
  \item{indFun}{a function that returns a set of indices to be saved as a test set;
-this function must have parameters \code{data}, \code{clab}, \code{iternum}; see Details}
+this function must have parameters \code{data}, \code{clab}, \code{iternum}; see 
+    Details}
  \item{niter}{number of iterations for user-specified partition function to be  run}
  \item{fsFun}{function computing ranks of features for feature selection}
  \item{fsNum}{number of features to be kept for learning in each iteration}
