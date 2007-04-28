@@ -180,7 +180,7 @@ setMethod("xvalML", c("formula", "ExpressionSet", "character",
           classif <- unlist( sapply( out, function(x) x[[1]] ) )
 
           if (!is.function(fsFun))
-              return(classif)
+              return(as.factor(as.character(classif)))
           else {
               fs.memory <- as.vector( sapply( out, function(x) x[[2]] ) )
               return(list(fs.memory=fs.memory, out=classif))
