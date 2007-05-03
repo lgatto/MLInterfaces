@@ -40,7 +40,7 @@ setClass("classifOutput", representation(
 	predLabels="MLLabel", predScores="MLScore", predLabelsTr="MLLabel",
 	trainInds="integer", allClass="character"), contains="MLOutput",
 		prototype=prototype(method="", RObject=NULL,
-			call=match.call(), distMat=dist(0), 
+			call=new("call"), distMat=dist(0), 
 			allClass=character(0), trainInds=integer(0),
 			predLabels=newPredClass(character(0)),
 			predLabelsTr=newPredClass(character(0)),
@@ -49,7 +49,7 @@ setClass("classifOutput", representation(
 setClass("clustOutput", representation(
 	clustIndices="MLLabel", clustScores="MLScore"), contains="MLOutput",
 		prototype=prototype(method="", RObject=NULL,
-			call=match.call(), distMat=dist(0),
+			call=new("call"), distMat=dist(0),
 			clustIndices=newGroupIndex(integer(0)),
 			clustScores=newSilhouetteVec(numeric(0))))
 
