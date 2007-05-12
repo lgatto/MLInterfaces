@@ -10,4 +10,4 @@ Depends: R (>= 2.1), Biobase, methods, genefilter, rpart, rda
 Suggests: class, cluster, e1071, ipred, randomForest, gpls, pamr, rpart,
         MASS, nnet, ALL, gbm, mlbench, hgu95av2, som, RColorBrewer, hu6800,
         golubEsets, sma
-SaveImage: yes
+LazyLoad: yes
