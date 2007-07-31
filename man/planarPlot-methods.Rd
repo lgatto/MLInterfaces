@@ -40,14 +40,10 @@ library(hgu95av2)
 gg <- all2[pick,]
 sym <- unlist(mget(featureNames(gg), hgu95av2SYMBOL))
 featureNames(gg) <- sym
-class <- as.character(all2$mol.biol)
-gg@phenoData@data$class <- factor(class)
-tmp = rbind(gg@phenoData@varMetadata,class="class" )
-newpd = new("AnnotatedDataFrame", data=gg@phenoData@data, varMetadata=tmp)
-gg = new("ExpressionSet", exprs=exprs(gg), phenoData=newpd)
+gg$class = factor(ifelse(all2$mol.biol=="NEG", "NEG", "POS"))
 
-cl1 <- which( class == "NEG" )
-cl2 <- which( class != "NEG" )
+cl1 <- which( gg$class == "NEG" )
+cl2 <- which( gg$class != "NEG" )
 #
 # create balanced training sample
 #
@@ -61,27 +57,27 @@ opar <- par(no.readonly=TRUE)
 par(mfrow=c(2,2))
 planarPlot( tgg, gg, "class" )
 title("rpart")
-points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(class[trainInds]=="NEG", "yellow", "black"), pch=16)
+points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(gg$class[trainInds]=="NEG", "yellow", "black"), pch=16)
 #
 # run nnet
 #
 ngg <- nnetB( gg, "class", trainInds, size=8 )
 planarPlot( ngg, gg, "class" )
-points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(class[trainInds]=="NEG", "yellow", "black"), pch=16)
+points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(gg$class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("nnet")
 #
 # run knn
 #
 kgg <- knnB( gg, "class", trainInds, k=3, l=1 )
 planarPlot( kgg, gg, "class" )
-points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(class[trainInds]=="NEG", "yellow", "black"), pch=16)
+points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(gg$class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("3-nn")
 #
 # run svm
 #
 sgg <- svmB( gg, "class", trainInds )
 planarPlot( sgg, gg, "class" )
-points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(class[trainInds]=="NEG", "yellow", "black"), pch=16)
+points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(gg$class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("svm")
 par(opar)
 }
