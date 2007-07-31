@@ -172,7 +172,13 @@ setMethod("xvalML", c("formula", "ExpressionSet", "character",
 #              cat(i)
               idx <- selnProc(i)
               fs.idx <- fsProc(idx, fs.idx)
-              newfmla = mkfmla(respn, allGN[fs.idx])
+#
+# BAD!!!  why not use the actual formula?  feature selection
+# present in build 24497 assumes using all features in data
+# we want to use formula unless fsFun exists
+#
+              if (!missing(fsFun)) newfmla = mkfmla(respn, allGN[fs.idx])
+              else newfmla = formula
               list( MLearn(newfmla, data[fs.idx,], proc, inds[idx], ...)@predLabels@.Data, fs.idx )
           }
 
