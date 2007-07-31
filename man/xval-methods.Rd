@@ -72,6 +72,14 @@ scores will be interpreted according to the value of \code{decreasing},
 to select \code{fsNum} features.  Thanks to Stephen Henderson of University
 College London for
 this functionality.
+
+Note that if \code{fsFun} is non-null, then the RHS of
+\code{formula} will be
+ignored, and it is assumed that the RHS is ".".  We will attempt
+to ameliorate this in a future revision.  If you wish to subset
+the features in \code{data} before applying cross-validated
+feature selection, do this manually, not by specifying a nontrivial
+formula.
 }
 %\section{Methods}{
 %\describe{
