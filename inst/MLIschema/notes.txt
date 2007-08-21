@@ -1,0 +1,44 @@
+
+What are the minimum specifications needed to
+a) massage an ExpressionSet+formula+parms model spec
+into input to an arbitrary machine learning function
+in some R package
+b) massage the output of an arbitrary machine learning
+function in some R package into an MLOutput instance
+
+setClass("MLIschema", representation(
+ mlpackageName="character",
+ mlfunctionName="character",
+ usesFormula="logical",
+ predictMethodName="character",
+ predictParms="list",
+ tuningParms="list"))
+
+makeMLIschema = function( mlpackageName,
+  mlfunctionName, usesFormula,
+  predictMethodName, predictParms, ... ) {
+  new("MLIschema", 
+    mlpackageName=mlpackageName,
+    mlfunctionName=mlfunctionName,
+    usesFormula=usesFormula,
+    predictMethodName=predictMethodName, 
+    predictParms=predictParms,
+    tuningParms=...) }
+    
+randomForestI = makeMLIschema(
+     "randomForest", "randomForest",
+     TRUE, "predict", list() )
+
+setMethod("MLearn", c("formula", "data.frame",
+   "MLIschema" , "numeric"), function( formula,
+     data, method, trainInd, mlSpecials = NULL, ...) {
+    learnFunNm = paste(method@mlpackageName,
+      method@mlfunctionName, sep="::")
+    if (method@usesFormula==FALSE) stop("method does not accept formula")
+    thefun = do.call("::", list(method@mlpackageName, method@mlfunctionName))
+    RANS = do.call( thefun, list(formula=formula, data=data[trainInd,], ...) )
+    new("MLOutput", method=learnFunNm, distMat=as.dist(as.matrix(0,1,1)),
+      RObject=RANS, call=match.call())
+})
+
+
