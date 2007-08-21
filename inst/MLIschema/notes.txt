@@ -1,10 +1,11 @@
 
-What are the minimum specifications needed to
-a) massage an ExpressionSet+formula+parms model spec
-into input to an arbitrary machine learning function
-in some R package
-b) massage the output of an arbitrary machine learning
-function in some R package into an MLOutput instance
+#What are the minimum specifications needed to
+#a) massage an ExpressionSet+formula+parms model spec
+#into input to an arbitrary machine learning function
+#in some R package
+#b) massage the output of an arbitrary machine learning
+#function in some R package into an MLOutput instance
+#
 
 setClass("MLIschema", representation(
  mlpackageName="character",
@@ -16,27 +17,55 @@ setClass("MLIschema", representation(
 
 makeMLIschema = function( mlpackageName,
   mlfunctionName, usesFormula,
-  predictMethodName, predictParms, ... ) {
+  predictMethodName, predictParms=list(), ... ) {
+  extra = list(...)
+  cc = match.call()
+  ars = cc[-1]
+  opt = ars[-c(1:4)]
+  anames = names(ars)
+  if (!("predictParms" %in% names(anames))) predictParms=list()
   new("MLIschema", 
     mlpackageName=mlpackageName,
     mlfunctionName=mlfunctionName,
     usesFormula=usesFormula,
     predictMethodName=predictMethodName, 
     predictParms=predictParms,
-    tuningParms=...) }
+    tuningParms=extra) }
     
-randomForestI = makeMLIschema(
+randomForestI = function(...) makeMLIschema(
      "randomForest", "randomForest",
-     TRUE, "predict", list() )
+     TRUE, "predict", list(), ... )
 
 setMethod("MLearn", c("formula", "data.frame",
    "MLIschema" , "numeric"), function( formula,
-     data, method, trainInd, mlSpecials = NULL, ...) {
+     data, method, trainInd, mlSpecials = NULL) {
+#
+# step 1 -- get the function to be called from the schema object
+#
     learnFunNm = paste(method@mlpackageName,
       method@mlfunctionName, sep="::")
     if (method@usesFormula==FALSE) stop("method does not accept formula")
+#
+# can't just use do.call("nnet::nnet" ... it seems; instead, build
+# the function using an initial call to resolution operator
+#
     thefun = do.call("::", list(method@mlpackageName, method@mlfunctionName))
-    RANS = do.call( thefun, list(formula=formula, data=data[trainInd,], ...) )
+#
+# step 2 -- now build the parms to the call
+#
+    callParms = list(formula=formula, data=data[trainInd,])
+    if (length(method@tuningParms)>0) {
+       pn = names(method@tuningParms)
+       for (i in 1:length(pn))
+         callParms[[pn[i]]] = method@tuningParms[[i]]
+       }
+#
+# step 3 -- execute and get the original object
+#
+    RANS = do.call( thefun, callParms )
+#
+# step 4 --  transform value to something we can work with
+#
     new("MLOutput", method=learnFunNm, distMat=as.dist(as.matrix(0,1,1)),
       RObject=RANS, call=match.call())
 })
