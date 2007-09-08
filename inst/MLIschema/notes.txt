@@ -7,34 +7,49 @@
 #function in some R package into an MLOutput instance
 #
 
+library(MLInterfaces)
+library(MASS)
+data(crabs)
+
 setClass("MLIschema", representation(
  mlpackageName="character",
  mlfunctionName="character",
  usesFormula="logical",
+ retObjectBuilder="function",
  predictMethodName="character",
  predictParms="list",
  tuningParms="list"))
 
+classifOutBuilder = function(mlfunctionName, rans, call, ...) {
+ new("classifOutput", method=mlfunctionName, predLabels=
+     newPredClass(do.call(predictMethodName, list(rans, ...))),
+     call=call, RObject=rans) }
+
+
 makeMLIschema = function( mlpackageName,
   mlfunctionName, usesFormula,
-  predictMethodName, predictParms=list(), ... ) {
+  predictMethodName, predictParms=list(), retObjectBuilder=NULL, ... ) {
   extra = list(...)
-  cc = match.call()
-  ars = cc[-1]
-  opt = ars[-c(1:4)]
-  anames = names(ars)
-  if (!("predictParms" %in% names(anames))) predictParms=list()
+ # cc = match.call()
+ # ars = cc[-1]
+ # opt = ars[-c(1:4)]
+ # anames = names(ars)
+ # if (!("predictParms" %in% names(anames))) predictParms=list()
+  if (missing(predictParms)) predictParms=list()
+  if (is.null(retObjectBuilder)) {
+    retObjectBuilder=function(mlfunctionName, rans, call, ...) {
+     new("MLOutput", method=mlfunctionName, RObject=rans, call=call,
+		distMat=as.dist(matrix(0,1,1))) 
+    }}
   new("MLIschema", 
     mlpackageName=mlpackageName,
     mlfunctionName=mlfunctionName,
     usesFormula=usesFormula,
     predictMethodName=predictMethodName, 
+    retObjectBuilder=retObjectBuilder,
     predictParms=predictParms,
     tuningParms=extra) }
     
-randomForestI = function(...) makeMLIschema(
-     "randomForest", "randomForest",
-     TRUE, "predict", list(), ... )
 
 setMethod("MLearn", c("formula", "data.frame",
    "MLIschema" , "numeric"), function( formula,
@@ -66,8 +81,18 @@ setMethod("MLearn", c("formula", "data.frame",
 #
 # step 4 --  transform value to something we can work with
 #
-    new("MLOutput", method=learnFunNm, distMat=as.dist(as.matrix(0,1,1)),
-      RObject=RANS, call=match.call())
+#    new("MLOutput", method=learnFunNm, distMat=as.dist(as.matrix(0,1,1)),
+#      RObject=RANS, call=match.call())
+     method@retObjectBuilder(learnFunNm, RANS, call=match.call())
 })
 
+randomForestI = function(...) makeMLIschema(
+     "randomForest", "randomForest",
+     TRUE, "predict", predictParms=list(), ... )
 
+#debugMethod("MLearn", c("formula", "data.frame",
+#   "MLIschema" , "numeric"))
+
+
+d1 = MLearn(sp~CW, crabs, randomForestI(), c(1:40,101:140) )
+#d2 = MLearn(sp~CW, crabs, randomForestI(ntree=20) , c(1:40,101:140))
