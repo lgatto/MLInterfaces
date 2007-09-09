@@ -1,6 +1,6 @@
 \name{MLearn-methods}
 \docType{methods}
-\alias{MLearn}
+\alias{MLearn-OLD}
 \alias{es2df}
 \alias{tellMLearnMethods}
 \alias{MLearn-methods}
@@ -14,7 +14,8 @@
 \alias{predLabelsTr,classifOutput-method}
 \title{ Methods for Function MLearn in Package `MLInterfaces' }
 \description{
-test version of more lightweight interface
+Initial version of more lightweight interface; please do help(MLearn)
+for the more recent schema-based approach.
 }
 \section{Methods}{
 \describe{
@@ -27,10 +28,6 @@ applies a machine learning algorithm identified by \code{method}, specifying
 the training set indices for the training run.  An instance of \code{\link{MLOutput-class}}
 is returned.
 
-\code{MLearn} is an evolving interface.  To determine what 
-values for \code{method} are currently supported, issue
-the command \code{tellMLearnMethods()}.  This looks at the \code{MLearn}
-code in real time and describes branch points in a switch statement.
 
 An adaptation allows an \code{\link[Biobase]{ExpressionSet}} instance to be bound to
 the \code{data} parameter.  The ExpressionSet and phenoData will be converted
@@ -43,7 +40,6 @@ this purpose, and an extractor method exists.
  }
 }
 \examples{
-tellMLearnMethods()
 library(MASS)
 data(Pima.tr)
 pm = MLearn(type~., data=Pima.tr, "lda", 1:150 )

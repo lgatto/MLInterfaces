@@ -1,0 +1,36 @@
+import("methods")
+import("tools")
+import("Biobase")
+
+exportClasses( "MLOutput", "classifOutput", "clustOutput",
+	"MLScore", "probMat", "probArray", "membMat", "qualScore", "silhouetteVec",
+	"MLLabel", "predClass", "groupIndex",
+	"varImpStruct",
+	"raboostCont", "daboostCont",
+	"somout", "SOMBout",
+	"classifierOutput", "learnerSchema", "nonstandardLearnerSchema" )
+	
+exportMethods(
+  "ldaB", "qdaB", "isoMDSB", "knnB", "knn1B", "lvq1B", 
+  "lvq2B", "lvq3B", "olvq1B", "agnesB", "claraB", "dianaB", "fannyB", "pamB", 
+  "bclustB", "cmeansB", "cshellB", "lcaB", "naiveBayesB", "svmB", "baggingB", "ipredknnB", "sldaB", 
+  "nnetB", "pamrB", "randomForestB", "rpartB", "stat.diag.daB", 
+  "somB", "SOMB", "hclustB", "kmeansB", "silhouetteB", 
+  "cvB", "gbmB", "show", "RObject", "distMat", "predLabels", "predLabelsTr",
+  "allClass", "trainInds", "confuMat", "confuMatTrain", 
+  "MLearn", 
+  "getGrid", 
+  "planarPlot", 
+  "Predict", 
+  "getVarImp", 
+  "plot", 
+  "xval", 
+  "xvalLoop", 
+  "xvalML")
+
+export(tellMLearnMethods, 
+	randomForestI, knnI, dldaI, nnetI, rpartI, 
+	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
+	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, rab, lvq, RAB, DAB,
+	balKfold )
+

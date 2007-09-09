@@ -1,0 +1,186 @@
+
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+
+\bibliographystyle{plainnat} 
+ 
+\begin{document}
+%\setkeys{Gin}{width=0.55\textwidth}
+
+\title{Notes on non-syntactic names}
+\author{VJ Carey}
+\maketitle
+
+\section{Objective}
+
+We want to be able to handle non-syntactic names in formulae
+with minimal added infrastructure.  Let's see an example.
+<<getALL>>=
+if (!("ALL" %in% search())) library(ALL)
+if (!exists("ALL")) data(ALL)
+lit = t(exprs(ALL)[1:5,])
+lit[1:3,1:4]
+dlit = data.frame(lit, neg=factor(ALL$mol.biol=="NEG"))
+dlit[1:3,1:4]
+dlit2 = data.frame(lit, neg=factor(ALL$mol.biol=="NEG"), check.names=FALSE)
+dlit2[1:3,1:4]
+@
+
+\section{GLM and others that work without change}
+<<dog>>=
+library(randomForest)
+library(MASS)
+glm(neg~., data=dlit, fam=binomial)
+glm(neg~., data=dlit2, fam=binomial) 
+randomForest(neg~., data=dlit2, fam=binomial) 
+lda(neg~., data=dlit2, fam=binomial) 
+@
+
+\section{RPART}
+<<dor>>=
+library(rpart)
+rpart(neg~., data=dlit)
+lk = try(rpart(neg~., data=dlit2))
+lk
+@
+In rpart, we have
+
+\begin{verbatim}
+ lapply(m[attr(Terms, "term.labels")], tfun)
+\end{verbatim}
+and the backticks need to be removed for the selection in m.  In other words
+defining
+\begin{verbatim}
+ cleanTick = function(x) gsub("`", "", x)
+\end{verbatim}
+and using
+\begin{verbatim}
+ lapply(m[cleanTick(attr(Terms, "term.labels"))], tfun)
+\end{verbatim}
+moves us along a bit.  We also need a change to rpart.matrix, at
+\begin{verbatim}
+    else x <- as.matrix(frame[cleanTick(predictors)])
+\end{verbatim}
+
+\section{NNET}
+<<dnn>>=
+library(nnet)
+nnet(neg~., data=dlit, size=2)
+lk = try(nnet(neg~., size=2, data=dlit2))
+lk
+@
+if we modify
+\begin{verbatim}
+> .getXlevels
+function (Terms, m) 
+{
+    xvars <- sapply(attr(Terms, "variables"), deparse, width.cutoff = 500)[-1]
+    if ((yvar <- attr(Terms, "response")) > 0) 
+        xvars <- cleanTick(xvars[-yvar]) # change here
+    if (length(xvars) > 0) {
+        xlev <- lapply(m[xvars], levels)
+        xlev[!sapply(xlev, is.null)]
+    }
+    else NULL
+}
+\end{verbatim}
+the function works.
+
+\section{Standalone approach}
+
+<<sta>>=
+set.seed(123)
+x = matrix(rnorm(40),nr=8)
+colnames(x) = paste(1001:1005,"_at", sep="")
+X = data.frame(x, check.names=FALSE)
+glm(`1005_at`~., data=X)
+library(MASS)
+lda(I(`1005_at`>0)~., data=X)
+library(nnet)
+try(nnet(I(`1005_at`>0)~., data=X, size=2))
+library(rpart)
+try(rpart(I(`1005_at`>0)~., data=X))
+@
+
+\begin{verbatim}
+
+traceback for nnet:
+
+Error in `[.data.frame`(m, xvars) : undefined columns selected
+
+Enter a frame number, or 0 to exit   
+
+1: try(nnet(I(`1005_at` > 0) ~ ., data = X, size = 2))
+2: nnet(I(`1005_at` > 0) ~ ., data = X, size = 2)
+3: nnet.formula(I(`1005_at` > 0) ~ ., data = X, size = 2)
+4: .getXlevels(Terms, m)
+5: lapply(m[xvars], levels)
+6: is.vector(X)
+7: m[xvars]
+8: `[.data.frame`(m, xvars)
+
+traceback for rpart
+
+Error in `[.data.frame`(frame, predictors) : 
+        undefined columns selected
+
+Enter a frame number, or 0 to exit   
+
+1: try(rpart(I(`1005_at` > 0) ~ ., data = X))
+2: rpart(I(`1005_at` > 0) ~ ., data = X)
+3: rpart.matrix(m)
+4: as.matrix(frame[predictors])
+5: frame[predictors]
+6: `[.data.frame`(frame, predictors)
+
+\end{verbatim}
+
+\begin{verbatim}
+solution for nnet:
+
+> .getXlevels2
+function (Terms, m) 
+{
+    detick = function(x) gsub("`","",x)
+    xvars <- sapply(attr(Terms, "variables"), deparse, width.cutoff = 500)[-1]
+    if ((yvar <- attr(Terms, "response")) > 0) 
+        xvars <- detick(xvars[-yvar])
+    if (length(xvars) > 0) {
+        xlev <- lapply(m[xvars], levels)
+        xlev[!sapply(xlev, is.null)]
+    }
+    else NULL
+}
+\end{verbatim}
+
+
+
+\end{document}
