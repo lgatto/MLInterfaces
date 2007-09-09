@@ -19,6 +19,13 @@ setClass("classifierOutput", representation(
 setClass("nonstandardLearnerSchema", representation(frontConverter="function",
    hasNamespace="logical"), contains="learnerSchema")
 
+#setClassUnion("funcOrNull", c("function", "NULL"))
+setClass("xvalSpec", representation(type="character", partitionFunc="function"))
+
+# constructor defined here for now
+xvalSpec = function(type, partitionFunc=function(x)x)
+  new("xvalSpec", type=type, partitionFunc=partitionFunc)
+
 # -- below find the legacy classes as of sep 9 2007
 
 # virual classes are defined with specializations to

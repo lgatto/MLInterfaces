@@ -57,6 +57,9 @@ several nodes in a computer cluster. See documentation for
  \item{K}{number of partitions to be used if \code{balKfold} is used as \code{indFun}}
 }
 \section{Details}{
+NB: This is now regarded as a legacy approach.  See \code{\link{MLearn}} for
+an approach in which the cross-validation specification is a parameter to MLearn.
+
 If \code{xvalMethod} is \code{"FUN"}, then \code{indFun} must be a function
 with parameters \code{data}, \code{clab}, and \code{iternum}.
 This function returns

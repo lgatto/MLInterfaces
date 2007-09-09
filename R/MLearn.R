@@ -53,3 +53,32 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric", "m
         MLearn( formula, data, method, trainInd, ... )
  })
 
+# try an approach to cross-validated interface
+
+setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
+   "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
+   xvspec = trainInd # rationalize parameter name
+   if (!(xvspec@type %in% c("LOO", "LOG"))) stop("only supporting LOO or LOG type xvalidation at this time")
+   if (xvspec@type == "LOG" && is(xvspec@partitionFunc, "NULL")) stop("for xval type LOG, must supply partition function")
+   thecall = match.call()
+# first very primitive implementation; need to introduce MMorgan's cluster-capable formulation
+# and henderson's feature selection support
+   if (xvspec@type == "LOO") {
+	N = nrow(data)
+	inds = 1:N
+        testpred = rep(NA, N)
+        for (i in 1:N) {
+          tmp = MLearn(formula, data, method, inds[-i], ...)
+          testpred[i] = as.character(tmp@testPredictions)
+        }
+   tef = model.frame(formula, data)
+   teo = model.response( tef )
+   }
+   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall)
+})
+
+setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema",
+   "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
+        data = es2df(data, keep=as.character(as.list(formula)[[2]]))
+	MLearn(formula, data, method, trainInd, ...)
+})

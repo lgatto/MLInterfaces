@@ -23,6 +23,11 @@
 \alias{MLearn,formula,ExpressionSet,character,numeric,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,numeric,missing-method}
 \alias{MLearn,formula,data.frame,learnerSchema,numeric,missing-method}
+\alias{xvalSpec}
+\alias{xvalSpec-class}
+\alias{MLearn,formula,data.frame,learnerSchema,xvalSpec,missing-method}
+\alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
+
 
 \title{revised MLearn interface for machine learning}
 \description{revised MLearn interface for machine learning, emphasizing
@@ -36,7 +41,7 @@ MLearn( formula, data, method, trainInd, mlSpecials, ... )
   \item{data}{ data.frame or ExpressionSet instance}
   \item{method}{ instance of learnerSchema }
   \item{trainInd}{ obligatory numeric vector of indices of data to be used for training;
-all other data are used for testing }
+all other data are used for testing, or instance of the xvalSpec class }
   \item{mlSpecials}{ see help(MLearn-OLD) for this parameter; learnerSchema design
 obviates need for this parameter, which is retained only for back-compatibility.}
   \item{\dots}{ additional named arguments passed to external learning function }
@@ -137,5 +142,11 @@ data(sample.ExpressionSet)
 X = MLearn(type~., sample.ExpressionSet[100:250,], randomForestI, 1:16, importance=TRUE )
 library(randomForest)
 varImpPlot(RObject(X))
+#
+# demonstrate rudimentary cross validation
+#
+nn1cv = MLearn(sp~CW+RW, data=crabs, nnetI, xvalSpec("LOO"), size=3, decay=.01 )
+confuMat(nn1cv)
 }
+
 \keyword{ models }

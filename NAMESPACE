@@ -8,7 +8,8 @@ exportClasses( "MLOutput", "classifOutput", "clustOutput",
 	"varImpStruct",
 	"raboostCont", "daboostCont",
 	"somout", "SOMBout",
-	"classifierOutput", "learnerSchema", "nonstandardLearnerSchema" )
+	"classifierOutput", "learnerSchema", "nonstandardLearnerSchema",
+	"xvalSpec")#, "funcOrNULL" )
 	
 exportMethods(
   "ldaB", "qdaB", "isoMDSB", "knnB", "knn1B", "lvq1B", 
@@ -32,5 +33,5 @@ export(tellMLearnMethods,
 	randomForestI, knnI, dldaI, nnetI, rpartI, 
 	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
 	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, rab, lvq, RAB, DAB,
-	balKfold )
+	balKfold, xvalSpec )
 
