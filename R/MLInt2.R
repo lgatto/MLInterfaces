@@ -1,3 +1,5 @@
+# this is the original 2006 version of MLearn ... to be superseded by
+# the schema-based version defined in MLearn.R, probably by bioc 2.2
 
 setGeneric("MLearn", function(formula, data, method, trainInd, mlSpecials, ...)standardGeneric("MLearn"))
 
