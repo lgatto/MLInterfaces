@@ -5,6 +5,13 @@ Version 2.0 of MLInterfaces is imminent; I hope it will be available by
 Sept 24.  Version 1.11.10+ includes a number of new approaches to
 simplify maintenance and extensibility
 
+Basic approach:
+A learner defined in a package with a namespace, that uses a formula interface,
+and has a predict method, is the most reasonable case and the one that the
+interface design is based on.  A schema object is defined to provide access
+to such learners and to define how their outputs are converted to standard
+structures.
+
 1) It is intended that all use will be through MLearn(formula, data, ...)
   a) The simplest usage is MLearn(formula, data, learnerSchema, trainInds).
 Instances of learnerSchema identify the package and function constituting
@@ -33,7 +40,9 @@ they will be deprecated, possibly by Sept 24.  The old version of MLearn,
 which uses a string to identify the learner and a switch statement to
 act, is retained for now but I do not intend to improve it in any way.
 There was a problem with parameter capture in this design that motivated
-the move to a schematic approach to learner specification.
+the move to a schematic approach to learner specification.  It can stay 
+indefinitely; we will just discourage use of strings as opposed to
+schema objects to specify learners.
 
 3) Benefits.  The primary MLearn method definition is 18 lines long.
 Converter functions are typically around 8 lines long, and vary primarily
@@ -49,5 +58,7 @@ xvalSpec.
 
 Some learners have such idiosyncratic implementations (no formula interface, 
 no predict method) that bridge methods need to be defined, and the schemas are
-specified using closures: knnI(k=3,l=1) for example.
+specified using closures to fix the tuning parameters: knnI(k=3,l=1) for example.
+I would like to handle all tuning parameters uniformly, but this minority
+of learners cannot be allowed to force major complexities on this package.
 
