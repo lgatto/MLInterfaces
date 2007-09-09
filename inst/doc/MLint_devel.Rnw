@@ -1,0 +1,128 @@
+% NOTE -- ONLY EDIT .Rnw!!!
+% .tex file will get overwritten.
+%
+%\VignetteIndexEntry{MLInterfaces devel for schema-based MLearn}
+%\VignetteDepends{MASS}
+%\VignetteKeywords{Genomics}
+%\VignettePackage{MLInterfaces}
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+
+
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+
+\bibliographystyle{plainnat} 
+ 
+\begin{document}
+%\setkeys{Gin}{width=0.55\textwidth}
+
+\title{MLInterfaces 2.0 -- a new design}
+\author{VJ Carey}
+\maketitle
+
+\section{Introduction}
+
+MLearn, the workhorse method of MLInterfaces, has been streamlined
+to support simpler development.
+
+In 1.*, MLearn included a substantial switch statement, and the
+external learning function was identified by a string.  Many
+massage tasks were wrapped up in switch case elements devoted to
+each method.  MLearn returned instances of MLOutput, but these
+had complicated subclasses.
+
+MLearn now takes a signature \texttt{c("formula", "data.frame", "learnerSchema",
+"numeric")}, with the expectation that extra parameters captured in ... go to the fitting
+function.  The complexity of dealing with different expectations and return
+values of different machine learning functions is handled primarily by
+the learnerSchema instances.  The basic realizations are that
+\begin{itemize}
+\item most learning functions use the formula/data idiom, and needed additional
+parameters can go in ...
+\item the problem of converting from the function's output structures (typically
+lists, but sometimes also objects with attributes) to the uniform
+structure delived by MLearn should be handled as generically
+as possible, but specialization will typically be needed
+\item the conversion process can be handled in most cases using only the
+native R object returned by the learning function, the data, and the training index set.
+\item some functions, like knn, are so idiosyncratic (lacking formula interface or
+predict method) that special software is needed to adapt MLearn to work with them
+\end{itemize}
+
+Thus we have defined a learnerSchema class,
+<<lks>>=
+library(MLInterfaces)
+getClass("learnerSchema")
+@
+along with a constructor used to define a family of schema objects that help
+MLearn carry out specific tasks of learning.
+
+\section{Some examples}
+
+We define interface schema instances with suffix "I".
+
+randomForest has a simple converter:
+<<lkrf>>=
+randomForestI@converter
+@
+
+The job of the converter is to populate as much as the classifierOutput
+instance as possible.  For something like nnet, we can do more:
+<<lknn>>=
+nnetI@converter
+@
+We can get posterior class probabilities.
+
+To obtain the predictions necessary for confusionMatrix computation, we
+may need the converter to know about parameters used in the fit.
+Here, closures are used.
+
+<<lkknn>>=
+knnI(k=3, l=2)@converter
+@
+
+So we can have the following calls:
+<<show>>=
+library(MASS)
+data(crabs)
+kp = sample(1:200, size=120)
+rf1 = MLearn(sp~CL+RW, data=crabs, randomForestI, kp, ntree=100)
+rf1
+RObject(rf1)
+knn1 = MLearn(sp~CL+RW, data=crabs, knnI(k=3,l=2), kp)
+knn1
+@
+
+
+\end{document}
+
