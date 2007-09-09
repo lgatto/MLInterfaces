@@ -6,6 +6,7 @@
 \alias{show,varImpStruct-method}
 \alias{getVarImp}
 \alias{getVarImp,classifOutput-method}
+\alias{getVarImp,classifierOutput-method}
 \title{Class "varImpStruct" -- collect data on variable importance
  from various machine learning methods}
 \description{  collects data on variable importance }
@@ -57,9 +58,17 @@ library(golubEsets)
 data(Golub_Merge)
 library(hu6800)
 smallG <- Golub_Merge[1:60,]
+set.seed(1234)
+opar=par(no.readonly=TRUE)
+par(las=2, mar=c(10,11,5,5))
 rf <- randomForestB( smallG, "ALL.AML", 1:40, importance=TRUE )
 plot( getVarImp( rf ), n=10, resolveenv=hu6800SYMBOL )
 gb <- gbmB( smallG, "ALL.AML", 1:40 , n.minobsinnode=3 , n.trees=6000)
 plot( getVarImp( gb ), n=10, resolveenv=hu6800SYMBOL )
+set.seed(1234)
+rf2 <- MLearn(ALL.AML~., smallG, randomForestI, 1:40, importance=TRUE,
+ sampsize=table(smallG$ALL.AML[1:40]), mtry=sqrt(ncol(exprs(smallG))))
+plot( getVarImp( rf2 ), n=10, resolveenv=hu6800SYMBOL ) # translation?
+par(opar)
 }
 \keyword{classes}

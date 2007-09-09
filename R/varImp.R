@@ -20,6 +20,16 @@ setMethod("getVarImp", "classifOutput", function(object) {
 	else stop("getVarImp defined only for randomForestB or gbmB output")
 })
 
+setMethod("getVarImp", "classifierOutput", function(object) {
+# watch out, people are using compound S3 classes c("randomForest.formula", "randomForest")
+	if (any(class(object@RObject) == "randomForest")) {
+		imp <- object@RObject$importance
+		return(new("varImpStruct", data.matrix(imp[,-1]), 
+			method="randomForest", varnames= row.names(imp)))
+		}
+	else stop("getVarImp defined only for randomForestI-based classifierOutput")
+})
+
 setMethod("show", "varImpStruct", function(object) {
  cat("varImpStruct for method", object@method, "\n")
  cat("first five varnames:\n")
@@ -28,16 +38,30 @@ setMethod("show", "varImpStruct", function(object) {
  print(dim(object@.Data))
 })
 
+mapPSvec = function(vn, resolveenv) {
+#
+# this uses an annotation environment to remap probe set ids
+# needed for dealing with formula name mangling
+#
+                vn = make.names(vn)
+                maplist = as.list(resolveenv) # sorry
+                nn = names(maplist)
+                nn = make.names(nn)
+                names(maplist) = nn
+                newmap = na.omit(unlist(maplist))
+                ansind = na.omit(match(vn, names(newmap)))
+                vn[ vn %in% names(newmap) ] = newmap[ansind]
+                vn
+}
+
+
 setMethod("plot", "varImpStruct", function(x, y, ..., n=20, resolveenv=NULL) {
         vn <- x@varnames
-	vn = gsub("^X", "", vn) # undo formula mangling -- very hokey
-	vn = gsub("AFFX\\.", "AFFX-", vn) # undo formula mangling -- very hokey
+
 # but the key thing is to get ifnotfound right below, once you have done these steps
         if (!is.null(resolveenv))
 		{
-		nn <- unlist(mget(vn, resolveenv, ifnotfound=list(function(x)x)))
-		nn[is.na(nn)] <- vn[is.na(nn)]
-		vn <- nn
+		vn = mapPSvec(vn, resolveenv)
 		}
 	if (x@method=="gbm") 
 		{

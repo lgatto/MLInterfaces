@@ -33,5 +33,5 @@ export(tellMLearnMethods,
 	randomForestI, knnI, dldaI, nnetI, rpartI, 
 	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
 	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, rab, lvq, RAB, DAB,
-	balKfold, xvalSpec )
+	balKfold, xvalSpec, getVarImp )
 

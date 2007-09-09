@@ -61,7 +61,10 @@ parameters must be set to use these models.
 To obtain documentation on the older (pre bioc 2.1) version of the MLearn
 method, please use help(MLearn-OLD).
 \describe{
-\item{randomForestI}{\link[randomForest]{randomForest}}
+\item{randomForestI}{\link[randomForest]{randomForest}.  Note, that to obtain the
+default performance of randomForestB, you need to set mtry and sampsize parameters
+to sqrt(number of features) and table([training set response factor]) respectively,
+as these were not taken to be the function's defaults.}
 \item{knnI(k=1,l=0)}{\link[class]{knn}; special support bridge required, defined in MLint}
 \item{dldaI}{\link[sma]{stat.diag.da}; special support bridge required, defined in MLint}
 \item{nnetI}{\link[nnet]{nnet}}
