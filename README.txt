@@ -27,9 +27,10 @@ Instances of xvalSpec define the partitioning of the data.  Of note is that
 the former implementations of xval/xvalML did not generate MLOutput instances,
 but the new implementation will generate objects identical in nature to those
 produced in the train/test scheme described in 1a)
-  At present xvalSpec is only defined for LOO, nontrivial work will be 
-needed to get Martin Morgan's cluster-capable implementation in place along
-with the feature selection interface from S. Henderson.
+  At present MLearn+xvalSpec yields has all functionality of previous versions (including
+support for functionally specified partition) except i) Martin Morgan had
+some infrastructure simplifying cluster computing for xval, and ii) Stephen
+Henderson had contributed a feature selection facility.  I am working on ii).
   c) So far, only supervised learning is handled in the new approach.  My
 plan is to continue with cross-validation first, and then address the
 unsupervised methods.
