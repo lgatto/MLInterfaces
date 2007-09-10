@@ -25,6 +25,7 @@
 \alias{MLearn,formula,data.frame,learnerSchema,numeric,missing-method}
 \alias{xvalSpec}
 \alias{xvalSpec-class}
+\alias{balKfold.xvspec}
 \alias{MLearn,formula,data.frame,learnerSchema,xvalSpec,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
 
@@ -146,10 +147,13 @@ X = MLearn(type~., sample.ExpressionSet[100:250,], randomForestI, 1:16, importan
 library(randomForest)
 varImpPlot(RObject(X))
 #
-# demonstrate rudimentary cross validation
+# demonstrate cross validation
 #
-nn1cv = MLearn(sp~CW+RW, data=crabs, nnetI, xvalSpec("LOO"), size=3, decay=.01 )
+nn1cv = MLearn(sp~CW+RW, data=crabs[c(1:20,101:120),], nnetI, xvalSpec("LOO"), size=3, decay=.01 )
 confuMat(nn1cv)
+nn2cv = MLearn(sp~CW+RW, data=crabs[c(1:20,101:120),], nnetI, 
+   xvalSpec("LOG",5, balKfold.xvspec(5)), size=3, decay=.01 )
+confuMat(nn2cv)
 }
 
 \keyword{ models }
