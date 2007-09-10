@@ -27,7 +27,7 @@ exportMethods(
   "plot", 
   "xval", 
   "xvalLoop", 
-  "xvalML", "MLearn.wx")
+  "xvalML")
 
 export(tellMLearnMethods, 
 	randomForestI, knnI, dldaI, nnetI, rpartI, 
