@@ -86,7 +86,10 @@ function(data, classLab, proc, xvalMethod="LOO", group=0:0, indFun, niter, fsFun
 })
 
 
-balKfold.eset <- function(K) function( data, clab, iternum ) {
+balKfold <- function(K) function( data, clab, iternum ) {
+#
+# old approach that assumes data are ExpressionSet...
+#
  clabs <- pData(data)[[clab]]
  narr <- nrow(pData(data))
  cnames <- unique(clabs)
@@ -101,7 +104,8 @@ balKfold.eset <- function(K) function( data, clab, iternum ) {
  (1:narr)[ - which( unlist(grpinds)==iternum ) ]
 }
 
-balKfold <- function(K) function( data, clab, iternum ) {
+balKfold.xvspec <- function(K) function( data, clab, iternum ) {
+# redefined for data.frame application in xvalSpec usage
 # defines the training set indices
  clabs <- data[[clab]]
  narr <- nrow(data)
