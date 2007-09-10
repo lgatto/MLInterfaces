@@ -36,6 +36,7 @@ a schematic description of external learning functions like knn, lda, nnet, etc.
 }
 \usage{
 MLearn( formula, data, method, trainInd, mlSpecials, ... )
+xvalSpec( type, niter, partitionFunc )
 }
 \arguments{
   \item{formula}{ standard model formula }
@@ -46,6 +47,17 @@ all other data are used for testing, or instance of the xvalSpec class }
   \item{mlSpecials}{ see help(MLearn-OLD) for this parameter; learnerSchema design
 obviates need for this parameter, which is retained only for back-compatibility.}
   \item{\dots}{ additional named arguments passed to external learning function }
+  \item{type}{"LOO" to specify leave-one-out cross-validation; any
+other token implies use of a \code{partitionFunc}}
+  \item{niter}{numeric, specifying number of cross-validation iterations,
+i.e., the number of partitions to be formed}
+  \item{partitionFunc}{function, with parameters data (bound
+to data.frame), clab (bound to character string), iternum (bound
+to numeric index into sequence of 1:\code{niter}).  This function's job
+is to provide the indices of training cases for each cross-validation
+step.  An example is \code{\link{balKfold.xvspec}}, which computes
+a series of indices that are approximately balanced with respect
+to frequency of outcome types.}
 }
 \details{
 This implementation attempts to reduce complexity of the basic
