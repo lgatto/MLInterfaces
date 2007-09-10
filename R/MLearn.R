@@ -55,27 +55,69 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric", "m
 
 # try an approach to cross-validated interface
 
+#setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
+#   "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
+#   xvspec = trainInd # rationalize parameter name
+#   if (!(xvspec@type %in% c("LOO", "LOG"))) stop("only supporting LOO or LOG type xvalidation at this time")
+#   if (xvspec@type == "LOG" && is(xvspec@partitionFunc, "NULL")) stop("for xval type LOG, must supply partition function")
+#   thecall = match.call()
+## first very primitive implementation; need to introduce MMorgan's cluster-capable formulation
+## and henderson's feature selection support
+#   if (xvspec@type == "LOO") {
+#	N = nrow(data)
+#	inds = 1:N
+#        testpred = rep(NA, N)
+#        for (i in 1:N) {
+#          tmp = MLearn(formula, data, method, inds[-i], ...)
+#          testpred[i] = as.character(tmp@testPredictions)
+#        }
+#   tef = model.frame(formula, data)
+#   teo = model.response( tef )
+#   }
+#   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall)
+#})
+
+
 setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
    xvspec = trainInd # rationalize parameter name
+   xvalMethod = xvspec@type
    if (!(xvspec@type %in% c("LOO", "LOG"))) stop("only supporting LOO or LOG type xvalidation at this time")
    if (xvspec@type == "LOG" && is(xvspec@partitionFunc, "NULL")) stop("for xval type LOG, must supply partition function")
    thecall = match.call()
-# first very primitive implementation; need to introduce MMorgan's cluster-capable formulation
-# and henderson's feature selection support
-   if (xvspec@type == "LOO") {
-	N = nrow(data)
-	inds = 1:N
-        testpred = rep(NA, N)
-        for (i in 1:N) {
-          tmp = MLearn(formula, data, method, inds[-i], ...)
-          testpred[i] = as.character(tmp@testPredictions)
-        }
    tef = model.frame(formula, data)
    teo = model.response( tef )
-   }
+
+   N <- nrow(data)
+   inds <- 1:N
+
+   if (xvalMethod == "LOO")
+     {
+     n <- length(inds)
+     selnProc <- function(i) -i   # how to get the training set from inds
+     }
+   else                          # FUN
+     {
+     classLab = names(tef)[ attr( terms(formula), "response" ) ]
+     n <- xvspec@niter
+     selnProc <- function(i) xvspec@partitionFunc( data, classLab, i )  # func defines training set directly
+     }
+   xvalidator <- function(i, ...) {
+     idx <- selnProc(i) # need to change sign when reordering...
+     list( test.idx=(setdiff(inds,idx)), mlans=MLearn( formula, data, method=method, trainInd=inds[idx], ...) ) # package result -- test.idx kept for rearrangement
+     }
+
+#   xvalLoop = xvalLoop(NULL) # eventually will allow clusters
+
+   out <- lapply( 1:n, xvalidator, ... )
+   classif <- unlist( sapply( out, function(x) x[["mlans"]]@testPredictions ) )
+# now want the test sets for the various iterations
+   ords <- unlist( lapply( out, function(x) x[["test.idx"]] ) )
+   reord = match(inds, ords)
+   testpred = factor(classif)[reord]
    new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall)
 })
+
 
 setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema",
    "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {

@@ -86,7 +86,7 @@ function(data, classLab, proc, xvalMethod="LOO", group=0:0, indFun, niter, fsFun
 })
 
 
-balKfold <- function(K) function( data, clab, iternum ) {
+balKfold.eset <- function(K) function( data, clab, iternum ) {
  clabs <- pData(data)[[clab]]
  narr <- nrow(pData(data))
  cnames <- unique(clabs)
@@ -100,6 +100,23 @@ balKfold <- function(K) function( data, clab, iternum ) {
    grpinds[[i]] <- rep(1:K, nrep[[i]])[1:clens[[i]]]
  (1:narr)[ - which( unlist(grpinds)==iternum ) ]
 }
+
+balKfold <- function(K) function( data, clab, iternum ) {
+# defines the training set indices
+ clabs <- data[[clab]]
+ narr <- nrow(data)
+ cnames <- unique(clabs)
+ ilist <- list()
+ for (i in 1:length(cnames))
+   ilist[[cnames[i]]] <- which( clabs == cnames[i] )
+ clens <- lapply(ilist,length)
+ nrep <- lapply(clens, function(x) ceiling(x/K))
+ grpinds <- list()
+ for (i in 1:length(nrep))
+   grpinds[[i]] <- rep(1:K, nrep[[i]])[1:clens[[i]]]
+ (1:narr)[ - which( unlist(grpinds)==iternum ) ]
+}
+
 
 ## xvalLoop is a 'hook' to customize how xval execute. The default is
 ## a simple lapply
