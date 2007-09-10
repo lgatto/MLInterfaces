@@ -25,7 +25,6 @@
 \alias{MLearn,formula,data.frame,learnerSchema,numeric,missing-method}
 \alias{xvalSpec}
 \alias{xvalSpec-class}
-\alias{balKfold.xvspec}
 \alias{MLearn,formula,data.frame,learnerSchema,xvalSpec,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
 

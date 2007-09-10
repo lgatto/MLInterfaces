@@ -77,6 +77,12 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric", "m
 #   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall)
 #})
 
+# this method for MLearn is devoted essentially to cross-validation.  it structures
+# a series of calls to MLearn[numeric trainInd] and collects the output, suitably
+# ordered, into a classifierOutput structure, in contrast to the older xvalML
+
+# it is an open question whether we should try to keep all the RObjects generated through
+# the sequence of cross-validations.  i think we can as long as we are not in LOO
 
 setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
