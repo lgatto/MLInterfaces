@@ -123,6 +123,117 @@ knn1 = MLearn(sp~CL+RW, data=crabs, knnI(k=3,l=2), kp)
 knn1
 @
 
+\section{Making new interfaces}
+\subsection{A simple example: ada}
+
+The \Rfunction{ada} method of the \Rpackage{ada} package has a formula
+interface and a predict method.  We can create a learnerSchema on the fly,
+and then use it:
+
+<<mkadaI>>=
+adaI = makeLearnerSchema("ada", "ada", standardMLIConverter )
+arun = MLearn(sp~CL+RW, data=crabs, adaI, kp )
+confuMat(arun)
+RObject(arun)
+@
+
+What is the standardMLIConverter?
+<<lks>>=
+standardMLIConverter
+@
+
+\subsection{A harder example: rda}
+
+The \Rpackage{rda} package includes the rda function for regularized
+discriminant analysis, and rda.cv for aiding in tuning parameter selection.
+No formula interface is supported, and the predict method delivers
+arrays organized according to the tuning parameter space search.
+Bridge work needs to be done to support the use of MLearn with this
+methodology.
+
+
+First we create a wrapper that uses formula-data for the rda.cv function:
+<<dowrap>>=
+rdaCV = function( formula, data, ... ) {
+ passed = list(...)
+ if ("genelist" %in% names(passed)) stop("please don't supply genelist parameter.")
+ # data input to rda needs to be GxN
+ x = model.matrix(formula, data)
+ if ("(Intercept)" %in% colnames(x))
+   x = x[, -which(colnames(x) %in% "(Intercept)")]
+ x = t(x)
+ mf = model.frame(formula, data)
+ resp = as.numeric(factor(model.response(mf)))
+ run1 = rda( x, resp, ... )
+ rda.cv( run1, x, resp )
+}
+@
+
+We also create a wrapper for a non-cross-validated call, where
+alpha and delta parameters are specified:
+<<dow2>>=
+rdaFixed = function( formula, data, alpha, delta, ... ) {
+ passed = list(...)
+ if ("genelist" %in% names(passed)) stop("please don't supply genelist parameter.")
+ # data input to rda needs to be GxN
+ x = model.matrix(formula, data)
+ if ("(Intercept)" %in% colnames(x))
+   x = x[, -which(colnames(x) %in% "(Intercept)")]
+ x = t(x)
+ featureNames = rownames(x)
+ mf = model.frame(formula, data)
+ resp = as.numeric(resp.fac <- factor(model.response(mf)))
+ finalFit=rda( x, resp, genelist=TRUE, alpha=alpha, delta=delta, ... )
+ list(finalFit=finalFit, x=x, resp.num=resp, resp.fac=resp.fac, featureNames=featureNames,
+    keptFeatures=featureNames[ which(apply(finalFit$gene.list,3,function(x)x)==1) ])
+}
+@
+
+Now our real interface is defined.  It runs the rdaCV  wrapper
+to choose tuning parameters, then passes these to rdaFixed, and
+defines an S3 object (for uniformity, to be
+like most learning packages that we work with.)
+We also define a predict method for that object.
+This has to deal with the fact that rda does not
+use factors.
+
+<<doreal>>=
+rdacvML = function(formula, data, ...) {
+ run1 = rdaCV( formula, data, ... )
+ perf.1se = cverrs(run1)$one.se.pos
+ del2keep = which.max(perf.1se[,2])
+ parms2keep = perf.1se[del2keep,]
+ alp = run1$alpha[parms2keep[1]]
+ del = run1$delta[parms2keep[2]]
+ fit = rdaFixed( formula, data, alpha=alp, delta=del, ... )
+ class(fit) = "rdacvML"
+ attr(fit, "xvalAns") = run1
+ fit
+}
+
+predict.rdacvML = function(object, newdata, ...) {
+ newd = data.matrix(newdata)
+ fnames = rownames(object$x)
+ newd = newd[, fnames]
+ inds = predict(object$finalFit, object$x, object$resp.num, xnew=t(newd))
+ factor(levels(object$resp.fac)[inds])
+}
+
+print.rdacvML = function(x, ...) {
+ cat("rdacvML S3 instance. components:\n")
+ print(names(x))
+ cat("---\n")
+ cat("elements of finalFit:\n")
+ print(names(x$finalFit))
+ cat("---\n") 
+ cat("the rda.cv result is in the xvalAns attribute of the main object.\n")
+}
+@
+
+Finally, the converter can take the standard form; look at
+rdacvI.
+
+
 \section{Additional features}
 
 The xvalSpec class allows us to specify types of cross-validation, and to

@@ -34,7 +34,7 @@ export(tellMLearnMethods,
 	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
 	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, rab, lvq, RAB, DAB,
 	balKfold, xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
-        plotXvalRDA )
+        plotXvalRDA, makeLearnerSchema, standardMLIConverter )
 
 S3method("print", "rdacvML")
 
