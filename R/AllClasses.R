@@ -12,7 +12,7 @@ setClass("classifierOutput", representation(
 	testScores="ANY",
 	trainOutcomes="factor",
 	trainPredictions="factor",
-	trainScores="ANY",
+	trainScores="ANY", fsHistory="list",
 	RObject="ANY",
 	call="call"))
 

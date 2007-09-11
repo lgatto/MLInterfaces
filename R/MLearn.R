@@ -133,7 +133,9 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
      idx <- selnProc(i) # need to change sign when reordering...
      if (do.fs) fmla2use=fsFun(formula, data[inds[idx],])  # we are clobbering input formula
       else fmla2use=formula
-     list( test.idx=(setdiff(inds,idx)), mlans=MLearn( fmla2use, data, method=method, trainInd=inds[idx], ...) ) # package result -- test.idx kept for rearrangement
+     rhs_fmla = function (f) colnames(attr(terms(f), "factors"))
+     list( test.idx=(setdiff(inds,idx)), mlans=MLearn( fmla2use, data, method=method, trainInd=inds[idx], ...),
+             featInUse= rhs_fmla(fmla2use) ) # package result -- test.idx kept for rearrangement
      }
 
 #   xvalLoop = xvalLoop(NULL) # eventually will allow clusters
@@ -142,9 +144,11 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    classif <- unlist( sapply( out, function(x) testPredictions(x[["mlans"]]) ) )
 # now want the test sets for the various iterations
    ords <- unlist( lapply( out, function(x) x[["test.idx"]] ) )
+   featsUsed = list()
+   if (do.fs) featsUsed = lapply(  out, function(x) x[["featInUse"]] )
    reord = match(inds, ords)
    testpred = factor(classif)[reord]
-   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall)
+   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall, fsHistory=featsUsed)
 })
 
 
