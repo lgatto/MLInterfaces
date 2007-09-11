@@ -43,3 +43,6 @@ naiveBayesI = makeLearnerSchema("e1071", "naiveBayes",
 
 baggingI = makeLearnerSchema("ipred", "bagging",
     standardMLIConverter)
+
+rdacvI = makeLearnerSchema("MLInterfaces", "rdacvML",
+    standardMLIConverter)

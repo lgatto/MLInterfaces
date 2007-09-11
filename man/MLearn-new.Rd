@@ -207,6 +207,31 @@ data(Golub_Train)
 litg = Golub_Train[ 100:150, ]
 g1 = MLearn(ALL.AML~. , litg, nnetI, xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fsFun.rowtQ3), size=3, decay=.01 )
 confuMat(g1)
+#
+# illustrate rda.cv interface from package rda (requiring local bridge)
+#
+library(ALL)
+data(ALL)
+#
+# restrict to BCR/ABL or NEG
+#
+bio <- which( ALL$mol.biol \%in\% c("BCR/ABL", "NEG"))
+#
+# restrict to B-cell
+#
+isb <- grep("^B", as.character(ALL$BT))
+kp <- intersect(bio,isb)
+all2 <- ALL[,kp]
+mads = apply(exprs(all2),1,mad)
+kp = which(mads>1)  # get around 250 genes
+vall2 = all2[kp, ]
+vall2$mol.biol = factor(vall2$mol.biol) # drop unused levels
+
+r1 = MLearn(mol.biol~., vall2, rdacvI, 1:40)
+confuMat(r1)
+RObject(r1)
+plotXvalRDA(r1)  # special interface to plots of parameter space
+
 }
 
 \keyword{ models }

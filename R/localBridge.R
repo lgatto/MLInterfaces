@@ -107,7 +107,7 @@ predict.dlda2 = function(object, newdata, ...) {
  stat.diag.da( object$traindat, as.numeric(object$traincl), newdata, ... )$pred
 }
 
-# -- rdaML -- bridges to rda::rda.cv which requires a run of rda
+# -- rdacvML -- bridges to rda::rda.cv which requires a run of rda
 
 rdaCV = function( formula, data, ... ) {
  passed = list(...)
@@ -139,7 +139,7 @@ rdaFixed = function( formula, data, alpha, delta, ... ) {
     keptFeatures=featureNames[ which(apply(finalFit$gene.list,3,function(x)x)==1) ])
 }
 
-rdaML = function(formula, data, ...) {
+rdacvML = function(formula, data, ...) {
  run1 = rdaCV( formula, data, ... )
  perf.1se = cverrs(run1)$one.se.pos
  del2keep = which.max(perf.1se[,2])
@@ -147,25 +147,39 @@ rdaML = function(formula, data, ...) {
  alp = run1$alpha[parms2keep[1]]
  del = run1$delta[parms2keep[2]]
  fit = rdaFixed( formula, data, alpha=alp, delta=del, ... )
- class(fit) = "rdaML"
+ class(fit) = "rdacvML"
+ attr(fit, "xvalAns") = run1
  fit
 }
 
-print.rdaML = function(object) {
- cat("rdaML S3 instance. components:\n")
+print.rdacvML = function(object) {
+ cat("rdacvML S3 instance. components:\n")
  print(names(object))
  cat("---\n")
  cat("elements of finalFit:\n")
  print(names(object$finalFit))
+ cat("---\n") 
+ cat("the rda.cv result is in the xvalAns attribute of the main object.\n")
 }
 
-predict.rdaML = function(object, newdata, ...) {
+rda.xvalAns = function(cfo) {
+ if (!is(cfo, "classifierOutput")) stop("works for classifierOutput instance from MLearn/rdacvI")
+ attr( RObject(cfo), "xvalAns" )
+}
+
+plotXvalRDA = function(cfo, ...) {
+ if (!is(cfo, "classifierOutput")) stop("works for classifierOutput instance from MLearn/rdacvI")
+ plot( rda.xvalAns(cfo), ... )
+}
+
+predict.rdacvML = function(object, newdata, ...) {
  newd = data.matrix(newdata)
  fnames = rownames(object$x)
  newd = newd[, fnames]
  inds = predict(object$finalFit, object$x, object$resp.num, xnew=t(newd))
  factor(levels(object$resp.fac)[inds])
 }
+
 
 cverrs = function (x, type = c("both", "error", "gene"), nice = FALSE, 
     ...) 
