@@ -152,12 +152,12 @@ rdacvML = function(formula, data, ...) {
  fit
 }
 
-print.rdacvML = function(object) {
+print.rdacvML = function(x, ...) {
  cat("rdacvML S3 instance. components:\n")
- print(names(object))
+ print(names(x))
  cat("---\n")
  cat("elements of finalFit:\n")
- print(names(object$finalFit))
+ print(names(x$finalFit))
  cat("---\n") 
  cat("the rda.cv result is in the xvalAns attribute of the main object.\n")
 }

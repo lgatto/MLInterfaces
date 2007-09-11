@@ -27,6 +27,10 @@
 \alias{xvalSpec-class}
 \alias{MLearn,formula,data.frame,learnerSchema,xvalSpec,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
+\alias{plotXvalRDA}
+\alias{rdacvI}
+\alias{rdacvML}
+
 
 \title{revised MLearn interface for machine learning}
 \description{revised MLearn interface for machine learning, emphasizing
@@ -98,6 +102,17 @@ olvq1.  You will need to write your own detailed schema if you want to tweak tun
 parameters.}
 \item{naiveBayesI}{\link[e1071]{naiveBayes}}
 \item{baggingI}{\link[ipred]{bagging}}
+\item{rdacvI}{\link[rda]{rda.cv}.  This interface is complicated.  The typical
+use includes cross-validation internal to the rda.cv function.  That process
+searches a tuning parameter space and delivers an ordering on parameters.
+The interface selects the parameters by looking at all parameter
+configurations achieving the smallest min+1SE cv.error estimate, and taking
+the one among them that employed the -most- features (agnosticism).
+A final run of rda is then conducted with the tuning parameters set at
+that 'optimal' choice.  The bridge code can be modified to facilitate
+alternative choices of the parameters in use.  \code{plotXvalRDA}
+is an interface to the plot method for objects of class rdacv defined in
+package rda.}
 } % end list of schemas
 } % end details
 \value{
