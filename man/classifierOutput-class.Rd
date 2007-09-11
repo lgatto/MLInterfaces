@@ -6,8 +6,10 @@
 \alias{show,classifierOutput-method}
 \alias{testScores,classifierOutput-method}
 \alias{testPredictions,classifierOutput-method}
+\alias{fsHistory,classifierOutput-method}
 \alias{testScores}
 \alias{testPredictions}
+\alias{fsHistory}
 
 \title{Class "classifierOutput" ~~~ }
 \description{	 ~~ A concise (1-5 lines) description of what the class is.  ~~}
@@ -34,6 +36,7 @@ Objects can be created by calls of the form \code{new("classifierOutput", ...)}.
     \item{show}{\code{signature(object = "classifierOutput")}: ... }
     \item{testScores}{\code{signature(object = "classifierOutput")}: ... }
     \item{testPredictions}{\code{signature(object = "classifierOutput")}: ... }
+    \item{fsHistory}{\code{signature(object = "classifierOutput")}: ... }
 	 }
 }
 %\references{ ~put references to the literature/web site here ~ }
