@@ -37,6 +37,8 @@ that is not retained with MLearn+xvalSpec is the xvalLoop generic with its suppo
 for cluster computing.  I will introduce that ASAP, when I have a working example.
   c) So far, only supervised learning is handled in the new approach.  Now that
 cross-validation is working, I will start to deal with unsupervised methods.
+  d) A brief vignette that describes basic architecture with examples is in in
+MLint_devel.Rnw.  This will be elaborated soon.
 
 2) Back-compatibility and deprecation.  I have left the *B methods in place,
 but they have been sequestered into a single file Bmethods.R.  Eventually
