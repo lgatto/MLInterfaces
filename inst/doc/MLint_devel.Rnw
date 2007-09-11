@@ -123,6 +123,11 @@ knn1 = MLearn(sp~CL+RW, data=crabs, knnI(k=3,l=2), kp)
 knn1
 @
 
+\section{Additional features}
+
+The xvalSpec class allows us to specify types of cross-validation, and to
+control carefully how partitions are formed.
+
 
 \end{document}
 

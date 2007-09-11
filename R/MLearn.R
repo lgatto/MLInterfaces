@@ -69,7 +69,7 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric", "m
 #        testpred = rep(NA, N)
 #        for (i in 1:N) {
 #          tmp = MLearn(formula, data, method, inds[-i], ...)
-#          testpred[i] = as.character(tmp@testPredictions)
+#          testpred[i] = as.character(testPredictions(tmp))
 #        }
 #   tef = model.frame(formula, data)
 #   teo = model.response( tef )
@@ -93,7 +93,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    thecall = match.call()
    tef = model.frame(formula, data)
    teo = model.response( tef )
-   classLab = names(tef)[ respind <- attr( terms(formula), "response" ) ]
+   classLab = names(tef)[ respind <- attr( terms(formula,data=data), "response" ) ]
 
    N <- nrow(data)
    inds <- 1:N
@@ -139,7 +139,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
 #   xvalLoop = xvalLoop(NULL) # eventually will allow clusters
 
    out <- lapply( 1:n, xvalidator, ... )
-   classif <- unlist( sapply( out, function(x) x[["mlans"]]@testPredictions ) )
+   classif <- unlist( sapply( out, function(x) testPredictions(x[["mlans"]]) ) )
 # now want the test sets for the various iterations
    ords <- unlist( lapply( out, function(x) x[["test.idx"]] ) )
    reord = match(inds, ords)

@@ -34,7 +34,7 @@ a schematic description of external learning functions like knn, lda, nnet, etc.
 }
 \usage{
 MLearn( formula, data, method, trainInd, mlSpecials, ... )
-xvalSpec( type, niter=0, partitionFunc= function(data, class, iternum ) {
+xvalSpec( type, niter=0, partitionFunc= function(data, classLab, iternum ) {
 				(1:nrow(data))[-iternum] },
 	                 fsFun = function(formula, data) formula )
 }
@@ -176,16 +176,18 @@ confuMat(nn2cv)
 fsFun.rowtQ3 = function(formula, data) {
  # facilitation of a rowttests with a formula/data.frame takes a little work
  mf = model.frame(formula, data)
+ mm = model.matrix(formula, data)
  respind = attr( terms(formula, data=data), "response" )
- x = mf[,-respind]
+ x = mm
+ if ("(Intercept)" \%in\% colnames(x)) x = x[,-which(colnames(x) == "(Intercept)")]
  y = mf[, respind]
  respname = names(mf)[respind]
  nuy = length(unique(y))
  if (nuy > 2) warning("number of unique values of response exceeds 2")
- dm = t(data.matrix(x))
- dm = matrix(as.double(dm), nr=nrow(dm)) # rowttests seems fussy
- ans = abs( rowttests(dm, factor(y), tstatOnly=TRUE)[[1]] )
- names(ans) = names(x)
+ #dm = t(data.matrix(x))
+ #dm = matrix(as.double(dm), nr=nrow(dm)) # rowttests seems fussy
+ ans = abs( rowttests(t(x), factor(y), tstatOnly=TRUE)[[1]] )
+ names(ans) = colnames(x)
  ans = names( ans[ which(ans > quantile(ans, .75) ) ] )
  btick = function(x) paste("`", x, "`", sep="")  # support for nonsyntactic varnames
  as.formula( paste(respname, paste(btick(ans), collapse="+"), sep="~"))
@@ -194,6 +196,17 @@ fsFun.rowtQ3 = function(formula, data) {
 nn3cv = MLearn(sp~CW+RW+CL+BD+FL, data=crabs[c(1:20,101:120),], nnetI, 
    xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fsFun.rowtQ3), size=3, decay=.01 )
 confuMat(nn3cv)
+nn4cv = MLearn(sp~.-index-sex, data=crabs[c(1:20,101:120),], nnetI, 
+   xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fsFun.rowtQ3), size=3, decay=.01 )
+confuMat(nn4cv)
+#
+# try with expression data
+#
+library(golubEsets)
+data(Golub_Train)
+litg = Golub_Train[ 100:150, ]
+g1 = MLearn(ALL.AML~. , litg, nnetI, xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fsFun.rowtQ3), size=3, decay=.01 )
+confuMat(g1)
 }
 
 \keyword{ models }
