@@ -107,3 +107,83 @@ predict.dlda2 = function(object, newdata, ...) {
  stat.diag.da( object$traindat, as.numeric(object$traincl), newdata, ... )$pred
 }
 
+# -- rdaML -- bridges to rda::rda.cv which requires a run of rda
+
+rdaCV = function( formula, data, ... ) {
+ passed = list(...)
+ if ("genelist" %in% names(passed)) stop("please don't supply genelist parameter.")
+ # data input to rda needs to be GxN
+ x = model.matrix(formula, data)
+ if ("(Intercept)" %in% colnames(x))
+   x = x[, -which(colnames(x) %in% "(Intercept)")]
+ x = t(x)
+ mf = model.frame(formula, data)
+ resp = as.numeric(factor(model.response(mf)))
+ run1 = rda( x, resp, ... )
+ rda.cv( run1, x, resp )
+}
+
+rdaFixed = function( formula, data, alpha, delta, ... ) {
+ passed = list(...)
+ if ("genelist" %in% names(passed)) stop("please don't supply genelist parameter.")
+ # data input to rda needs to be GxN
+ x = model.matrix(formula, data)
+ if ("(Intercept)" %in% colnames(x))
+   x = x[, -which(colnames(x) %in% "(Intercept)")]
+ x = t(x)
+ featureNames = rownames(x)
+ mf = model.frame(formula, data)
+ resp = as.numeric(resp.fac <- factor(model.response(mf)))
+ finalFit=rda( x, resp, genelist=TRUE, alpha=alpha, delta=delta, ... )
+ list(finalFit=finalFit, x=x, resp.num=resp, resp.fac=resp.fac, featureNames=featureNames,
+    keptFeatures=featureNames[ which(apply(finalFit$gene.list,3,function(x)x)==1) ])
+}
+
+rdaML = function(formula, data, ...) {
+ run1 = rdaCV( formula, data, ... )
+ perf.1se = cverrs(run1)$one.se.pos
+ del2keep = which.max(perf.1se[,2])
+ parms2keep = perf.1se[del2keep,]
+ alp = run1$alpha[parms2keep[1]]
+ del = run1$delta[parms2keep[2]]
+ fit = rdaFixed( formula, data, alpha=alp, delta=del, ... )
+ class(fit) = "rdaML"
+ fit
+}
+
+print.rdaML = function(object) {
+ cat("rdaML S3 instance. components:\n")
+ print(names(object))
+ cat("---\n")
+ cat("elements of finalFit:\n")
+ print(names(object$finalFit))
+}
+
+predict.rdaML = function(object, newdata, ...) {
+ newd = data.matrix(newdata)
+ fnames = rownames(object$x)
+ newd = newd[, fnames]
+ inds = predict(object$finalFit, object$x, object$resp.num, xnew=t(newd))
+ factor(levels(object$resp.fac)[inds])
+}
+
+cverrs = function (x, type = c("both", "error", "gene"), nice = FALSE, 
+    ...) 
+{
+    if (class(x) != "rdacv") {
+        stop("You must supply a cross-validation object.")
+    }
+    else {
+        minerr <- min(x$cv.err)/x$n
+        one.se <- ceiling((sqrt(minerr * (1 - minerr)/x$n) * 
+            1.645 + minerr) * x$n)
+        pos <- which(x$cv.err == one.se, TRUE)
+        minpos <- which(x$cv.err == min(x$cv.err), TRUE)
+        tmperr <- x$cv.err
+        dimnames(tmperr) <- list(x$alpha, x$delta)
+        tmpgene <- x$ngene
+        dimnames(tmpgene) <- list(x$alpha, x$delta)
+        return(list(one.se.pos = pos, min.cv.pos = minpos))
+    }
+}
+
