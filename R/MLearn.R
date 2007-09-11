@@ -133,7 +133,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
      idx <- selnProc(i) # need to change sign when reordering...
      if (do.fs) fmla2use=fsFun(formula, data[inds[idx],])  # we are clobbering input formula
       else fmla2use=formula
-     rhs_fmla = function (f) colnames(attr(terms(f), "factors"))
+     rhs_fmla = function (f) colnames(attr(terms(f, data=data), "factors"))
      list( test.idx=(setdiff(inds,idx)), mlans=MLearn( fmla2use, data, method=method, trainInd=inds[idx], ...),
              featInUse= rhs_fmla(fmla2use) ) # package result -- test.idx kept for rearrangement
      }
