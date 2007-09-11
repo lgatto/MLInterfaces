@@ -20,11 +20,14 @@ setClass("nonstandardLearnerSchema", representation(frontConverter="function",
    hasNamespace="logical"), contains="learnerSchema")
 
 #setClassUnion("funcOrNull", c("function", "NULL"))
-setClass("xvalSpec", representation(type="character", niter="numeric", partitionFunc="function"))
+setClass("xvalSpec", representation(type="character", niter="numeric", partitionFunc="function", fsFun="function"))
 
 # constructor defined here for now
-xvalSpec = function(type, niter=0, partitionFunc=function(data, classLab, iternum){NULL})
-  new("xvalSpec", type=type, niter=niter, partitionFunc=partitionFunc)
+
+ xvalSpec = function(type, niter=0, partitionFunc=function(data, classLab, 
+       iternum){(1:nrow(data))[-iternum]}, fsFun=function(formula, data)formula) {
+  new("xvalSpec", type=type, niter=niter, partitionFunc=partitionFunc, fsFun=fsFun)
+  }
 
 # -- below find the legacy classes as of sep 9 2007
 

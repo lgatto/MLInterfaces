@@ -93,9 +93,12 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    thecall = match.call()
    tef = model.frame(formula, data)
    teo = model.response( tef )
+   classLab = names(tef)[ respind <- attr( terms(formula), "response" ) ]
 
    N <- nrow(data)
    inds <- 1:N
+
+# deal with sample selection
 
    if (xvalMethod == "LOO")
      {
@@ -104,13 +107,33 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
      }
    else                          # FUN
      {
-     classLab = names(tef)[ attr( terms(formula), "response" ) ]
      n <- xvspec@niter
      selnProc <- function(i) xvspec@partitionFunc( data, classLab, i )  # func defines training set directly
      }
+
+# deal with feature selection
+
+   # check the supplied fsFun
+        do.fs = FALSE
+   	if (is.function(xvspec@fsFun)) {
+	        do.fs = TRUE
+		fsFun = xvspec@fsFun
+		if (!all(names(formals(fsFun)) %in% c("formula", "data"))) {
+			stop("xvspec@fsFun must have formals formula, data")
+			}
+		tst = fsFun(formula,data)
+		if (!is( tst, "formula") ) {
+			print("problem with fsFun in xvalSpec:")
+			print(tst)
+			stop("fsFun must return a formula; instead returned the object just printed.")
+		}
+	}
+
    xvalidator <- function(i, ...) {
      idx <- selnProc(i) # need to change sign when reordering...
-     list( test.idx=(setdiff(inds,idx)), mlans=MLearn( formula, data, method=method, trainInd=inds[idx], ...) ) # package result -- test.idx kept for rearrangement
+     if (do.fs) fmla2use=fsFun(formula, data[inds[idx],])  # we are clobbering input formula
+      else fmla2use=formula
+     list( test.idx=(setdiff(inds,idx)), mlans=MLearn( fmla2use, data, method=method, trainInd=inds[idx], ...) ) # package result -- test.idx kept for rearrangement
      }
 
 #   xvalLoop = xvalLoop(NULL) # eventually will allow clusters
@@ -130,3 +153,4 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema",
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
 	MLearn(formula, data, method, trainInd, ...)
 })
+

@@ -28,14 +28,15 @@
 \alias{MLearn,formula,data.frame,learnerSchema,xvalSpec,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
 
-
 \title{revised MLearn interface for machine learning}
 \description{revised MLearn interface for machine learning, emphasizing
 a schematic description of external learning functions like knn, lda, nnet, etc.
 }
 \usage{
 MLearn( formula, data, method, trainInd, mlSpecials, ... )
-xvalSpec( type, niter, partitionFunc )
+xvalSpec( type, niter=0, partitionFunc= function(data, class, iternum ) {
+				(1:nrow(data))[-iternum] },
+	                 fsFun = function(formula, data) formula )
 }
 \arguments{
   \item{formula}{ standard model formula }
@@ -49,7 +50,7 @@ obviates need for this parameter, which is retained only for back-compatibility.
   \item{type}{"LOO" to specify leave-one-out cross-validation; any
 other token implies use of a \code{partitionFunc}}
   \item{niter}{numeric, specifying number of cross-validation iterations,
-i.e., the number of partitions to be formed}
+i.e., the number of partitions to be formed; ignored if \code{type} is "LOO".}
   \item{partitionFunc}{function, with parameters data (bound
 to data.frame), clab (bound to character string), iternum (bound
 to numeric index into sequence of 1:\code{niter}).  This function's job
@@ -57,6 +58,9 @@ is to provide the indices of training cases for each cross-validation
 step.  An example is \code{\link{balKfold.xvspec}}, which computes
 a series of indices that are approximately balanced with respect
 to frequency of outcome types.}
+  \item{fsFun}{function, with parameters formula, data.  The function
+must return a formula suitable for defining a model on the basis of the
+main input data.  A candidate fsFun  is given in examples below.}
 }
 \details{
 This implementation attempts to reduce complexity of the basic
@@ -165,6 +169,31 @@ confuMat(nn1cv)
 nn2cv = MLearn(sp~CW+RW, data=crabs[c(1:20,101:120),], nnetI, 
    xvalSpec("LOG",5, balKfold.xvspec(5)), size=3, decay=.01 )
 confuMat(nn2cv)
+#
+# illustrate feature selection -- following function keeps features that
+# discriminate in the top 25 percent of all features according to rowttests
+#
+fsFun.rowtQ3 = function(formula, data) {
+ # facilitation of a rowttests with a formula/data.frame takes a little work
+ mf = model.frame(formula, data)
+ respind = attr( terms(formula, data=data), "response" )
+ x = mf[,-respind]
+ y = mf[, respind]
+ respname = names(mf)[respind]
+ nuy = length(unique(y))
+ if (nuy > 2) warning("number of unique values of response exceeds 2")
+ dm = t(data.matrix(x))
+ dm = matrix(as.double(dm), nr=nrow(dm)) # rowttests seems fussy
+ ans = abs( rowttests(dm, factor(y), tstatOnly=TRUE)[[1]] )
+ names(ans) = names(x)
+ ans = names( ans[ which(ans > quantile(ans, .75) ) ] )
+ btick = function(x) paste("`", x, "`", sep="")  # support for nonsyntactic varnames
+ as.formula( paste(respname, paste(btick(ans), collapse="+"), sep="~"))
+}
+
+nn3cv = MLearn(sp~CW+RW+CL+BD+FL, data=crabs[c(1:20,101:120),], nnetI, 
+   xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fsFun.rowtQ3), size=3, decay=.01 )
+confuMat(nn3cv)
 }
 
 \keyword{ models }
