@@ -31,6 +31,9 @@
 \alias{plotXvalRDA}
 \alias{rdacvI}
 \alias{rdacvML}
+\alias{makeLearnerSchema}
+\alias{standardMLIConverter}
+
 
 
 \title{revised MLearn interface for machine learning}
@@ -42,6 +45,7 @@ MLearn( formula, data, method, trainInd, mlSpecials, ... )
 xvalSpec( type, niter=0, partitionFunc= function(data, classLab, iternum ) {
 				(1:nrow(data))[-iternum] },
 	                 fsFun = function(formula, data) formula )
+makeLearnerSchema(packname, mlfunname, converter)
 }
 \arguments{
   \item{formula}{ standard model formula }
@@ -66,6 +70,11 @@ to frequency of outcome types.}
   \item{fsFun}{function, with parameters formula, data.  The function
 must return a formula suitable for defining a model on the basis of the
 main input data.  A candidate fsFun  is given in examples below.}
+  \item{packname}{character -- name of package harboring a learner function}
+  \item{mlfunname}{character -- name of function to use}
+  \item{converter}{function -- with parameters (obj, data, trainInd) that tells
+how to convert the material in obj [produced by [packname::mlfunname] ] into a
+classifierOutput instance.}
 }
 \details{
 This implementation attempts to reduce complexity of the basic

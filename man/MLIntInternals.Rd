@@ -3,7 +3,6 @@
  \alias{getGrid}
  \alias{getGrid,data.frame-method}
  \alias{getGrid,ExpressionSet-method}
- \alias{makeCVFunc}
  \alias{newGroupIndex}
  \alias{newMembMat}
  \alias{newPredClass}
@@ -22,7 +21,6 @@ Users will generally not call these functions directly.
 \usage{
 chkMLInterfaceProc(x)
 getGrid(x)
-makeCVFunc(algorithm, ...)
 newGroupIndex(x)
 newMembMat(x)
 newPredClass(x)
@@ -37,7 +35,6 @@ wrapClust(out, k, height, dis)
 
 \arguments{
   \item{x}{a vector or matrix or ExpressionSet}
-  \item{algorithm}{ function }
   \item{out}{output of cluster procedure}
   \item{k}{number of clusters}
   \item{height}{see \code{\link{hclust}}}

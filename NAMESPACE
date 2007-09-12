@@ -17,7 +17,7 @@ exportMethods(
   "bclustB", "cmeansB", "cshellB", "lcaB", "naiveBayesB", "svmB", "baggingB", "ipredknnB", "sldaB", 
   "nnetB", "pamrB", "randomForestB", "rpartB", "stat.diag.daB", 
   "somB", "SOMB", "hclustB", "kmeansB", "silhouetteB", 
-  "cvB", "gbmB", "show", "RObject", "distMat", "predLabels", "predLabelsTr",
+  "gbmB", "show", "RObject", "distMat", "predLabels", "predLabelsTr",
   "allClass", "trainInds", "confuMat", "confuMatTrain", 
   "MLearn", 
   "getGrid", 
