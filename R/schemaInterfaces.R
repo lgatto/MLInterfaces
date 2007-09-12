@@ -46,3 +46,9 @@ baggingI = makeLearnerSchema("ipred", "bagging",
 
 rdacvI = makeLearnerSchema("MLInterfaces", "rdacvML",
     standardMLIConverter)
+
+sldaI = makeLearnerSchema("ipred", "slda",
+    MLIConverter.slda)
+
+# to do as of 12 Sep 2007 -- inclass, inbagg [ need good cFUN examples before going there ]
+# pamr, gbm, logitBoost

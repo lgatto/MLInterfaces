@@ -121,3 +121,13 @@ MLIConverter.selftesting = function(obj, data, trainInd) {
    new("classifierOutput", testPredictions=factor(tepr),
        trainPredictions=factor(tepr), RObject=obj)
    }
+
+MLIConverter.slda = function(obj, data, trainInd) { # decision.values parm needed
+   teData = data[-trainInd,]
+   trData = data[trainInd,]
+   tepr = predict(obj, teData)
+   trpr = predict(obj, trData)
+   teprob = predict(obj, teData, type="prob")
+   new("classifierOutput", testPredictions=factor(tepr$class), testScores=tepr$posterior,
+       trainPredictions=factor(trpr$class), trainScores=trpr$posterior, RObject=obj)
+   }

@@ -27,6 +27,7 @@ setGeneric("ldaB", function(exprObj, classifLab, trainInd, prior, tol=1.0e-4,
 setMethod("ldaB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, prior, tol, method, CV, nu, metric, ...){
 
+		#.Deprecated("MLearn", "MLInterfaces")
 		if(missing(method)){ method <- NULL }
 		if(missing(nu)){ nu <- NULL }
 		cl <- pData(exprObj)[[classifLab]][trainInd]
@@ -69,6 +70,7 @@ setGeneric("qdaB", function(exprObj, classifLab, trainInd, prior, tol=1.0e-4, me
 
 setMethod("qdaB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, prior, tol, method, CV, nu, metric, ...){
+		#.Deprecated("MLearn", "MLInterfaces")
 		if(missing(method)){ method <- NULL }
 		if(missing(nu)){ nu <- NULL }
 		cl <- pData(exprObj)[[classifLab]][trainInd]
@@ -196,6 +198,7 @@ knnP <- function(train, test, cl, k=1, l=0, prob=FALSE, use.all=TRUE) {
 # october 25 -- seem to need to use name newdata
 # for this to work with generic prediction
 #
+ #.Deprecated("MLearn", "MLInterfaces")
  ans <- class::knn(train,test,cl,k,l,prob,use.all)
  nf <- function(train,cl,k,l,prob,use.all) function(newdata)
 	 class::knn(train,newdata,cl,k,l,prob,use.all)
@@ -204,11 +207,14 @@ knnP <- function(train, test, cl, k=1, l=0, prob=FALSE, use.all=TRUE) {
  ans
 }
 
-predict.knnP <- function(object, ...) 
+predict.knnP <- function(object, ...) {
+ 	#.Deprecated("MLearn", "MLInterfaces")
 	attr(object, "predfun")(...)
+}
 
 print.knnP <- function(x, ...)
 	{
+ 	#.Deprecated("MLearn", "MLInterfaces")
 	cat("instance of knnP [predictable knn object]\n")
 	NextMethod()
 	}
@@ -222,6 +228,7 @@ setMethod("knnB", c("ExpressionSet", "character", "integer",
 			"ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, k, l, 
 			prob, use.all, metric){
+		#.Deprecated("MLearn", "MLInterfaces")
 
 		cl <- pData(exprObj)[[classifLab]][trainInd]				
 		trainDat <- t(exprs(exprObj)[,trainInd])
@@ -292,6 +299,7 @@ setGeneric("knn1B", function(exprObj, classifLab, trainInd, metric="euclidean"){
 
 setMethod("knn1B", c("ExpressionSet", "character", "integer", "ANY"), 
 		function(exprObj, trainInd, classifLab, metric){
+		#.Deprecated("MLearn", "MLInterfaces")
 				
 		cl <- pData(exprObj)[[classifLab]][trainInd]
 		trainDat <- t(exprs(exprObj)[,trainInd])
@@ -329,6 +337,7 @@ setGeneric("lvq1B", function(exprObj, classifLab, trainInd, size, prior, k=5, ni
 setMethod("lvq1B", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, size, prior, k, niter, alpha, metric){
 
+		#.Deprecated("MLearn", "MLInterfaces")
 		if(missing(size)){ size <- NULL }
 		cl <- pData(exprObj)[[classifLab]][trainInd]
 		trainDat <- t(exprs(exprObj)[,trainInd])
@@ -373,6 +382,7 @@ setMethod("lvq2B", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY
 		function(exprObj, classifLab, trainInd, size, prior, k, 
 			niter, alpha, win, metric){
 
+		#.Deprecated("MLearn", "MLInterfaces")
 		if(missing(size)){ size <- NULL }
 		cl <- pData(exprObj)[[classifLab]][trainInd]
 		trainDat <- t(exprs(exprObj)[,trainInd])
@@ -416,6 +426,7 @@ setGeneric("lvq3B", function(exprObj, classifLab, trainInd, size, prior, k=5,
 setMethod("lvq3B", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, size, prior, k, niter, alpha, win, epsilon, metric){
 
+		#.Deprecated("MLearn", "MLInterfaces")
 		if(missing(size)){ size <- NULL }
 		cl <- pData(exprObj)[[classifLab]][trainInd]			
 		trainDat <- t(exprs(exprObj)[,trainInd])
@@ -458,6 +469,7 @@ setGeneric("olvq1B", function(exprObj, classifLab, trainInd, size, prior, k=5, n
 setMethod("olvq1B", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, size, prior, k, niter, alpha, metric){
 
+		#.Deprecated("MLearn", "MLInterfaces")
 		if(missing(size)){ size <- NULL }
 		cl <- pData(exprObj)[[classifLab]][trainInd]
 		trainDat <- t(exprs(exprObj)[,trainInd])
@@ -937,6 +949,7 @@ setGeneric("naiveBayesB", function(exprObj, classifLab, trainInd,	na.action=na.p
 setMethod("naiveBayesB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"),
 		function(exprObj, classifLab, trainInd, na.action, threshold, metric){
 
+		#.Deprecated("MLearn", "MLInterfaces")
 		cl <- pData(exprObj)[[classifLab]][trainInd]		
 		trainDat <- data.frame(y=cl, t(exprs(exprObj)[,trainInd]))
 		testDat <- data.frame(t(exprs(exprObj)[,-trainInd]))	
@@ -983,6 +996,7 @@ setMethod("svmB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"
 		coef0, cost, nu, class.weights, cachesize, tolerance, epsilon, shrinking, 
 		cross, fitted, subset, na.action, decision.values, metric, ...){
 
+		#.Deprecated("MLearn", "MLInterfaces")
 			trainDat <- t(exprs(exprObj)[,trainInd])
 			testDat <- t(exprs(exprObj)[,-trainInd])
 			dis <- dist(testDat, method=metric)
@@ -1034,6 +1048,7 @@ setGeneric("baggingB", function(exprObj, classifLab, trainInd, subset, aggregati
 setMethod("baggingB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, subset, aggregation, metric, ...){
 
+		#.Deprecated("MLearn", "MLInterfaces")
 		if(missing(subset)){ subset <- NULL }
 
 		cl <- pData(exprObj)[[classifLab]][trainInd]		
@@ -1075,6 +1090,7 @@ setGeneric("ipredknnB", function(exprObj, classifLab, trainInd, na.action, k=5, 
 setMethod("ipredknnB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, na.action, k, metric, ...){
 				
+		#.Deprecated("MLearn", "MLInterfaces")  # not needed at all, just shapes knn output
 		if(missing(na.action)){ na.action <- NULL }
 		cl <- pData(exprObj)[[classifLab]][trainInd]		
 		trainDat <- data.frame(y = cl, t(exprs(exprObj)[,trainInd]))
@@ -1115,6 +1131,7 @@ setGeneric("sldaB", function(exprObj, classifLab, trainInd, subset, na.action=na
 setMethod("sldaB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "ANY"), 
 		function(exprObj, classifLab, trainInd, subset, na.action, metric, ...){
 
+		#.Deprecated("MLearn", "MLInterfaces")  
 		if(missing(subset)){ subset <- NULL }
 		cl <- pData(exprObj)[[classifLab]][trainInd]		
 		trainDat <- data.frame(y=cl, t(exprs(exprObj)[,trainInd]))			
@@ -1157,6 +1174,8 @@ library(ipred)
 #
 #setMethod("inbaggB", c("ExpressionSet", "character", "integer", "character", "ANY", "ANY", "ANY", "ANY"), 
 #		function(exprObj, classifLab, trainInd, intLab, pFUN, cFUN, metric, ...){
+#
+#
 #
 ##		if(missing(pFUN)){ pFUN <- list(list(model=lm)) }
 #		if(missing(pFUN)){ pFUN <- NULL }
@@ -1224,6 +1243,11 @@ library(ipred)
 ##	values) and samples with PS values > 0.75 are
 ##	classified as ALL (this is all made up, it's intended to illustrate
 ##	the function usage), otherwise AML. 
+###
+###
+### -- Sep 12 2007 -- right ... easy to interface, hard to understand
+### -- so no interfaces for inbagg or inclass until will have a plausible working example in genomics
+###
 ## example:
 ## train <- c(sample(1:47, 23), sample(48:72, 12))
 ## psclassify <- function(newdata){
@@ -1310,6 +1334,7 @@ setMethod("nnetB", c("ExpressionSet", "character", "integer", "ANY", "ANY",
 		function(exprObj, classifLab, trainInd, weights, size, Wts, mask, 
 			skip, rang, decay, maxit, Hess, trace, MaxNWts, abstol, reltol, metric, ...){
 		
+			#.Deprecated("MLearn", "MLInterfaces")
 			cl <- pData(exprObj)[[classifLab]][trainInd]
 
 			trainDat <- data.frame(t(exprs(exprObj)[,trainInd]), sampLab = cl)
@@ -1427,6 +1452,7 @@ setMethod("randomForestB", c("ExpressionSet", "character", "integer", "ANY", "AN
 			classwt, cutoff, sampsize, nodesize, importance, proximity, oob.prox, outscale, 
 			norm.votes, do.trace, keep.forest, corr.bias, metric, ...){
 
+			#.Deprecated("MLearn", "MLInterfaces")
 			trainDat <- t(exprs(exprObj)[,trainInd])
 			cl <- pData(exprObj)[[classifLab]][trainInd]
 			if(missing(xtest)){ xtest <- NULL }
@@ -1482,6 +1508,7 @@ setMethod("rpartB", c("ExpressionSet", "character", "integer", "ANY", "ANY", "AN
 		function(exprObj, classifLab, trainInd, weights, subset, 
 			na.action, method, model, x, y, parms, control, cost, metric, ...){
 
+			#.Deprecated("MLearn", "MLInterfaces")
 			if(missing(subset)){ subset <- NULL }
 			if(missing(control)){ control <- NULL }
 			if(missing(parms)){ parms <- NULL }
@@ -1521,6 +1548,7 @@ setMethod("stat.diag.daB", c("ExpressionSet", "character", "integer", "ANY", "AN
 		function(exprObj, classifLab, trainInd, pool,  
                        metric, ...){
 		
+			#.Deprecated("MLearn", "MLInterfaces")
 			require(sma) # nice if it had a namespace
 			cl <- pData(exprObj)[[classifLab]][trainInd]
 
@@ -1814,36 +1842,38 @@ setMethod("silhouetteB", c("clustOutput"),
 # cvtnb <- cvB(eset, "ALL.AML", makeCVFunc("naiveBayes") )
 ####################
 
-setGeneric("cvB", function(exprObj, classifLab, algofunc, metric="euclidean", ...){
-	standardGeneric("cvB")
-})
+# nice but i don't think we need this any more, sep 12 2007 VJC
 
-setMethod("cvB", c("ExpressionSet", "character", "ANY", "ANY"), 
-		function(exprObj, classifLab, algofunc, metric, ...){
-
-	cl <- pData(exprObj)[[classifLab]]
-	dat <- exprs(exprObj)
-	dis <- dist(t(dat), method=metric)
-	n <- ncol(dat)
-	predCV <- cl
-
-	for( i in 1:n ){
-		predCV[i] <- algofunc(t(dat[,-i]), t(dat[,i]), cl[-i], ...)
-	}
-
-	tab <- table(predCV, cl)
-	diag(tab) <- 0
-	err <- paste(round(100*sum(tab)/length(cl),2), "%", sep="")
-#	new("classifCV", err=err, sampLabels=predCV, distMat=dis)
-                #out <- class::knn(trainDat, testDat, cl, k, l, prob, use.all)
-                new("classifOutput", method="knn",
-                        predLabels=newPredClass(as.character(predCV)),
-			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
-#                        predScores=newQualScore(attr(out,"prob")),
-                        RObject=err, call=match.call(), distMat=dis)
-                                                                                
-
-})
+#setGeneric("cvB", function(exprObj, classifLab, algofunc, metric="euclidean", ...){
+#	standardGeneric("cvB")
+#})
+#
+#setMethod("cvB", c("ExpressionSet", "character", "ANY", "ANY"), 
+#		function(exprObj, classifLab, algofunc, metric, ...){
+#
+#	cl <- pData(exprObj)[[classifLab]]
+#	dat <- exprs(exprObj)
+#	dis <- dist(t(dat), method=metric)
+#	n <- ncol(dat)
+#	predCV <- cl
+#
+#	for( i in 1:n ){
+#		predCV[i] <- algofunc(t(dat[,-i]), t(dat[,i]), cl[-i], ...)
+#	}
+#
+#	tab <- table(predCV, cl)
+#	diag(tab) <- 0
+#	err <- paste(round(100*sum(tab)/length(cl),2), "%", sep="")
+##	new("classifCV", err=err, sampLabels=predCV, distMat=dis)
+#                #out <- class::knn(trainDat, testDat, cl, k, l, prob, use.all)
+#                new("classifOutput", method="knn",
+#                        predLabels=newPredClass(as.character(predCV)),
+#			trainInds=trainInd, allClass=as.character(pData(exprObj)[[classifLab]]),
+##                        predScores=newQualScore(attr(out,"prob")),
+#                        RObject=err, call=match.call(), distMat=dis)
+#                                                                                
+#
+#})
 
 #####################
 # title: makeCVFunc
@@ -1868,142 +1898,142 @@ setMethod("cvB", c("ExpressionSet", "character", "ANY", "ANY"),
 # aa <- pamrB(golubMerge[100:200,], train, "ALL.AML")
 ####################
 
-makeCVFunc <- function(algorithm, ...){
-
-	if( algorithm == "knn" ){		
-		resfunc <- function(train, test, lab){
-				class::knn(train, test, lab, ...)
-		}	
-	}
-
-	if( algorithm == "knn1" ){		
-		resfunc <- function(train, test, lab){
-				class::knn1(train, test, lab)
-		}	
-	}
-			
-	if( algorithm == "lvq1" ){		
-		resfunc <- function(train, test, lab){
-				initbk <- class::lvqinit(train, lab, ...)
-				trbk <- class::lvq1(train, lab, initbk, ...)
-				class::lvqtest(trbk, test)
-		}
-	}
-
-	if( algorithm == "lvq2" ){		
-		resfunc <- function(train, test, lab){
-				initbk <- class::lvqinit(train, lab, ...)
-				trbk <- class::lvq2(train, lab, initbk, ...)
-				class::lvqtest(trbk, test)
-		}
-	}
-
-	if( algorithm == "lvq3" ){		
-		resfunc <- function(train, test, lab){
-				initbk <- class::lvqinit(train, lab, ...)
-				trbk <- class::lvq3(train, lab, initbk, ...)
-				class::lvqtest(trbk, test)
-		}
-	}
-
-	if( algorithm == "olvq1" ){
-		
-		resfunc <- function(train, test, lab){
-				initbk <- class::lvqinit(train, lab, ...)
-				trbk <- class::olvq1(train, lab, initbk, ...)
-				class::lvqtest(trbk, test)
-		}
-	}	
-
-	if( algorithm == "naiveBayes" ){
-
-		resfunc <- function(train, test, lab){
-				df <- data.frame(y=lab, train)
-				classifObj <- e1071::naiveBayes(y~., data=df, ...)
-				predict(classifObj, test, ...)
-		}	
-	}
-
-	if( algorithm == "svm" ){
-		resfunc <- function(train, test, lab){
-				classifObj <- e1071::svm(train, lab, ...)
-				predict(classifObj, test, ...)
-		}	
-	}
-
-	if( algorithm == "lda" ){
-		resfunc <- function(train, test, lab){
-				classifObj <- MASS::lda(train, grouping=lab, ...)
-				predict(classifObj, test, ...)$class
-		}
-	}
-
-
-	if( algorithm == "qda" ){
-		resfunc <- function(train, test, lab){
-				classifObj <- MASS::qda(train, grouping=lab, ...)
-				predict(classifObj, test, ...)$class
-		}
-	}
-
-	if( algorithm == "bagging" ){
-		resfunc <- function(train, test, lab){
-				df <- data.frame(y=lab, train)
-				classifObj <- ipred::bagging(y~., data=df, ...)
-				predict(classifObj, data.frame(test), type="class", ...)
-		}	
-	}
-
-	if( algorithm == "ipredknn" ){
-
-		resfunc <- function(train, test, lab){
-				df <- data.frame(y=lab, train)
-				classifObj <- ipred::ipredknn(y~., data=df, ...)
-				ipred::predict.ipredknn(classifObj, data.frame(test), type="class", ...)
-		}	
-	}
-
-	if( algorithm == "slda" ){
-
-		resfunc <- function(train, test, lab){
-				df <- data.frame(y=lab, train)
-				classifObj <- ipred::slda(y~., data=df, ...)
-				predict(classifObj, data.frame(test), ...)$class
-		}	
-	}
-
-	if( algorithm == "randomForest" ){
-		resfunc <- function(train, test, lab){
-				classifObj <- randomForest::randomForest(train, y=lab, ...)
-				predict(classifObj, test, ...)
-		}	
-	}
-
-	if( algorithm == "rpart" ){
-		resfunc <- function(train, test, lab){
-				df <- data.frame(train, y=lab)
-				classifObj <- rpart::rpart(y~., data=df, ...)
-				predict(classifObj, data.frame(test), type="class")
-		}
-	}
-
-	if( algorithm == "nnet" ){
-		resfunc <- function(train, test, lab){
-				df <- data.frame(train, y=lab)
-				classifObj <- nnet::nnet(y~., data=df, ...)
-				predict(classifObj, data.frame(test), type="class", ...)
-		}	
-	}
-
-	if( algorithm == "pamr" ){
-		resfunc <- function(train, test, lab, threshold=1){
-				df <- list(x=t(train), y=lab)
-				classifObj <- pamr::pamr.train(df, ...)		
-				pamr::pamr.predict(classifObj, matrix(test, ncol=1), threshold, ...)
-		}	
-	}
-	resfunc
-}
+#makeCVFunc <- function(algorithm, ...){
+#
+#	if( algorithm == "knn" ){		
+#		resfunc <- function(train, test, lab){
+#				class::knn(train, test, lab, ...)
+#		}	
+#	}
+#
+#	if( algorithm == "knn1" ){		
+#		resfunc <- function(train, test, lab){
+#				class::knn1(train, test, lab)
+#		}	
+#	}
+#			
+#	if( algorithm == "lvq1" ){		
+#		resfunc <- function(train, test, lab){
+#				initbk <- class::lvqinit(train, lab, ...)
+#				trbk <- class::lvq1(train, lab, initbk, ...)
+#				class::lvqtest(trbk, test)
+#		}
+#	}
+#
+#	if( algorithm == "lvq2" ){		
+#		resfunc <- function(train, test, lab){
+#				initbk <- class::lvqinit(train, lab, ...)
+#				trbk <- class::lvq2(train, lab, initbk, ...)
+#				class::lvqtest(trbk, test)
+#		}
+#	}
+#
+#	if( algorithm == "lvq3" ){		
+#		resfunc <- function(train, test, lab){
+#				initbk <- class::lvqinit(train, lab, ...)
+#				trbk <- class::lvq3(train, lab, initbk, ...)
+#				class::lvqtest(trbk, test)
+#		}
+#	}
+#
+#	if( algorithm == "olvq1" ){
+#		
+#		resfunc <- function(train, test, lab){
+#				initbk <- class::lvqinit(train, lab, ...)
+#				trbk <- class::olvq1(train, lab, initbk, ...)
+#				class::lvqtest(trbk, test)
+#		}
+#	}	
+#
+#	if( algorithm == "naiveBayes" ){
+#
+#		resfunc <- function(train, test, lab){
+#				df <- data.frame(y=lab, train)
+#				classifObj <- e1071::naiveBayes(y~., data=df, ...)
+#				predict(classifObj, test, ...)
+#		}	
+#	}
+#
+#	if( algorithm == "svm" ){
+#		resfunc <- function(train, test, lab){
+#				classifObj <- e1071::svm(train, lab, ...)
+#				predict(classifObj, test, ...)
+#		}	
+#	}
+#
+#	if( algorithm == "lda" ){
+#		resfunc <- function(train, test, lab){
+#				classifObj <- MASS::lda(train, grouping=lab, ...)
+#				predict(classifObj, test, ...)$class
+#		}
+#	}
+#
+#
+#	if( algorithm == "qda" ){
+#		resfunc <- function(train, test, lab){
+#				classifObj <- MASS::qda(train, grouping=lab, ...)
+#				predict(classifObj, test, ...)$class
+#		}
+#	}
+#
+#	if( algorithm == "bagging" ){
+#		resfunc <- function(train, test, lab){
+#				df <- data.frame(y=lab, train)
+#				classifObj <- ipred::bagging(y~., data=df, ...)
+#				predict(classifObj, data.frame(test), type="class", ...)
+#		}	
+#	}
+#
+#	if( algorithm == "ipredknn" ){
+#
+#		resfunc <- function(train, test, lab){
+#				df <- data.frame(y=lab, train)
+#				classifObj <- ipred::ipredknn(y~., data=df, ...)
+#				ipred::predict.ipredknn(classifObj, data.frame(test), type="class", ...)
+#		}	
+#	}
+#
+#	if( algorithm == "slda" ){
+#
+#		resfunc <- function(train, test, lab){
+#				df <- data.frame(y=lab, train)
+#				classifObj <- ipred::slda(y~., data=df, ...)
+#				predict(classifObj, data.frame(test), ...)$class
+#		}	
+#	}
+#
+#	if( algorithm == "randomForest" ){
+#		resfunc <- function(train, test, lab){
+#				classifObj <- randomForest::randomForest(train, y=lab, ...)
+#				predict(classifObj, test, ...)
+#		}	
+#	}
+#
+#	if( algorithm == "rpart" ){
+#		resfunc <- function(train, test, lab){
+#				df <- data.frame(train, y=lab)
+#				classifObj <- rpart::rpart(y~., data=df, ...)
+#				predict(classifObj, data.frame(test), type="class")
+#		}
+#	}
+#
+#	if( algorithm == "nnet" ){
+#		resfunc <- function(train, test, lab){
+#				df <- data.frame(train, y=lab)
+#				classifObj <- nnet::nnet(y~., data=df, ...)
+#				predict(classifObj, data.frame(test), type="class", ...)
+#		}	
+#	}
+#
+#	if( algorithm == "pamr" ){
+#		resfunc <- function(train, test, lab, threshold=1){
+#				df <- list(x=t(train), y=lab)
+#				classifObj <- pamr::pamr.train(df, ...)		
+#				pamr::pamr.predict(classifObj, matrix(test, ncol=1), threshold, ...)
+#		}	
+#	}
+#	resfunc
+#}
 
 
 

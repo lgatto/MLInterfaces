@@ -16,6 +16,7 @@
 \alias{svmI}
 \alias{dlda2}
 \alias{dldaI}
+\alias{sldaI}
 \alias{knn2}
 \alias{ldaI.predParms}
 \alias{lvq}
@@ -102,6 +103,7 @@ olvq1.  You will need to write your own detailed schema if you want to tweak tun
 parameters.}
 \item{naiveBayesI}{\link[e1071]{naiveBayes}}
 \item{baggingI}{\link[ipred]{bagging}}
+\item{sldaI}{\link[ipred]{slda}}
 \item{rdacvI}{\link[rda]{rda.cv}.  This interface is complicated.  The typical
 use includes cross-validation internal to the rda.cv function.  That process
 searches a tuning parameter space and delivers an ordering on parameters.
@@ -143,6 +145,9 @@ names(RObject(dlda1))
 lda1 = MLearn(sp~CW+RW, data=crabs, ldaI, kp )
 lda1
 names(RObject(lda1))
+slda1 = MLearn(sp~CW+RW, data=crabs, sldaI, kp )
+slda1
+names(RObject(slda1))
 svm1 = MLearn(sp~CW+RW, data=crabs, svmI, kp )
 svm1
 names(RObject(svm1))
