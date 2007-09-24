@@ -4,7 +4,10 @@
 setClass("learnerSchema", representation(
 	packageName="character",
 	mlFunName="character",
-	converter="function")) 
+	converter="function"), 
+          prototype=prototype(packageName="",
+				mlFunName="",
+				converter=function(obj, data, trainInd){}))
 
 setClass("classifierOutput", representation(
         testOutcomes="factor",
@@ -14,10 +17,23 @@ setClass("classifierOutput", representation(
 	trainPredictions="factor",
 	trainScores="ANY", fsHistory="list",
 	RObject="ANY",
-	call="call"))
+	call="call"),
+	  prototype=prototype(testOutcomes=factor(),
+				testPredictions=factor(),
+				testScores=matrix(),
+				trainOutcomes=factor(),
+				trainPredictions=factor(),
+				trainScores=matrix(),
+				fsHistory=list(), 
+				RObject=list(), call=new("call")))
 
 setClass("nonstandardLearnerSchema", representation(frontConverter="function",
    hasNamespace="logical"), contains="learnerSchema")
+
+setOldClass("silhouette")
+setClass("clusteringOutput", representation(
+	partition="integer", silhouette="silhouette", distEnv="environment",
+	metric="character", call="call", RObject="ANY"))
 
 #setClassUnion("funcOrNull", c("function", "NULL"))
 setClass("xvalSpec", representation(type="character", niter="numeric", partitionFunc="function", fsFun="function"))

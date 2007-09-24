@@ -20,3 +20,4 @@ Collate: legacyConstructors.R	AllClasses.R
 	methods-classifierOutput.R
 	methods-learnerSchema.R
 	schemaInterfaces.R
+	Kfold.R

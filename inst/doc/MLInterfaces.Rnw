@@ -117,7 +117,8 @@ Here is how $k$-nearest neighbors is used
 to get predictions of ALL status, using the first
 40 records as the training set:
 <<doknnB>>=
-krun <- knnB( smallG, "ALL.AML", trainInd=1:40 )
+#krun <- knnB( smallG, "ALL.AML", trainInd=1:40 )
+krun = MLearn(ALL.AML~., smallG, knnI(k=1), 1:40)
 krun
 @
 The \Rfunction{confuMat} method computes the confusion matrix
@@ -130,9 +131,10 @@ Additional parameters can be supplied as accepted by
 the target procedure in package \Rpackage{class}.
 To use a neural net in the same context (with fewer
 genes to simplify the summary below)
-<<>>=
+<<lkco2>>=
 set.seed(1234)
-nns <- nnetB( smallG[1:10,], "ALL.AML", trainInd=1:40, size=2, decay=.01, maxit=250 )
+#nns <- nnetB( smallG[1:10,], "ALL.AML", trainInd=1:40, size=2, decay=.01, maxit=250 )
+nns <- MLearn( ALL.AML~., smallG[1:10,], nnetI, trainInd=1:40, size=2, decay=.01, maxit=250 )
 nns
 confuMat(nns)
 @
@@ -140,13 +142,27 @@ confuMat(nns)
 The basic call sequence for supervised learning
 for {\tt ExpressionSet}s is
 \begin{verbatim}
-methB(eset, tag, trainInd, ...)
+MLearn(formula, data, learnerSchema, trainInd, ...)
 \end{verbatim}
-The parameter {\tt tag} is the name of the {\tt phenoData}
-element to be used as predictand.  Parameter {\tt trainInd}
-is an integer sequence isolating the samples to be used for
-training.
-For unsupervised learning,
+The parameter \texttt{formula} is a standard R formula, with
+\verb+y~x+z+ indicating that \verb+x and \verb+z+ are predictors
+of response \verb+y+.  If \texttt{data} is a data.frame
+instance, then the formula has the usual interpretation for R.
+If \texttt{data} is an \texttt{ExpressionSet} instance, then
+it is assumed that the dependent variable is present in the
+pData component of phenoData, and the variables on the RHS
+are found in the exprs component of assayData.  If . is used
+on the RHS, then all features in the exprs component are used as
+predictors.
+The \texttt{learnerSchema} parameter is bound by instances of
+the learnerSchema class.  Many examples are provided with MLInterfaces,
+see the page from help(MLearn) for a complete list.
+Parameter {\tt trainInd}
+is a numeric sequence isolating the samples to be used for
+training; it may also be bound by an instance of xvalSpec
+to define a cross-validation of a learning process (see section \ref{xval}).
+
+For unsupervised learning, there are a number of methods of the form
 \begin{verbatim}
 methB(eset, k, height, ...)
 \end{verbatim}
@@ -169,71 +185,47 @@ ags <- agnesB(smallG, k=4, height=0, stand=FALSE)
 <<fig=TRUE>>=
 plot(RObject(ags), which.plot=2)
 @
-\section{Classes}
-The S4 class structure is based on a few observations.
-First, there are two basic types of task covered in machine
-learning, `supervised' (MLP uses known classes and ML
-returns predictand instances) and `unsupervised' (MLP groups
-data based on features, no predictand data assumed; ML can
-tell which group D' is closest to).  
-Second, there is an important concept of `quality' of
-prediction or clustering events, and it will be important
-to allow flexible representation of different approaches to
-quality measurement by machine learning procedures.
-Third, there are
-various things that one always wants access to, regardless
-of the underlying MLP (call information, R object constituting
-the `fit' to the training data).  This leads to general classes {\tt MLOutput},
-which collects the most general information of interest,
-{\tt MLLabel}, which represents predictand
-or clustergroup information, and {\tt MLScore}, which represents
-quality information.  Classes {\tt classifOutput} and
-{\tt clustOutput} manage the results of supervised and unsupervised
-learning respectively.
 
-\subsection{MLOutput}
-\label{mlosec}
-Extended by all machine learning output containers.
-<<>>=
-getClass("MLOutput")
+\section{Classes}
+
+For input to MLearn, to define the procedure to be used,
+two major classes are defined: learnerSchema, and xvalSpec.
+<<lkci>>=
+getClass("learnerSchema")
+getClass("xvalSpec")
 @
-\subsubsection{MLLabel}
-Identifies the results of machine learning labeling
-events, either in the form of class labels or
-integer cluster indices.
-<<>>=
-getClass("MLLabel")
+
+For output, we have only the classifierOutput class:
+<<lkcc>>=
+getClass("classifierOutput")
 @
-\subsubsection{MLScore}
-Identifies quality information about classification
-or clustering events.  This can range from a
-scalar (agglomeration coefficient, not yet used)
-to a vector (vote proportions in knn) to a matrix
-(posterior probabilities of class assignments)
-to an array (pamr thresholded posteriors).
-<<>>=
-getClass("MLScore")
-@
-\subsection{classifOutput}
-Container for classification results.
-<<>>=
-getClass("classifOutput")
-@
-\subsection{clustOutput}
-Container for clustering results.
-<<>>=
+Some legacy classes for output structures exist
+but are too complex and will be abandoned after a
+deprecation cycle.  The clustOutput class
+will be replaced by a clusteringOutput class:
+<<lkcl>>=
 getClass("clustOutput")
 @
 
+
 \section{Cross-validation}
 
-The prevalent interfaces make it difficult to rely on resubstitution
-to evaluate performance: the [f]B interfaces demand that the user
-supply an index set for a training data subset, and \Rfunction{confuMat} computes
-the confusion matrix on the complementary test subset.
+Instances of the xvalSpec class are bound to the
+trainInd parameter of MLearn to perform cross-validation.
+The constructor \texttt{xvalSpec} can be used in line.
+It has parameters type (only relevant to select
+"LOO", for leave-one out), niter (number of partitions to 
+use), partitionFunc (function that returns indices of members
+of partitions), fsFunc (function that performs feature selection
+and returns a formula with selected features on right-hand side).
 
-Calls to [f]B interfaces can be wrapped to facilitate cross-validation.
-Several illustrations follow.
+The partitionFunc must take parameters data, clab, iternum.  data is the
+usual data frame to be supplied to the learner function.  clab must
+be the name of a column in data.  Values of the variable in that
+column are balanced across cross-validation partitions.
+iternum is used to select the partition elements as we iterate
+through cross validation.
+
 \begin{itemize}
 \item straight leave-one-out (LOO) -- note the group parameter must be integer; it
 is irrelevant for the LOO method.
@@ -241,29 +233,29 @@ is irrelevant for the LOO method.
 library(golubEsets)
 data(Golub_Merge)
 smallG <- Golub_Merge[200:250,]
-lk1 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", group=as.integer(0))
-table(lk1,smallG$ALL.AML)
+lk1 <- MLearn(ALL.AML~., smallG, knnI(k=1,l=0), xvalSpec("LOO"))
+confuMat(lk1)
 @
-\item Now do an 8-fold cross-validation using the sequence of records to define groups:
+\item Now do a random 8-fold cross-validation.
+<<doxr>>=
+ranpart = function(K, data) {
+ N = nrow(data)
+ cu = as.numeric(cut(1:N, K))
+ sample(cu, size=N, replace=FALSE)
+}
+ranPartition = function(K) function(data, clab, iternum) {
+ p = ranpart(K, data)
+ which(p == iternum)
+}
+lkran <- MLearn(ALL.AML~., smallG, knnI(k=1,l=0), xvalSpec("LOG", 8, partitionFunc=ranPartition(8)))
+confuMat(lkran)
+@
+\item Now do an 8-fold cross-validation with approximate balance
+among groups with respect to frequency of ALL and AML.  The utility
+function balKfold.xvspec helps for this.
 <<dox2>>=
-lk2 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOG", group=as.integer(
- rep(1:8,each=9)))
-table(lk2,smallG$ALL.AML)
-@
-\item A helper function \Rfunction{balKfold} allows the user to create
-partitions that are approximately balanced with respect to class
-representation.
-<<doba>>=
-balKfold
-lk3 <- xval(smallG, "ALL.AML", knnB, xvalMethod="FUN", 0:0, indFun=balKfold(5), niter=5)
-table(lk3, smallG$ALL.AML)
-@
-\item A function can be supplied to define allocation of records to partitions.  Here
-we supply a function that implements LOO:
-<<doloo2>>=
-LOO2 <- xval(smallG, "ALL.AML", knnB, "FUN", 0:0, function(x,y,i) {
-  (1:ncol(exprs(x)))[-i] }, niter=72 )
-table(lk1, LOO2)
+lk3 <- MLearn(ALL.AML~., smallG, knnI(k=1,l=0), xvalSpec("LOG", 8, partitionFunc=balKfold.xvspec(8)))
+confuMat(lk3)
 @
 \end{itemize}
 
@@ -293,7 +285,7 @@ table(lk3f$out, smallG$ALL.AML)
 
 The \Rfunction{nnet} function returns a structure encoding
 predicted probabilities of class occupancy.  We will use
-this to enrich the \Rfunction{nnetB} output to include
+this to enrich the \Rfunction{MLearn/nnetI} output to include
 a ``doubt'' outcome.  As written this code will handle
 a two-class outcome; additional structure emerges with
 more than two classes and some changes will be needed
@@ -302,12 +294,12 @@ for such cases.
 First we obtain the predicted probabilities (for the test set)
 and round these for display purposes.
 <<getpp>>=
-predProb <- round(nns@predScores,3)
+predProb <- round(testScores(nns),3)
 @
 We save the true labels and the predicted labels.
 <<gettrue>>=
 truth <- as.character(smallG$ALL.AML[-c(1:40)]) 
-simpPred <- predict(RObject(nns),newdata=data.frame(t(exprs(smallG)[1:10,-c(1:40)])),type="class")
+simpPred <- as.character(testPredictions(nns))
 @
 We create a closure that allows boundaries of class probabilities
 to be specified for assertion of ``doubt'':
