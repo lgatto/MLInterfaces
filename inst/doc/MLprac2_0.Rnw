@@ -1,3 +1,8 @@
+%\VignetteIndexEntry{MLInterfaces Exercises, post Bioc 2.1}
+%\VignetteDepends{ALL}
+%\VignetteKeywords{Genomics, MachineLearning}
+%\VignettePackage{MLInterfaces}
+
 
 %
 % NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
