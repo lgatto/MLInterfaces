@@ -9,7 +9,7 @@ License: LGPL
 Depends: R (>= 2.1), Biobase, MASS, methods, genefilter, rpart, rda
 Suggests: class, cluster, e1071, ipred, randomForest, gpls, pamr, rpart,
         MASS, nnet, ALL, gbm, mlbench, hgu95av2, som, RColorBrewer, hu6800,
-        golubEsets, sma, ada
+        golubEsets, sma, ada, keggorth
 LazyLoad: yes
 Collate: legacyConstructors.R	AllClasses.R
 	legacyMethods.R
