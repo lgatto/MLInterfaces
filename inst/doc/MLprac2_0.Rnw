@@ -707,97 +707,97 @@ In the second part, we consider how to extract features from the
 CGH profile to learn about gene cluster activation and phenotype.
 
 
-\subsection{Working with Neve2006}
-
-We are going to examine some aCGH copy number data
-as published by Neve et al 2006.
-
-<<getdat>>=
-library(Neve2006)
-data(neveCGHmatch)
-chr = function(x) pData(featureData(x))$Chrom
-kb = function(x) pData(featureData(x))$kb
-nc17 = neveCGHmatch[ chr(neveCGHmatch) == 17, ]
-<<lk1,fig=TRUE>>=
-par(mfrow=c(3,2))
-for (i in 1:6)
- plot( logRatios(nc17)[,i] ~ kb(nc17), main=nc17$geneCluster[i],
-  ylab="log ratio", xlab="on chr 17")
-par(mfrow=c(1,1))
-@
-
-\subsection{Segmentation via rpart}
-
-First we are going to use rpart as a device for estimating
-a piecewise constant model for log ratios.  No optimality is
-claimed for the technique; it can be compared to tilingArray::segment
-and DNAcopy::segment.  However, there are infrastructure gains
-obtained by using a bona fide modeling tool, which has a generic predict().
-
-We develop additional infrastructure here:
-<<build,results=hide>>=
-setOldClass("rpart")
-setClass("rpSeg", representation(
-  obj="rpart", samp="numeric", LR="numeric", KB="numeric",
-  chr="character", rpCall="call", pdLabel="character"))
-setMethod("show", "rpSeg", function(object) {
- cat("rpart segmentation for sample", object@samp, "phenoLabel", 
-    object@pdLabel, "\n")
- cat("range of clone locations on chr", object@chr, "\n")
- print(range(object@KB))
-})
-setMethod("plot", "rpSeg", function(x, y, ...) {
- rng = range(x@KB)
- X = seq(rng[1], rng[2], 500) 
- Y = predict( x@obj, newdata=data.frame(KB=X) )
- plot( x@KB, x@LR, xlab=paste("kB on chr", x@chr), ylab="log ratio",
-   main=paste("sample", x@samp, ";", x@pdLabel))
- points(X, Y, pch="-", cex=2)
-})
-treeSeg = function(es, samp, chr="17", pdv="geneCluster", ...) {
- LR = logRatios(es)[,samp]
- pdl = as.character(es[[pdv]][samp])
- KB = kb(es)
- ob = rpart(LR~KB, ...)
- new("rpSeg", obj=ob, samp=samp, LR=LR, KB=KB,
-   chr=chr, rpCall=ob$call, pdLabel=pdl)
-}
-@
-
-Now test it out:
-<<lkts1>>=
-ts1 = treeSeg(nc17, 1)
-ts1
-@
-<<ss,fig=TRUE>>=
-tsL = list()
-for (i in 1:6) tsL[[i]] = treeSeg(nc17, i)
-par(mfrow=c(3,2))
-for (i in 1:6) plot(tsL[[i]])
-par(mfrow=c(1,1))
-@
- 
-\subsection{Open problems in integrative analysis}
-
-\addtocounter{mlq}{1}
-\bi
-\item \textit{Question \MLQ.}  Add infrastructure to extract
-estimated mean log ratio at selected chromosomal offsets for
-all samples in a CGHset.
-These extracted quantities 
-can be regarded as new predictive features, and
-will need names.  If possible,
-write the infrastructure so that queries can be couched in
-terms of gene symbols and extents.
-\ei
-
-\addtocounter{mlq}{1}
-\bi
-\item \textit{Question \MLQ.}  Is predictability of breast
-cancer phenotype enhanced
-when use is made of genomic aberration data in addition
-to expression data?
-\ei
-
+%\subsection{Working with Neve2006}
+%
+%We are going to examine some aCGH copy number data
+%as published by Neve et al 2006.
+%
+%<<getdat>>=
+%library(Neve2006)
+%data(neveCGHmatch)
+%chr = function(x) pData(featureData(x))$Chrom
+%kb = function(x) pData(featureData(x))$kb
+%nc17 = neveCGHmatch[ chr(neveCGHmatch) == 17, ]
+%<<lk1,fig=TRUE>>=
+%par(mfrow=c(3,2))
+%for (i in 1:6)
+% plot( logRatios(nc17)[,i] ~ kb(nc17), main=nc17$geneCluster[i],
+%  ylab="log ratio", xlab="on chr 17")
+%par(mfrow=c(1,1))
+%@
+%
+%\subsection{Segmentation via rpart}
+%
+%First we are going to use rpart as a device for estimating
+%a piecewise constant model for log ratios.  No optimality is
+%claimed for the technique; it can be compared to tilingArray::segment
+%and DNAcopy::segment.  However, there are infrastructure gains
+%obtained by using a bona fide modeling tool, which has a generic predict().
+%
+%We develop additional infrastructure here:
+%<<build,results=hide>>=
+%setOldClass("rpart")
+%setClass("rpSeg", representation(
+%  obj="rpart", samp="numeric", LR="numeric", KB="numeric",
+%  chr="character", rpCall="call", pdLabel="character"))
+%setMethod("show", "rpSeg", function(object) {
+% cat("rpart segmentation for sample", object@samp, "phenoLabel", 
+%    object@pdLabel, "\n")
+% cat("range of clone locations on chr", object@chr, "\n")
+% print(range(object@KB))
+%})
+%setMethod("plot", "rpSeg", function(x, y, ...) {
+% rng = range(x@KB)
+% X = seq(rng[1], rng[2], 500) 
+% Y = predict( x@obj, newdata=data.frame(KB=X) )
+% plot( x@KB, x@LR, xlab=paste("kB on chr", x@chr), ylab="log ratio",
+%   main=paste("sample", x@samp, ";", x@pdLabel))
+% points(X, Y, pch="-", cex=2)
+%})
+%treeSeg = function(es, samp, chr="17", pdv="geneCluster", ...) {
+% LR = logRatios(es)[,samp]
+% pdl = as.character(es[[pdv]][samp])
+% KB = kb(es)
+% ob = rpart(LR~KB, ...)
+% new("rpSeg", obj=ob, samp=samp, LR=LR, KB=KB,
+%   chr=chr, rpCall=ob$call, pdLabel=pdl)
+%}
+%@
+%
+%Now test it out:
+%<<lkts1>>=
+%ts1 = treeSeg(nc17, 1)
+%ts1
+%@
+%<<ss,fig=TRUE>>=
+%tsL = list()
+%for (i in 1:6) tsL[[i]] = treeSeg(nc17, i)
+%par(mfrow=c(3,2))
+%for (i in 1:6) plot(tsL[[i]])
+%par(mfrow=c(1,1))
+%@
+% 
+%\subsection{Open problems in integrative analysis}
+%
+%\addtocounter{mlq}{1}
+%\bi
+%\item \textit{Question \MLQ.}  Add infrastructure to extract
+%estimated mean log ratio at selected chromosomal offsets for
+%all samples in a CGHset.
+%These extracted quantities 
+%can be regarded as new predictive features, and
+%will need names.  If possible,
+%write the infrastructure so that queries can be couched in
+%terms of gene symbols and extents.
+%\ei
+%
+%\addtocounter{mlq}{1}
+%\bi
+%\item \textit{Question \MLQ.}  Is predictability of breast
+%cancer phenotype enhanced
+%when use is made of genomic aberration data in addition
+%to expression data?
+%\ei
+%
 \end{document}
 
