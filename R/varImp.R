@@ -38,7 +38,7 @@ setMethod("show", "varImpStruct", function(object) {
  print(dim(object@.Data))
 })
 
-mapPSvec = function(vn, resolveenv) {
+mapPSvecBAD = function(vn, resolveenv) {
 #
 # this uses an annotation environment to remap probe set ids
 # needed for dealing with formula name mangling
@@ -52,6 +52,16 @@ mapPSvec = function(vn, resolveenv) {
                 ansind = na.omit(match(vn, names(newmap)))
                 vn[ vn %in% names(newmap) ] = newmap[ansind]
                 vn
+}
+
+mapPSvec = function (vn, resolveenv) 
+{
+    if (is(resolveenv, "environment")) {
+        ans = unlist(mget(vn, resolveenv, ifnot = NA))
+        if (any(is.na(ans)))  # just pass psid if no mapping
+            ans[is.na(ans)] = names(ans)[is.na(ans)]
+        return(ans)
+    }
 }
 
 
