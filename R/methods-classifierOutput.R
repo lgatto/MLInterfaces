@@ -25,5 +25,7 @@ setMethod("confuMat", "classifierOutput", function(obj)
 setGeneric("testPredictions", function(x) standardGeneric("testPredictions"))
 setMethod("testPredictions", "classifierOutput", function(x) x@testPredictions)
 
+setGeneric("trainPredictions", function(x) standardGeneric("trainPredictions"))
+setMethod("trainPredictions", "classifierOutput", function(x) x@trainPredictions)
 setGeneric("fsHistory", function(x) standardGeneric("fsHistory"))
 setMethod("fsHistory", "classifierOutput", function(x) x@fsHistory)

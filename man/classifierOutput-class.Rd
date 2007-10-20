@@ -6,16 +6,19 @@
 \alias{show,classifierOutput-method}
 \alias{testScores,classifierOutput-method}
 \alias{testPredictions,classifierOutput-method}
+\alias{trainPredictions,classifierOutput-method}
 \alias{fsHistory,classifierOutput-method}
 \alias{testScores}
 \alias{testPredictions}
 \alias{fsHistory}
 
-\title{Class "classifierOutput" ~~~ }
-\description{	 ~~ A concise (1-5 lines) description of what the class is.  ~~}
+\title{Class "classifierOutput"}
+\description{
+This class summarizes the output values from different classifiers.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("classifierOutput", ...)}.
-	 ~~ describe objects here ~~ 
+Objects are typically created during the application of a supervised 
+machine learning algorithm to data and are the value returned.  It is very
+unlikely that any user would create such an object by hand.
 }
 \section{Slots}{
 	 \describe{
@@ -31,20 +34,22 @@ Objects can be created by calls of the form \code{new("classifierOutput", ...)}.
 }
 \section{Methods}{
   \describe{
-    \item{confuMat}{\code{signature(obj = "classifierOutput")}: ... }
-    \item{RObject}{\code{signature(obj = "classifierOutput")}: ... }
-    \item{show}{\code{signature(object = "classifierOutput")}: ... }
+    \item{confuMat}{\code{signature(obj = "classifierOutput")}: Compute
+    the confusion matrix. }
+    \item{RObject}{\code{signature(obj = "classifierOutput")}: The R object
+     returned by the underlying classifier. This can then be passed on to
+     specific methods for those objects, when they exist. }
+    \item{show}{\code{signature(object = "classifierOutput")}: A print method
+      that provides a summary of the output of the classifier. }
     \item{testScores}{\code{signature(object = "classifierOutput")}: ... }
-    \item{testPredictions}{\code{signature(object = "classifierOutput")}: ... }
+    \item{testPredictions}{\code{signature(object = "classifierOutput")}: Print
+     the predicted classes for each sample/individual in the test set. }
+    \item{trainPredictions}{\code{signature(object = "classifierOutput")}: Print
+     the predicted classes for each sample/individual in the training set. }
     \item{fsHistory}{\code{signature(object = "classifierOutput")}: ... }
 	 }
 }
-%\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-%\note{ ~~further notes~~ }
-%
-% ~Make other sections like Warning with \section{Warning }{....} ~
-%
+\author{ V. Carey }
 %\seealso{
 %	~~objects to See Also as \code{\link{~~fun~~}}, ~~~
 %	or \code{\linkS4class{CLASSNAME}} for links to other classes
