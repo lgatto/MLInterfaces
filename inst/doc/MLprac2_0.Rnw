@@ -698,6 +698,22 @@ by RDA as important for discriminating fusion are annotated
 to Genetic Information Processing in the KEGG orthology?
 \ei
 
+\section{Embedding features selection in cross-validation}
+
+We provide helper functions to conduct several kinds of feature
+selection in cross-validation, see \texttt{help(fs.absT)}.
+Here we pick the top 30 features (ranked by absolute t statistic)
+for each cross-validation partition.
+
+<<dofs>>=
+dldFS = MLearn( mol.biol~., fusk, dldaI, xvalSpec("LOG", 5,
+   balKfold.xvspec(5), fs.absT(30) ))
+dldFS
+confuMat(dld1)
+confuMat(dldFS)
+@
+
+
 \section{Learning with array CGH}
 
 This section contains two parts, one of which is left as a pair

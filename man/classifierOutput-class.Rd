@@ -6,6 +6,8 @@
 \alias{show,classifierOutput-method}
 \alias{testScores,classifierOutput-method}
 \alias{testPredictions,classifierOutput-method}
+\alias{testPredictions}
+\alias{trainPredictions}
 \alias{trainPredictions,classifierOutput-method}
 \alias{fsHistory,classifierOutput-method}
 \alias{testScores}

@@ -7,8 +7,9 @@
 \alias{mkfmla}
 \alias{Predict,raboostCont-method}
 \alias{Predict,daboostCont-method}
-\title{real adaboost (Friedman et al) (and discrete adaboost (DAB))  }
+\title{real adaboost (Friedman et al) }
 \description{
+read adaboost ... a demonstration version
 }
 \usage{
 RAB(formula, data, maxiter=200, maxdepth=1)
