@@ -25,10 +25,13 @@ consisting of the selected features for application of \code{\link{MLearn}}.
 }
 %\references{ ~put references to the literature/web site here ~ }
 \author{ VJ Carey <stvjc@channing.harvard.edu> }
-%\note{ ~~further notes~~ 
-
-% ~Make other sections like Warning with \section{Warning }{....} ~
-%}
+\note{ The functions \code{fs.absT} and \code{fs.probT} are
+two examples of approaches to embedded feature selection that make
+sense for two-sample prediction problems.  For selection based on
+linear models or other discrimination measures, you will need to create
+your own selection helper, following the code in these functions as
+examples.
+}
 \seealso{ \code{\link{MLearn}} }
 \examples{
 # we will demonstrate this procedure with the crabs data.
