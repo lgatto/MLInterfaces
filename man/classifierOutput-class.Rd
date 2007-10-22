@@ -12,7 +12,7 @@
 \alias{fsHistory,classifierOutput-method}
 \alias{testScores}
 \alias{testPredictions}
-\alias{fsHistory}
+%\alias{fsHistory}
 
 \title{Class "classifierOutput"}
 \description{

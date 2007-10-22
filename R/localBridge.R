@@ -96,7 +96,8 @@ dlda2 = function (formula, data, ...)
     cl = model.response(mf)
     x = mf[, -1]
     require(sma)
-    ans = stat.diag.da(x, as.numeric(cl), x, ...)$pred
+# deal with global visibility
+    ans = get("stat.diag.da")(x, as.numeric(cl), x, ...)$pred
     ans = list(traindat = x, ans = ans, traincl = cl)
     class(ans) = "dlda2"
     ans
@@ -104,7 +105,8 @@ dlda2 = function (formula, data, ...)
 
 predict.dlda2 = function(object, newdata, ...) {
  require(sma)
- stat.diag.da( object$traindat, as.numeric(object$traincl), newdata, ... )$pred
+# deal with global visibility
+ get("stat.diag.da")( object$traindat, as.numeric(object$traincl), newdata, ... )$pred
 }
 
 # -- rdacvML -- bridges to rda::rda.cv which requires a run of rda
