@@ -148,7 +148,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    if (do.fs) featsUsed = lapply(  out, function(x) x[["featInUse"]] )
    reord = match(inds, ords)
    testpred = factor(classif)[reord]
-   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall, fsHistory=featsUsed)
+   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall, RObject = out, fsHistory=featsUsed)
 })
 
 

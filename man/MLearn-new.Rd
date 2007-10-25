@@ -24,8 +24,6 @@
 \alias{MLearn,formula,ExpressionSet,character,numeric,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,numeric,missing-method}
 \alias{MLearn,formula,data.frame,learnerSchema,numeric,missing-method}
-\alias{xvalSpec}
-\alias{xvalSpec-class}
 \alias{MLearn,formula,data.frame,learnerSchema,xvalSpec,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
 \alias{plotXvalRDA}
