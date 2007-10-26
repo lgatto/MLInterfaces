@@ -86,3 +86,23 @@ setMethod("plot", "varImpStruct", function(x, y, ..., n=20, resolveenv=NULL) {
 			xlab="Mean decrease in accuracy")
 		} })
            
+setGeneric("report", function(x, n=10, resolveenv=NULL) standardGeneric("report"))
+
+setMethod("report", "varImpStruct", function(x, n=10, resolveenv=NULL) {
+        vn <- x@varnames
+
+# but the key thing is to get ifnotfound right below, once you have done these steps
+        if (!is.null(resolveenv))
+		{
+		vn = mapPSvec(vn, resolveenv)
+		}
+	if (x@method=="gbm") 
+		{
+		return(data.frame(imp=x@.Data[n:1], names=vn[n:1]))
+		}
+	else if (x@method=="randomForest") 
+		{
+		mda <- x@.Data[,"MeanDecreaseAccuracy"]
+                omda <- order(-mda)[1:n]
+		return(data.frame(MnDecrAcc=mda[omda], names=vn[omda]))
+		} })

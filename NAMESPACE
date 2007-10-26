@@ -27,7 +27,7 @@ exportMethods(
   "plot", 
   "xval", 
   "xvalLoop", "trainPredictions",
-  "xvalML", "testScores", "testPredictions", "fsHistory")
+  "xvalML", "testScores", "testPredictions", "fsHistory", "report")
 
 export(tellMLearnMethods, 
 	randomForestI, knnI, dldaI, nnetI, rpartI, 

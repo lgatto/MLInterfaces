@@ -20,10 +20,10 @@ setClass("classifierOutput", representation(
 	call="call"),
 	  prototype=prototype(testOutcomes=factor(),
 				testPredictions=factor(),
-				testScores=matrix(),
+				testScores=NULL,
 				trainOutcomes=factor(),
 				trainPredictions=factor(),
-				trainScores=matrix(),
+				trainScores=NULL,
 				fsHistory=list(), 
 				RObject=list(), call=new("call")))
 

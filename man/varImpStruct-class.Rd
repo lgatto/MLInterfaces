@@ -4,6 +4,8 @@
 \alias{plot,varImpStruct-method}
 \alias{plot,varImpStruct,ANY-method}
 \alias{show,varImpStruct-method}
+\alias{report,varImpStruct-method}
+\alias{report}
 \alias{getVarImp}
 \alias{getVarImp,classifOutput-method}
 \alias{getVarImp,classifierOutput-method}
@@ -41,6 +43,8 @@ names in a translation environment }
 display }
     \item{getVarImp}{\code{signature(object = "classifOutput")}: extractor
 of variable importance structure}
+    \item{report}{\code{signature(object = "classifOutput")}: extractor
+of variable importance data, with annotation}
   }
 }
 %\references{ ~put references to the literature/web site here ~ }
