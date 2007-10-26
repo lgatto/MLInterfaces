@@ -58,19 +58,31 @@ how to convert the material in obj [produced by [packname::mlfunname] ] into a
 classifierOutput instance.}
 }
 \details{
-This implementation attempts to reduce complexity of the basic
-MLInterfaces engine.  The primary MLearn method, which includes 
-"learnerSchema" in its signature, is very concise.  Details
-of massaging inputs and outputs are left to a learnerSchema class instance.
-The MLint\_devel vignette describes the schema formulation.  learnerSchema instances
-are provided for following methods; the naming convention is that the
-method basename is prepended to `I'.
+%This implementation attempts to reduce complexity of the basic
+%MLInterfaces engine.  The primary MLearn method, which includes 
+%"learnerSchema" in its signature, is very concise.  Details
+%of massaging inputs and outputs are left to a learnerSchema class instance.
+%The MLint\_devel vignette describes the schema formulation.  learnerSchema instances
+%are provided for following methods; the naming convention is that the
+%method basename is prepended to `I'.
+%
+%Note that some schema instances are presented as functions.  The
+%parameters must be set to use these models.
+The purpose of the MLearn methods is to provide a uniform calling sequence
+to diverse machine learning algorithms.  In R package, machine learning functions
+can have parameters \code{(x, y, ...)} or \code{(formula, data, ...)} or some
+other sequence, and these functions can return lists or vectors or other
+sorts of things.  With MLearn, we
+always have calling sequence \code{MLearn(formula, data, method, trainInd, ...)}, 
+and \code{data} can be a \code{data.frame} or \code{ExpressionSet}.  \code{MLearn}
+will always return an S4 instance of \code{classifierObject} or \code{clusteringObject}.
 
-Note that some schema instances are presented as functions.  The
-parameters must be set to use these models.
+At this time (1.13.x), NA values
+in predictors trigger an error.
 
 To obtain documentation on the older (pre bioc 2.1) version of the MLearn
 method, please use help(MLearn-OLD).
+
 \describe{
 \item{randomForestI}{\link[randomForest]{randomForest}.  Note, that to obtain the
 default performance of randomForestB, you need to set mtry and sampsize parameters

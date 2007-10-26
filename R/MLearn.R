@@ -16,8 +16,10 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
 ## execute on training data 
   ans = lfun( formula, trdata, ...)
 ## collect response subsets
-  trFrame = model.frame(formula, trdata)
-  teFrame = model.frame(formula, tedata)
+  trFrame = try(model.frame(formula, trdata, na.action=na.fail))
+  if (inherits(trFrame, "try-error")) stop("NA encountered in data.  Please rectify.")
+  teFrame = model.frame(formula, tedata, na.action=na.fail)
+  if (inherits(teFrame, "try-error")) stop("NA encountered in data.  Please rectify.")
   trout = model.response( trFrame )
   teout = model.response( teFrame )
 ## tell what was done
