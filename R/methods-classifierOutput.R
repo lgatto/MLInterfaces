@@ -18,9 +18,18 @@ setMethod("RObject", "classifierOutput", function(obj) obj@RObject)
 setGeneric("testScores", function(x) standardGeneric("testScores"))
 setMethod("testScores", "classifierOutput", function(x) x@testScores)
 
-#setGeneric("confuMat", function(x) standardGeneric("confuMat"))
-setMethod("confuMat", "classifierOutput", function(obj)
+#setGeneric("confuMat", function(x,type) standardGeneric("confuMat"))
+setMethod("confuMat", c("classifierOutput","missing"), function(obj,type)
    table(given=obj@testOutcomes, predicted=obj@testPredictions))
+setMethod("confuMat", c("classifierOutput","character"), 
+     function(obj,type) {
+        if(type=="test")
+           return(table(given=obj@testOutcomes, predicted=obj@testPredictions))
+        else if(type=="train")
+           return(table(given=obj@trainOutcomes, predicted=obj@trainPredictions))
+ 	else stop("non-missing type must be either 'test' or 'train'")
+	})
+      
 
 setGeneric("testPredictions", function(x) standardGeneric("testPredictions"))
 setMethod("testPredictions", "classifierOutput", function(x) x@testPredictions)

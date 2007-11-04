@@ -1,7 +1,7 @@
 \name{classifierOutput-class}
 \docType{class}
 \alias{classifierOutput-class}
-\alias{confuMat,classifierOutput-method}
+%\alias{confuMat,classifierOutput-method}
 \alias{RObject,classifierOutput-method}
 \alias{show,classifierOutput-method}
 \alias{testScores,classifierOutput-method}
