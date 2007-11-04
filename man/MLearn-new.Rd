@@ -5,6 +5,7 @@
 \alias{dlda}
 \alias{glmI.logistic} 
 \alias{knnI} 
+\alias{ksvmI} 
 \alias{ldaI} 
 \alias{lvqI} 
 \alias{naiveBayesI} 
@@ -117,6 +118,7 @@ that 'optimal' choice.  The bridge code can be modified to facilitate
 alternative choices of the parameters in use.  \code{plotXvalRDA}
 is an interface to the plot method for objects of class rdacv defined in
 package rda.}
+\item{ksvmI}{\link[kernlab]{ksvm}}
 } % end list of schemas
 } % end details
 \value{

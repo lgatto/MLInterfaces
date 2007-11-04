@@ -52,3 +52,6 @@ sldaI = makeLearnerSchema("ipred", "slda",
 
 # to do as of 12 Sep 2007 -- inclass, inbagg [ need good cFUN examples before going there ]
 # pamr, gbm, logitBoost
+
+ksvmI = makeLearnerSchema("kernlab", "ksvm",
+    standardMLIConverter)

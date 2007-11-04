@@ -159,7 +159,10 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
 
 setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema",
    "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
+	thecall = match.call()
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
-	MLearn(formula, data, method, trainInd, ...)
+	ans = MLearn(formula, data, method, trainInd, ...)
+	ans@call = thecall
+	ans
 })
 
