@@ -52,7 +52,10 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric", "m
 # from pData
 #
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
-        MLearn( formula, data, method, trainInd, ... )
+	thecall = match.call()
+        ans = MLearn( formula, data, method, trainInd, ... )
+ 	ans@call = thecall
+	ans
  })
 
 # try an approach to cross-validated interface
