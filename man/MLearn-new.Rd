@@ -5,6 +5,7 @@
 \alias{dlda}
 \alias{glmI.logistic} 
 \alias{knnI} 
+\alias{knn.cvI} 
 \alias{ksvmI} 
 \alias{ldaI} 
 \alias{lvqI} 
@@ -19,6 +20,7 @@
 \alias{dldaI}
 \alias{sldaI}
 \alias{knn2}
+\alias{knn.cv2}
 \alias{ldaI.predParms}
 \alias{lvq}
 \alias{rab}
@@ -90,6 +92,13 @@ default performance of randomForestB, you need to set mtry and sampsize paramete
 to sqrt(number of features) and table([training set response factor]) respectively,
 as these were not taken to be the function's defaults.}
 \item{knnI(k=1,l=0)}{\link[class]{knn}; special support bridge required, defined in MLint}
+\item{knn.cvI(k=1,l=0)}{\link[class]{knn.cv}; special support bridge required, defined in MLint.  This option uses the embedded leave-one-out
+cross-validation of \code{knn.cv}, and thereby
+achieves high performance.  You can have more general cross-validation
+using \code{knnI} with an \code{xvalSpec}, but it will be slower.
+When using this learner schema, you should use the
+numerical \code{trainInd} setting with \code{1:N} where
+\code{N} is the number of samples.}
 \item{dldaI}{\link[sma]{stat.diag.da}; special support bridge required, defined in MLint}
 \item{nnetI}{\link[nnet]{nnet}}
 \item{rpartI}{\link[rpart]{rpart}}

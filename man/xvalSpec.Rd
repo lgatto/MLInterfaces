@@ -14,7 +14,9 @@ xvalSpec( type, niter=0, partitionFunc= function(data, classLab, iternum ) {
 \arguments{
 
   \item{type}{a string, "LOO" indicating leave-one-out
-cross-validation, or "LOG" indicating leave-out-group.}
+cross-validation, or "LOG" indicating leave-out-group, or
+"NOTEST", indicating the entire dataset is used in a single
+training run.}
 
   \item{niter}{numeric specification of the number of
 cross-validation iterations to use.  Ignored if \code{type}

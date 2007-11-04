@@ -70,6 +70,23 @@ predict.knn2 = function(object, newdata, ...) {
  class::knn( object$traindat, newdata, object$traincl , prob=TRUE, ... )
 }
 
+# -- knn.cv
+
+knn.cv2 = function (formula, data, ...) 
+{
+    mf = model.frame(formula, data)
+    cl = model.response(mf)
+    x = mf[, -1]
+    ans = class::knn.cv( x, cl, prob=TRUE, ...)
+    ans = list(traindat = x, ans = ans, traincl = cl)
+    class(ans) = "knn.cv2"
+    ans
+}
+
+predict.knn.cv2 = function(object, newdata, ...) {
+ class::knn.cv( newdata, object$traincl , prob=TRUE, ... )
+}
+
 # -- lvq
 
 lvq = function(formula, data, ...) {

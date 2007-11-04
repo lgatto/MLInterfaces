@@ -2,8 +2,10 @@ setMethod("show", "classifierOutput", function(object) {
  cat("MLInterfaces classification output container\n")
  cat("The call was:\n")
  print(object@call)
- cat("Predicted outcome distribution for test set:\n")
- print(table(testPredictions(object)))
+ if (length(testPredictions(object))>0) {
+    cat("Predicted outcome distribution for test set:\n")
+    print(table(testPredictions(object)))
+ }
  if (length(tsco <- object@testScores)>0) {
   cat("Summary of scores on test set (use testScores() method for details):\n") 
   if (is(tsco, "numeric")) print(summary(tsco))
@@ -18,15 +20,21 @@ setMethod("RObject", "classifierOutput", function(obj) obj@RObject)
 setGeneric("testScores", function(x) standardGeneric("testScores"))
 setMethod("testScores", "classifierOutput", function(x) x@testScores)
 
-#setGeneric("confuMat", function(x,type) standardGeneric("confuMat"))
-setMethod("confuMat", c("classifierOutput","missing"), function(obj,type)
-   table(given=obj@testOutcomes, predicted=obj@testPredictions))
+#setGeneric("confuMat", function(obj,type) standardGeneric("confuMat"))
+setMethod("confuMat", c("classifierOutput","missing"), function(obj,type) {
+    confuMat(obj, "test") })
 setMethod("confuMat", c("classifierOutput","character"), 
      function(obj,type) {
-        if(type=="test")
+        if(type=="test") {
+	   if (length(obj@testOutcomes)==0)
+		stop("there is no test set in this classifier output")
            return(table(given=obj@testOutcomes, predicted=obj@testPredictions))
-        else if(type=="train")
+           }
+        else if(type=="train") {
+	   if (length(obj@trainOutcomes)==0)
+		stop("there is no training set in this classifier output")
            return(table(given=obj@trainOutcomes, predicted=obj@trainPredictions))
+           }
  	else stop("non-missing type must be either 'test' or 'train'")
 	})
       

@@ -169,3 +169,16 @@ MLIConverter.slda = function(obj, data, trainInd) { # decision.values parm neede
    new("classifierOutput", testPredictions=factor(tepr), testScores=teprob[[2]],
        trainPredictions=factor(tepr), trainScores=trprob[[2]], RObject=obj)
    }
+
+MLIConverter.knncv = function(k=1, l=0) function(obj, data, trainInd) {
+#
+# it is assumed that there is no train/test distinction --
+# the CV is embedded LOO, so all predictions are test predictions
+#
+   kpn = names(obj$traindat)  # name is somewhat misleading but OK
+   trData = data[trainInd,kpn]  # must be sure trData just has vbls in fmla
+   trpr = predict(obj, trData, k, l)
+   names(trpr) = rownames(trData)
+   new("classifierOutput", testPredictions=factor(trpr), testScores=attr(trpr, "prob"),
+       trainPredictions=factor(), RObject=obj, embeddedCV=TRUE)
+   }

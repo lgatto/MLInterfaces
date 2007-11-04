@@ -4,6 +4,9 @@ randomForestI = makeLearnerSchema("randomForest", "randomForest",
 knnI = function(k=1, l=0) {makeLearnerSchema("MLInterfaces", "knn2",
     MLIConverter.knn(k, l))}
 
+knn.cvI = function(k=1, l=0) {makeLearnerSchema("MLInterfaces", "knn.cv2",
+    MLIConverter.knncv(k, l))}
+
 dldaI = makeLearnerSchema("MLInterfaces", "dlda2",
     MLIConverter.dlda) 
 
