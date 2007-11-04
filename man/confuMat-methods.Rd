@@ -3,6 +3,8 @@
 \alias{confuMat}
 \alias{confuMat-methods}
 \alias{confuMat,classifOutput-method}
+\alias{confuMat,classifOutput,missing-method}
+\alias{confuMat,classifOutput,character-method}
 \alias{confuMat,classifierOutput-method}
 \alias{confuMat,classifierOutput,character-method}
 \alias{confuMat,classifierOutput,missing-method}
