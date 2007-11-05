@@ -22,10 +22,13 @@ setMethod("getVarImp", "classifOutput", function(object) {
 
 setMethod("getVarImp", "classifierOutput", function(object) {
 # watch out, people are using compound S3 classes c("randomForest.formula", "randomForest")
+ 	fixNames = function(x) gsub("\\.", "-", x)
 	if (any(class(object@RObject) == "randomForest")) {
 		imp <- object@RObject$importance
-		return(new("varImpStruct", data.matrix(imp[,-1]), 
-			method="randomForest", varnames= row.names(imp)))
+		dm = data.matrix(imp)
+		rownames(dm) = fixNames(row.names(imp))
+		return(new("varImpStruct", dm,
+			method="randomForest", varnames= rownames(dm)))
 		}
 	else stop("getVarImp defined only for randomForestI-based classifierOutput")
 })
@@ -38,63 +41,38 @@ setMethod("show", "varImpStruct", function(object) {
  print(dim(object@.Data))
 })
 
-mapPSvecBAD = function(vn, resolveenv) {
-#
-# this uses an annotation environment to remap probe set ids
-# needed for dealing with formula name mangling
-#
-                vn = make.names(vn)
-                maplist = as.list(resolveenv) # sorry
-                nn = names(maplist)
-                nn = make.names(nn)
-                names(maplist) = nn
-                newmap = na.omit(unlist(maplist))
-                ansind = na.omit(match(vn, names(newmap)))
-                vn[ vn %in% names(newmap) ] = newmap[ansind]
-                vn
-}
 
-mapPSvec = function (vn, resolveenv) 
+mapPSvec = function (vn, plat, toktype) 
 {
-    if (is(resolveenv, "environment")) {
-        ans = unlist(mget(vn, resolveenv, ifnot = NA))
+        ans = unlist(lookUp(vn, plat, toktype))
         if (any(is.na(ans)))  # just pass psid if no mapping
             ans[is.na(ans)] = names(ans)[is.na(ans)]
         return(ans)
-    }
 }
 
 
-setMethod("plot", "varImpStruct", function(x, y, ..., n=20, resolveenv=NULL) {
+setMethod("plot", "varImpStruct", function(x, y, ..., n=20, plat, toktype) {
         vn <- x@varnames
 
 # but the key thing is to get ifnotfound right below, once you have done these steps
-        if (!is.null(resolveenv))
-		{
-		vn = mapPSvec(vn, resolveenv)
-		}
-	if (x@method=="gbm") 
-		{
-		barplot(x@.Data[n:1], names=vn[n:1], horiz=TRUE,
-			xlab="Relative importance")
-		}
-	else if (x@method=="randomForest") 
+	if (!missing(plat)) vn = mapPSvec(vn, plat, toktype)
+	if (x@method=="randomForest") 
 		{
 		mda <- x@.Data[,"MeanDecreaseAccuracy"]
                 omda <- order(-mda)[n:1]
 		barplot(mda[omda], names=vn[omda], horiz=TRUE,
-			xlab="Mean decrease in accuracy")
+			xlab="Mean decrease in accuracy", ...)
 		} })
            
-setGeneric("report", function(x, n=10, resolveenv=NULL) standardGeneric("report"))
+setGeneric("report", function(x, n=10, plat, toktype) standardGeneric("report"))
 
-setMethod("report", "varImpStruct", function(x, n=10, resolveenv=NULL) {
+setMethod("report", "varImpStruct", function(x, n=10, plat, toktype) {
         vn <- x@varnames
 
 # but the key thing is to get ifnotfound right below, once you have done these steps
-        if (!is.null(resolveenv))
+        if (!missing(plat))
 		{
-		vn = mapPSvec(vn, resolveenv)
+		vn = mapPSvec(vn, plat, toktype)
 		}
 	if (x@method=="gbm") 
 		{

@@ -193,7 +193,8 @@ confuMat(bb.1)
 data(sample.ExpressionSet)
 X = MLearn(type~., sample.ExpressionSet[100:250,], randomForestI, 1:16, importance=TRUE )
 library(randomForest)
-varImpPlot(RObject(X))
+library(hgu95av2.db)
+plot(getVarImp(X), n=10, resolveenv=hgu95av2SYMBOL)
 #
 # demonstrate cross validation
 #

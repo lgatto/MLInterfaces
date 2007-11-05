@@ -1,6 +1,7 @@
 import("methods")
 import("tools")
 import("Biobase")
+import("annotate")
 
 exportClasses( "MLOutput", "classifOutput", "clustOutput",
 	"MLScore", "probMat", "probArray", "membMat", "qualScore", "silhouetteVec",

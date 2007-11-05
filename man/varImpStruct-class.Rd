@@ -37,8 +37,10 @@ Class \code{"vector"}, by class "matrix", with explicit coerce.
 \section{Methods}{
   \describe{
     \item{plot}{\code{signature(x = "varImpStruct")}: make a bar plot,
-you can supply an argument resolveenv which will look up variable
-names in a translation environment }
+you can supply arguments \code{plat}
+and \code{toktype} which will use \code{lookUp(...,plat,toktype)}
+from the \code{annotate} package to translate probe names to, e.g.,
+gene symbols.}
     \item{show}{\code{signature(object = "varImpStruct")}: simple abbreviated
 display }
     \item{getVarImp}{\code{signature(object = "classifOutput")}: extractor
@@ -60,19 +62,15 @@ of variable importance data, with annotation}
 \examples{
 library(golubEsets)
 data(Golub_Merge)
-library(hu6800)
-smallG <- Golub_Merge[1:60,]
+library(hu6800.db)
+smallG <- Golub_Merge[1001:1060,]
 set.seed(1234)
 opar=par(no.readonly=TRUE)
 par(las=2, mar=c(10,11,5,5))
-rf <- randomForestB( smallG, "ALL.AML", 1:40, importance=TRUE )
-plot( getVarImp( rf ), n=10, resolveenv=hu6800SYMBOL )
-gb <- gbmB( smallG, "ALL.AML", 1:40 , n.minobsinnode=3 , n.trees=6000)
-plot( getVarImp( gb ), n=10, resolveenv=hu6800SYMBOL )
-set.seed(1234)
 rf2 <- MLearn(ALL.AML~., smallG, randomForestI, 1:40, importance=TRUE,
  sampsize=table(smallG$ALL.AML[1:40]), mtry=sqrt(ncol(exprs(smallG))))
-plot( getVarImp( rf2 ), n=10, resolveenv=hu6800SYMBOL ) # translation?
+plot( getVarImp( rf2 ), n=10, plat="hu6800", toktype="SYMBOL")
 par(opar)
+report( getVarImp( rf2 ), n=10, plat="hu6800", toktype="SYMBOL")
 }
 \keyword{classes}
