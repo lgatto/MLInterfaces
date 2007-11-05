@@ -22,7 +22,7 @@ setMethod("getVarImp", "classifOutput", function(object) {
 
 setMethod("getVarImp", "classifierOutput", function(object) {
 # watch out, people are using compound S3 classes c("randomForest.formula", "randomForest")
- 	fixNames = function(x) gsub("\\.", "-", x)
+ 	fixNames = function(x) gsub("\\.", "-", gsub("^X", "", x))
 	if (any(class(object@RObject) == "randomForest")) {
 		imp <- object@RObject$importance
 		dm = data.matrix(imp)
