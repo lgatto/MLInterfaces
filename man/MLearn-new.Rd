@@ -24,6 +24,7 @@
 \alias{ldaI.predParms}
 \alias{lvq}
 \alias{rab}
+\alias{adaI}
 \alias{MLearn,formula,ExpressionSet,character,numeric,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,numeric,missing-method}
 \alias{MLearn,formula,data.frame,learnerSchema,numeric,missing-method}
@@ -108,8 +109,9 @@ numerical \code{trainInd} setting with \code{1:N} where
 \item{logisticI(threshold)}{\link[stats]{glm} -- with binomial family, expecting a dichotomous
 factor as response variable, not bulletproofed against other responses yet.  If response
 probability estimate exceeds threshold, predict 1, else 0}
-\item{RABI}{\link[MLint]{RAB} -- an experimental implementation of real Adaboost
-of Friedman Hastie Tibshirani Ann Stat 2001}
+%\item{RABI}{\link[MLint]{RAB} -- an experimental implementation of real Adaboost
+%of Friedman Hastie Tibshirani Ann Stat 2001}
+\item{ada}{\link[ada]{ada}}
 \item{lvqI}{\link[class]{lvqtest} after building codebook with lvqinit and updating with
 olvq1.  You will need to write your own detailed schema if you want to tweak tuning
 parameters.}
@@ -175,12 +177,20 @@ logi
 names(RObject(logi))
 rp2 = MLearn(sp~CW+RW, data=crabs, rpartI, kp)
 rp2
-# recode data for RAB
-nsp = ifelse(crabs$sp=="O", -1, 1)
-nsp = factor(nsp)
-ncrabs = cbind(nsp,crabs)
-rab1 = MLearn(nsp~CW+RW, data=ncrabs, RABI, kp, maxiter=10)
-rab1
+## recode data for RAB
+#nsp = ifelse(crabs$sp=="O", -1, 1)
+#nsp = factor(nsp)
+#ncrabs = cbind(nsp,crabs)
+#rab1 = MLearn(nsp~CW+RW, data=ncrabs, RABI, kp, maxiter=10)
+#rab1
+#
+# new approach to adaboost
+#
+ada1 = MLearn(sp ~ CW+RW, data = crabs, method = adaI, 
+    trainInd = kp, type = "discrete", iter = 200)
+ada1
+confuMat(ada1)
+#
 lvq.1 = MLearn(sp~CW+RW, data=crabs, lvqI, kp )
 lvq.1
 nb.1 = MLearn(sp~CW+RW, data=crabs, naiveBayesI, kp )
@@ -194,7 +204,10 @@ data(sample.ExpressionSet)
 X = MLearn(type~., sample.ExpressionSet[100:250,], randomForestI, 1:16, importance=TRUE )
 library(randomForest)
 library(hgu95av2.db)
-plot(getVarImp(X), n=10, resolveenv=hgu95av2SYMBOL)
+opar = par(no.readonly=TRUE)
+par(las=2)
+plot(getVarImp(X), n=10, plat="hgu95av2", toktype="SYMBOL")
+par(opar)
 #
 # demonstrate cross validation
 #

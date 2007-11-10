@@ -25,10 +25,11 @@ MLIConverter.knn = function(k=1, l=0) function(obj, data, trainInd) {
 
 MLIConverter.dlda = function(obj, data, trainInd) {
    kpn = names(obj$traindat)
+   outcoLev = levels(obj$traincl) # fragile
    teData = data[-trainInd,kpn] # key distinction -- typical predict methods allow
    trData = data[trainInd,kpn]  # variables in newdata to be superset of those in formula, not knn
-   tepr = predict(obj, teData)
-   trpr = predict(obj, trData)
+   tepr = outcoLev[predict(obj, teData)]
+   trpr = outcoLev[predict(obj, trData)]
    names(tepr) = rownames(teData)
    names(trpr) = rownames(trData)
    new("classifierOutput", testPredictions=factor(tepr), 

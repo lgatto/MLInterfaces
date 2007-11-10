@@ -58,3 +58,6 @@ sldaI = makeLearnerSchema("ipred", "slda",
 
 ksvmI = makeLearnerSchema("kernlab", "ksvm",
     standardMLIConverter)
+
+adaI = makeLearnerSchema("ada", "ada",
+    standardMLIConverter)
