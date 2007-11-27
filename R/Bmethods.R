@@ -1453,6 +1453,7 @@ setMethod("randomForestB", c("ExpressionSet", "character", "integer", "ANY", "AN
 			norm.votes, do.trace, keep.forest, corr.bias, metric, ...){
 
 			#.Deprecated("MLearn", "MLInterfaces")
+			.Defunct("MLearn",,"randomForestB is no longer available.  Please use MLearn method with randomForestI learnerSpec.")
 			trainDat <- t(exprs(exprObj)[,trainInd])
 			cl <- pData(exprObj)[[classifLab]][trainInd]
 			if(missing(xtest)){ xtest <- NULL }
@@ -1465,7 +1466,7 @@ setMethod("randomForestB", c("ExpressionSet", "character", "integer", "ANY", "AN
 			testDat <- t(exprs(exprObj)[ ,-trainInd])
 			dis <- dist(testDat, method=metric)
 
-			out <- randomForest::randomForest(trainDat, y=cl, xtest=xtest, ytest=ytest, addclass=addclass, 
+			out <- randomForest::randomForest(data.frame(trainDat), y=cl, xtest=data.frame(testDat), ytest=ytest, addclass=addclass, 
 						ntree=ntree, mtry= mtry,
 						classwt=classwt, cutoff=cutoff, sampsize=sampsize, nodesize=nodesize,
 						importance=importance, proximity=proximity, oob.prox=oob.prox, 

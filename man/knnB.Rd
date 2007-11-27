@@ -100,12 +100,16 @@ knnB(exprObj, classifLab, trainInd, k = 1, l = 1, prob = TRUE,
   \item{metric}{ See \code{knn} for a complete description. }
 }
 \details{
+Note: As of version 1.13.18 of MLInterfaces, randomForestB is no longer
+supported.  \code{\link{MLearn}} with \code{randomForestI}
+learnerSpec is supported, please use it.
+
   See \code{\link[class]{knn}} for a complete description of
 parameters to and details of the k-nearest neighbor procedure
 in the \code{class} package.
 
 For other interfaces, such as ldaB, nnetB, rpartB, gbmB,
-randomForestB, and so on, see the usage note above and
+and so on, see the usage note above and
 also see the man pages for those functions.  For each
 of these functions you will need to attach the appropriate package
 in order to examine the man page.
@@ -144,7 +148,6 @@ ldaB( smallG, "ALL.AML", 1:40 )
 qdaB( smallG[1:10,], "ALL.AML", 1:40 )
 pamrB( smallG, "ALL.AML", 1:40 )
 rpartB( smallG, "ALL.AML", 1:35 )
-randomForestB( smallG, "ALL.AML", 1:35 )
 gbmB( smallG, "ALL.AML", 1:40, n.minobsinnode=3 , n.trees=6000)
 stat.diag.daB( smallG, "ALL.AML", 1:40 )
 }
