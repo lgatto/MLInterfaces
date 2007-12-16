@@ -91,7 +91,9 @@ method, please use help(MLearn-OLD).
 \item{randomForestI}{\link[randomForest]{randomForest}.  Note, that to obtain the
 default performance of randomForestB, you need to set mtry and sampsize parameters
 to sqrt(number of features) and table([training set response factor]) respectively,
-as these were not taken to be the function's defaults.}
+as these were not taken to be the function's defaults.   Note you can use
+xvalSpec("NOTEST") as trainInd, to use all the samples; the RObject() result
+will print the misclassification matrix estimate along with OOB error rate estimate.}
 \item{knnI(k=1,l=0)}{\link[class]{knn}; special support bridge required, defined in MLint}
 \item{knn.cvI(k=1,l=0)}{\link[class]{knn.cv}; special support bridge required, defined in MLint.  This option uses the embedded leave-one-out
 cross-validation of \code{knn.cv}, and thereby
@@ -128,7 +130,8 @@ A final run of rda is then conducted with the tuning parameters set at
 that 'optimal' choice.  The bridge code can be modified to facilitate
 alternative choices of the parameters in use.  \code{plotXvalRDA}
 is an interface to the plot method for objects of class rdacv defined in
-package rda.}
+package rda.  You can use xvalSpec("NOTEST") with this procedure to
+use all the samples to build the discriminator.}
 \item{ksvmI}{\link[kernlab]{ksvm}}
 } % end list of schemas
 } % end details

@@ -195,7 +195,9 @@ predict.rdacvML = function(object, newdata, ...) {
  newd = data.matrix(newdata)
  fnames = rownames(object$x)
  newd = newd[, fnames]
- inds = predict(object$finalFit, object$x, object$resp.num, xnew=t(newd))
+ if (any(dim(newd) == 0))
+     inds =predict(object$finalFit, object$x, object$resp.num, xnew=object$x)
+ else inds = try(predict(object$finalFit, object$x, object$resp.num, xnew=t(newd)))
  factor(levels(object$resp.fac)[inds])
 }
 
