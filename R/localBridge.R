@@ -171,6 +171,20 @@ rdacvML = function(formula, data, ...) {
  fit
 }
 
+rdaML = function(formula, data, ...) {
+ dots = list(...)
+ nd = names(dots)
+ if (!(all(c("alpha", "delta") %in% nd))) stop("alpha and delta must be supplied with rdaI")
+ fit = rdaFixed( formula, data, ... )
+ class(fit) = "rdaML"
+ fit
+}
+
+print.rdaML = function(x, ...) {
+ cat("rdaML S3 instance. components:\n")
+ print(names(x))
+}
+
 print.rdacvML = function(x, ...) {
  cat("rdacvML S3 instance. components:\n")
  print(names(x))
@@ -200,6 +214,17 @@ predict.rdacvML = function(object, newdata, ...) {
  else inds = try(predict(object$finalFit, object$x, object$resp.num, xnew=t(newd)))
  factor(levels(object$resp.fac)[inds])
 }
+
+predict.rdaML = function(object, newdata, ...) {
+ newd = data.matrix(newdata)
+ fnames = rownames(object$x)
+ newd = newd[, fnames]
+ if (any(dim(newd) == 0))
+     inds =predict(object$finalFit, object$x, object$resp.num, xnew=object$x)
+ else inds = try(predict(object$finalFit, object$x, object$resp.num, xnew=t(newd)))
+ factor(levels(object$resp.fac)[inds])
+}
+
 
 
 cverrs = function (x, type = c("both", "error", "gene"), nice = FALSE, 

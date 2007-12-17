@@ -50,6 +50,9 @@ baggingI = makeLearnerSchema("ipred", "bagging",
 rdacvI = makeLearnerSchema("MLInterfaces", "rdacvML",
     standardMLIConverter)
 
+rdaI = makeLearnerSchema("MLInterfaces", "rdaML",
+    standardMLIConverter)
+
 sldaI = makeLearnerSchema("ipred", "slda",
     MLIConverter.slda)
 

@@ -32,6 +32,8 @@
 \alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
 \alias{plotXvalRDA}
 \alias{rdacvI}
+\alias{rdaI}
+\alias{rdaML}
 \alias{rdacvML}
 \alias{makeLearnerSchema}
 \alias{standardMLIConverter}
@@ -120,6 +122,8 @@ parameters.}
 \item{naiveBayesI}{\link[e1071]{naiveBayes}}
 \item{baggingI}{\link[ipred]{bagging}}
 \item{sldaI}{\link[ipred]{slda}}
+\item{rdaI}{\link[ipred]{rda} -- you must supply the alpha and delta parameters to
+use this.  Typically cross-validation is used to select these.  See \code{rdacvI} below.}
 \item{rdacvI}{\link[rda]{rda.cv}.  This interface is complicated.  The typical
 use includes cross-validation internal to the rda.cv function.  That process
 searches a tuning parameter space and delivers an ordering on parameters.
