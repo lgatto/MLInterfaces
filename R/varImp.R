@@ -3,9 +3,9 @@ setClass("varImpStruct", representation(method="character",
  varnames="character"), contains="matrix")
 
 if(!isGeneric("getVarImp"))setGeneric("getVarImp",
- function(object)standardGeneric("getVarImp"))
+ function(object,fixNames)standardGeneric("getVarImp"))
 
-setMethod("getVarImp", "classifOutput", function(object) {
+setMethod("getVarImp", c("classifOutput","logical"), function(object,fixNames) {
 # watch out, people are using compound S3 classes c("randomForest.formula", "randomForest")
 	if (any(class(object@RObject) == "randomForest")) {
 		imp <- object@RObject$importance
@@ -20,13 +20,17 @@ setMethod("getVarImp", "classifOutput", function(object) {
 	else stop("getVarImp defined only for randomForestB or gbmB output")
 })
 
-setMethod("getVarImp", "classifierOutput", function(object) {
+setMethod("getVarImp", c("classifierOutput","missing"), function(object,fixNames) {
+   getVarImp(object, TRUE)
+})
+
+setMethod("getVarImp", c("classifierOutput","logical"), function(object,fixNames) {
 # watch out, people are using compound S3 classes c("randomForest.formula", "randomForest")
- 	fixNames = function(x) gsub("\\.", "-", gsub("^X", "", x))
+ 	fixupNames = function(x) gsub("\\.", "-", gsub("^X", "", x))
 	if (any(class(object@RObject) == "randomForest")) {
 		imp <- object@RObject$importance
 		dm = data.matrix(imp)
-		rownames(dm) = fixNames(row.names(imp))
+		if (fixNames) rownames(dm) = fixupNames(row.names(imp))
 		return(new("varImpStruct", dm,
 			method="randomForest", varnames= rownames(dm)))
 		}

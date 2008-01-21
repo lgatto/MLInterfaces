@@ -7,8 +7,9 @@
 \alias{report,varImpStruct-method}
 \alias{report}
 \alias{getVarImp}
-\alias{getVarImp,classifOutput-method}
-\alias{getVarImp,classifierOutput-method}
+\alias{getVarImp,classifOutput,logical-method}
+\alias{getVarImp,classifierOutput,logical-method}
+\alias{getVarImp,classifierOutput,missing-method}
 \title{Class "varImpStruct" -- collect data on variable importance
  from various machine learning methods}
 \description{  collects data on variable importance }
@@ -43,10 +44,14 @@ from the \code{annotate} package to translate probe names to, e.g.,
 gene symbols.}
     \item{show}{\code{signature(object = "varImpStruct")}: simple abbreviated
 display }
-    \item{getVarImp}{\code{signature(object = "classifOutput")}: extractor
-of variable importance structure}
-    \item{report}{\code{signature(object = "classifOutput")}: extractor
-of variable importance data, with annotation}
+    \item{getVarImp}{\code{signature(object = "classifOutput", fixNames="logical")}: extractor
+of variable importance structure; fixNames parameter is to remove leading X used
+to make variable names syntactic by randomForest (ca 1/2008).  You can set fixNames to false
+if using hu6800 platform, because all featureNames are syntactic as given.}
+    \item{report}{\code{signature(object = "classifOutput", fixNames="logical")}: extractor
+of variable importance data, with annotation; fixNames parameter is to remove leading X used
+to make variable names syntactic by randomForest (ca 1/2008).  You can set fixNames to false
+if using hu6800 platform, because all featureNames are syntactic as given.}
   }
 }
 %\references{ ~put references to the literature/web site here ~ }
@@ -69,8 +74,8 @@ opar=par(no.readonly=TRUE)
 par(las=2, mar=c(10,11,5,5))
 rf2 <- MLearn(ALL.AML~., smallG, randomForestI, 1:40, importance=TRUE,
  sampsize=table(smallG$ALL.AML[1:40]), mtry=sqrt(ncol(exprs(smallG))))
-plot( getVarImp( rf2 ), n=10, plat="hu6800", toktype="SYMBOL")
+plot( getVarImp( rf2, FALSE ), n=10, plat="hu6800", toktype="SYMBOL")
 par(opar)
-report( getVarImp( rf2 ), n=10, plat="hu6800", toktype="SYMBOL")
+report( getVarImp( rf2, FALSE ), n=10, plat="hu6800", toktype="SYMBOL")
 }
 \keyword{classes}
