@@ -63,11 +63,11 @@ had complicated subclasses.
 
 MLearn now takes a signature \texttt{c("formula", "data.frame", "learnerSchema",
 "numeric")}, with the expectation that extra parameters captured in ... go to the fitting
-function.  The complexity of dealing with different expectations and return
+function.  The complexity of dealing with expectations and return
 values of different machine learning functions is handled primarily by
 the learnerSchema instances.  The basic realizations are that
 \begin{itemize}
-\item most learning functions use the formula/data idiom, and needed additional
+\item most learning functions use the formula/data idiom, and additional
 parameters can go in ...
 \item the problem of converting from the function's output structures (typically
 lists, but sometimes also objects with attributes) to the uniform
@@ -237,7 +237,27 @@ rdacvI.
 \section{Additional features}
 
 The xvalSpec class allows us to specify types of cross-validation, and to
-control carefully how partitions are formed.
+control carefully how partitions are formed.  More details are provided
+in the MLprac2\_2 vignette.
+
+\section{The MLearn approach to clustering and other forms
+of unsupervised learning}
+
+A learner schema for a clustering method needs to specify clearly
+the feature distance measure.  We will experiment here.  Our main
+requirements are
+\begin{itemize}
+\item ExpressionSets are the basic input objects
+\item The typical formula interface would be \verb+~.+ but one can
+imagine cases where a factor from phenoData is specified as a 'response' to
+color items, and this will be allowed
+\item a clusteringOutput class will need to be defined to contain the
+results, and it will propagate the result object from the native
+learning method.
+\end{itemize}
+
+
+%need unsupLearnerSchema?
 
 
 \end{document}

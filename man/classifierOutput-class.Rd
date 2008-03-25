@@ -56,7 +56,9 @@ results of cross-validatory iterations.  Each element of this
 list has two elements: \code{test.idx}, giving the numeric
 indices of the test cases for the associated cross-validation
 iteration, and \code{mlans}, which is the \code{\linkS4class{classifierOutput}}
-for the associated iteration.   }
+for the associated iteration.  See the example for an illustration
+of 'digging out' the predicted probabilities associated with each
+cross-validation iteration executed through an xvalSpec specification. }
     \item{\code{call}:}{Object of class \code{"call"} -- records the
 call used to generate the classifierOutput RObject }
   }
@@ -88,5 +90,13 @@ call used to generate the classifierOutput RObject }
 %}
 \examples{
 showClass("classifierOutput")
+library(golubEsets)
+data(Golub_Train) # now cross-validate a neural net
+set.seed(1234)
+xv5 = xvalSpec("LOG", 5, balKfold.xvspec(5))
+m2 = MLearn(ALL.AML~., Golub_Train[1000:1050,], nnetI, xv5, 
+   size=5, decay=.01, maxit=1900 )
+testScores(RObject(m2)[[1]]$mlans)
+alls = lapply(RObject(m2), function(x) testScores(x$mlans))
 }
 \keyword{classes}
