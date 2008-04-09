@@ -1,15 +1,15 @@
 Package: MLInterfaces
 Title: Uniform interfaces to R machine learning procedures for data in Bioconductor containers
-Version: 1.13.22
+Version: 1.13.23
 Author: Jess Mar, Robert Gentleman, Vince Carey
 Description: Uniform interfaces to machine learning code for data in Bioconductor containers
 biocViews: Statistics, Classification, Clustering
 Maintainer: V. Carey <stvjc@channing.harvard.edu>
 License: LGPL
-Depends: R (>= 2.1), Biobase, MASS, methods, genefilter, rpart, rda
+Depends: R (>= 2.1), Biobase, MASS, methods, genefilter, rpart, rda, annotate
 Suggests: class, cluster, e1071, ipred, randomForest, gpls, pamr, rpart,
         MASS, nnet, ALL, gbm, mlbench, hgu95av2.db, som, 
-	RColorBrewer, hu6800.db,
+        RColorBrewer, hu6800.db,
         golubEsets, sma, ada, keggorth, kernlab
 LazyLoad: yes
 Collate: legacyConstructors.R	AllClasses.R
