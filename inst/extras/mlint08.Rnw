@@ -1,0 +1,282 @@
+
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+
+\bibliographystyle{plainnat} 
+ 
+\begin{document}
+%\setkeys{Gin}{width=0.55\textwidth}
+
+\title{BioC 2008 practical: Machine learning with genome-scale data}
+\author{\copyright 2008 VJ Carey stvjc at channing.harvard.edu}
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+The term \textit{machine learning} refers to a family of
+computational methods for analyzing multivariate datasets.
+Each data point has a vector of \textit{features} in a shared
+\textit{feature space},
+and may have a \textit{class label} from some fixed finite set.
+
+\textit{Supervised learning} refers to processes
+that help articulate rules that map \textit{feature vectors}
+to \textit{class labels}.  The class labels are known and
+function as supervisory information to guide rule construction.
+\textit{Unsupervised learning} refers to processes
+that discover structure in collections of feature
+vectors.  Typically the structure consists of a grouping
+of objects into clusters.
+
+Some basic points to consider at the start:
+\bi
+\item Distinguish predictive modeling from inference
+on model parameters.  Typical work in epidemiology focuses
+on estimation of relative risks, and random samples are not
+required.  Typical work with machine learning tools targets
+estimation (and minimization) of the misclassification rate.
+Representative samples are required for this task.
+\item ``Two cultures'': model fitters vs. algorithmic predictors.
+If statistical models are correct, parameter estimation based
+on the mass of data can
+yield optimal discriminators (e.g., LDA).  Algorithmic discriminators
+tend to prefer
+to identify boundary cases and downweight the mass of data (e.g., boosting,
+svm).
+\item Different learning tools have different capabilities.
+There is little \textit{a priori} guidance on matching learning algorithms to
+aspects of problems.  While it is convenient to sift through a variety
+of approaches, one must pay a price for the model search.
+\item Data and model/learner visualization are  important, but
+visualization in higher dimensional data structures is hard.
+Dynamic graphics can help; look at ggobi and Rggobi for this.
+\item These notes provide very little mathematical background
+on the methods; see for example Ripley (\textit{Pattern recognition and neural networks},
+1995), Duda, Hart, Stork (\textit{Pattern classification}),
+Hastie, Tibshirani and Friedman (2003,
+\textit{Elements of statistical learning}) for extensive
+background.
+\ei
+
+\section{Data structures}
+
+The representation of genome-scale data has impacts on 
+many aspects of data analysis.  For microarray measures
+of mRNA abundance (expression arrays) we use the \texttt{ExpressionSet}
+to unify data and metadata on a set of arrays.  
+Let $G$ denote the number of genes probed on the array,
+and $N$ denote the number of samples which will be assumed
+independent (familial data structures not directly
+considered).  The key points for an \texttt{ExpressionSet} instance \texttt{X}
+are
+\begin{itemize}
+\item \texttt{exprs(X)} is a $G \times N$ \texttt{matrix} of expression values
+(typically on the log scale)
+\item \texttt{pData(X)} is a $N \times R$ \texttt{data.frame} of
+sample-level variables
+\item  \verb+X$v+ is an $N$-vector of values on the sample-level
+variable named \texttt{v}
+\item \texttt{X[G, S]} is a new \texttt{ExpressionSet} instance
+with genes restricted according to predicate \texttt{G} and
+samples restricted according to predicate \texttt{S}
+\end{itemize}
+
+Our first example
+is the Chiaretti et al. dataset on acute lymphocytic leukemia.
+<<d1,echo=FALSE>>=
+if (!("package:ALL" %in% search())) library(ALL)
+if (!(exists("ALL"))) data(ALL)
+<<d2,eval=FALSE>>=
+library(ALL)
+data(ALL)
+ALL
+@
+We will focus on the molecular classification of leukemia-type
+within B-cell leukemias, and create a subset of B-cell ALL samples
+that are either positive or negative for BCR/ABL gene fusion
+<<lkta>>=
+table(ALL$BT, ALL$mol.biol)
+bALL = ALL[, substr(ALL$BT, 1, 1) == "B"]
+fbALL = bALL[, bALL$mol.biol %in% c("BCR/ABL", "NEG")]
+fbALL$mol.biol = factor(fbALL$mol.biol, levels=c("NEG", "BCR/ABL"))
+fbALL$binFus = 1*(fbALL$mol.biol == "BCR/ABL")
+@
+In the last assignment, we make a 0-1 representation of the mol.biol
+factor.
+
+\section{Logistic regression and linear discriminant analysis}
+
+A standard analysis of a problem
+with a two-class outcome focuses on modeling the
+probability of class membership.  With our
+representation, we consider the probability that a
+sample is positive for BCR/ABL fusion (this event
+is denoted $F=1$, $F$ a binary random variable)  conditional on 
+the level of expression of a selected gene.  A linear logistic
+model takes the form
+\[
+\mbox{logit Pr}(F = 1|x) = \alpha + x\beta
+\]
+
+\subsection{Manual fit of a logistic regression}
+
+This can be fit manually using R as follows.  We use the third
+gene on the array as $x$.
+<<dologi>>=
+lr1 = glm(formula = fbALL$binFus ~ exprs(fbALL)[3, ], family = binomial)
+summary(lr1)
+@
+
+\subsubsection*{Exercises}
+\begin{itemize}
+\item Visualize the class-specific distributions of the modeled gene.
+\item What is the name of the gene used in this analysis?
+\end{itemize}
+
+\subsection{Using MLInterfaces}
+
+\subsubsection{A simple application: single gene logistic regression}
+
+Here we use a generic method that operates on \texttt{ExpressionSet}
+instances and formulae to carry out the same logistic
+regression analysis, but with cross-validation.  In this species
+of cross-validation, the dataset is partitioned into five subsets,
+each of which is formed to have approximately equal representation
+of the outcome classes.
+
+<<doml,keep.source=TRUE>>=
+library(MLInterfaces)
+lr2 = MLearn(mol.biol~., fbALL[3,], glmI.logistic(thresh=.5), 
+   xvalSpec("LOG", 5, balKfold.xvspec(5)), 
+   family=binomial)
+lr2
+@
+
+Notice that the result of this call is not a table of
+coefficients, but an object.  That object has the same
+formal structure for any successful call to \texttt{MLearn}.
+
+We can get the table of coefficients through the following:
+<<lktab>>=
+summary(RObject(RObject(lr2)[[1]]$mlans))
+@
+
+The access path to the coefficients 
+is somewhat convoluted -- two levels of
+storage must be traversed.  At the top level (interior
+call to \texttt{RObject}, applied to \texttt{lr2}), we are looking
+into the result of five cross-validation iterations.  We
+pick the first using \texttt{[[1]]}.  This returns a 
+list.  The element named \texttt{mlans} holds the table of
+coefficients (actually the glm model fit), retrieved using
+the outer call to \texttt{RObject}, rendered using \texttt{summary}.
+
+The \texttt{MLearn} method is tailored to predictive applications.
+In the use of logistic modeling, a threshold is specified in the
+third argument to MLearn.  The predicted probability of fusion for each
+sample is computed according to the fitted model and if it exceeds
+the threshold parameter, the sample is predicted to be in the fusion
+class; otherwise it is predicted to be negative for fusion.
+
+The confusion matrix for the cross-validated
+prediction exercise cross-tabulates
+known class vs predicted class for all samples.  The proportion
+of off-diagonal entries is an estimate of the misclassification rate.
+
+\subsubsection*{Exercises}
+\begin{itemize}
+\item If we relax the threshold for classifying to fusion to 40\%,
+what happens to the misclassification rate for cross-validated,
+single-gene,
+logistic regression-based prediction?
+\end{itemize}
+
+%lr3 = MLearn(mol.biol~., fbALL[3,], glmI.logistic(thresh=.40), 
+%   xvalSpec("LOG", 5, balKfold.xvspec(5)), 
+%   family=binomial)
+
+\subsubsection{Prediction with many genes}
+
+We will now illustrate linear discriminant analysis.
+We use a collection of genes, denoted $x_i$ to characterize sample $i$,
+and compute the multivariate mean for each class (denoted
+$\mu_F$ and $\mu_N$ for fusion and negative respectively)
+and the common covariance matrix $\Sigma$ for all the observations.
+If $\pi_F$ and $\pi_N$ are the proportions of fusion and negative
+samples in the dataset,
+The classification procedure is to 
+allocate the sample with gene `signature' $x_i$ to class $F$ when
+\[
+LD(x_i) = (\mu_F - \mu_N)^t \Sigma^{-1}(x_i - .5(\mu_F+\mu_N)) > \log(\pi_F/\pi_N).
+\]
+
+For this to be feasible on modest hardware, we need to filter the
+genes in use.  We use genefilter's \texttt{nsFilter} procedure to
+eliminate genes with relatively low variability across samples.
+<<dof,keep.source=TRUE>>=
+library(genefilter)
+ffbALL = nsFilter(fbALL, var.func=var, var.cutoff=.9)
+ffbALL[[2]] # check exclusion events
+ffbALL = ffbALL[[1]] # keep only ExpressionSet
+ffbALL
+@
+
+Now we construct a cross-validated linear discriminant analysis
+using all filtered genes.
+<<dold>>=
+lda1 = MLearn(mol.biol~., ffbALL, ldaI, xvalSpec("LOG", 5, 
+   balKfold.xvspec(5)))
+mm = confuMat(lda1)
+mcr = (sum(mm)-diag(mm))/sum(mm)
+mcr
+@
+
+Is this a legitimate application?  Is \Sexpr{round(mcr,3)} a good
+estimate of the misclassification rate of the procedure?  Perhaps
+not, because feature selection was conducted outside the cross-validation
+procedure.  The set of genes filtered away will differ from
+iteration to iteration of the cross-validation.  This process
+can be factored into our cross-validation using
+
+\section{Some technical details of MLInterfaces}
+\subsection{The signature of MLearn}
+
+\subsection{Available learnerSchema instances}
+<<lkls>>=
+grep(".*I($|\\.)", ls("package:MLInterfaces"), value=TRUE)
+@
+
+
+\end{document}
