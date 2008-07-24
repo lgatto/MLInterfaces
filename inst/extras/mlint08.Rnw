@@ -68,6 +68,14 @@ on estimation of relative risks, and random samples are not
 required.  Typical work with machine learning tools targets
 estimation (and minimization) of the misclassification rate.
 Representative samples are required for this task.
+\item All prediction or clustering algorithms, like all modeling
+procedures, rely on a choice of distance metric that permits
+quantitative
+evaluation of similarity and dissimilarity among objects.  The
+choice can affect results and there is typically no \textit{a priori}
+basis for selecting the distance function.  A one-minus-correlation
+distance can be very different from euclidean distance for
+a given pair of genes.
 \item ``Two cultures'': model fitters vs. algorithmic predictors.
 If statistical models are correct, parameter estimation based
 on the mass of data can
@@ -318,7 +326,59 @@ grep(".*I($|\\.)", ls("package:MLInterfaces"), value=TRUE)
 You can add your own schemata for new learning functions.  See the
 vignette MLint\_devel.
 
+\subsection{Tuning}
+
+You can set additional parameters in the ... argument place
+to MLearn.  Eventually a tuningSpec object will be defined to
+control this.
+
 \section{Supervised learning: Additional illustrations}
+
+\subsection{CART}
+
+Decision trees are attractive models for certain investigations.
+If the process under study has a hierarchical structure, so that
+some features decompose the population at a high level, and others
+operate within lower level components, a tree-structured model
+may be useful.  Classification And Regression Trees (CART) denotes
+a family of algorithms that aggressively sift through features
+in a recursive series of splits of the data.  At the first stage,
+all the data live in a root tree node.  All features are dichotomized
+in all possible ways and the node is split using the feature
+that leads to two nodes that are most pure in distribution of
+the class label according to some
+user-selected metric such as the Gini index or the deviance.
+The process recurses in the new nodes.  The tree construction
+proceeds until nodes reach some minimal size, and then it may be
+pruned back.  Details can be found in Ripley, Pattern Recognition and
+Neural Networks, 1995.
+
+<<dorp,cache=TRUE>>=
+rp1 = MLearn(mol.biol~., ffbALL, rpartI, xvalSpec("LOG", 5, 
+   balKfold.xvspec(5)))
+<<dodtrtr>>=
+confuMat(rp1)
+@
+
+Each fit yields an extensive summary.
+<<lks>>=
+summary(RObject(RObject(rp1)[[1]]$mlans))
+@
+
+We have cross-validated and can inspect the tree for each iteration:
+<<dofirp, fig=TRUE>>=
+  tr1 = RObject(RObject(rp1)[[1]]$mlans)
+  plot(tr1, uniform=TRUE, branch=.2, compress=TRUE, margin=.1, main=
+    paste("xval tree", 1))
+  text(tr1, all=TRUE, use.n=TRUE, fancy=TRUE, pretty=TRUE)
+@
+
+<<dofirp2, fig=TRUE>>=
+  tr2 = RObject(RObject(rp1)[[2]]$mlans)
+  plot(tr2, uniform=TRUE, branch=.2, compress=TRUE, margin=.1, main=
+    paste("xval tree", 2))
+  text(tr2, all=TRUE, use.n=TRUE, fancy=TRUE, pretty=TRUE)
+@
 
 \subsection{Random forests and variable importance assessment}
 
