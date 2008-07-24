@@ -237,7 +237,7 @@ logistic regression-based prediction?
 
 \subsubsection{Prediction with many genes}
 
-We will now illustrate linear discriminant analysis.
+We will now illustrate linear discriminant analysis (LDA).
 We use a collection of genes, denoted $x_i$ to characterize sample $i$,
 and compute the multivariate mean for each class (denoted
 $\mu_F$ and $\mu_N$ for fusion and negative respectively)
@@ -258,7 +258,6 @@ library(genefilter)
 ffbALL = nsFilter(fbALL, var.func=var, var.cutoff=.9)
 ffbALL[[2]] # check exclusion events
 ffbALL = ffbALL[[1]] # keep only ExpressionSet
-ffbALL
 @
 
 Now we construct a cross-validated linear discriminant analysis
@@ -380,6 +379,206 @@ We have cross-validated and can inspect the tree for each iteration:
   text(tr2, all=TRUE, use.n=TRUE, fancy=TRUE, pretty=TRUE)
 @
 
+\subsubsection*{Exercises}
+\bi
+\item The trees visualized here are not as informative as they
+would be if gene symbols were used for probe sets.
+Alter ffbALL so that the featureNames are symbols and generate
+a better plot.
+
+You could use code like
+<<doadad,eval=FALSE>>=
+X = featureNames(ffbALL)
+library(hgu95av2.db)
+SX = mget(X, hgu95av2SYMBOL)
+any(duplicated(unlist(SX)))
+featureNames(ffbALL) = SSX
+rrp1 = MLearn(mol.biol~., ffbALL, rpartI, xvalSpec("LOG", 5,
+   balKfold.xvspec(5)))
+@
+
+\item Create a deeper set of trees by specifying an option
+defined in rpart.control.  For example, set minsplit=3.
+Use \texttt{plotcp} on the resulting tree objects and interpret.
+\ei
+
 \subsection{Random forests and variable importance assessment}
+
+Leo Breiman extended the tree structured modeling approach
+by integrating random feature and case selection over
+a long sequence of tree fits.  Voting over the tree sequence 
+is used to create the classifier.
+
+According to wikipedia,
+``Each tree is constructed using the following algorithm:
+\bi
+\item
+   Let the number of training cases be N, and the number of variables in the classifier be M.
+\item
+   We are told the number m of input variables to be used to determine the decision at a node of the tree; m should be much less than M.
+\item
+    Choose a training set for this tree by choosing N times with replacement from all N available training cases (i.e. take a bootstrap sample). Use the rest of the cases to estimate the error of the tree, by predicting their classes.
+\item
+    For each node of the tree, randomly choose m variables on which to base the decision at that node. Calculate the best split based on these m variables in the training set.
+
+\item
+    Each tree is fully grown and not pruned (as may be done in constructing a normal tree classifier).
+\ei
+
+This is easy to use with MLearn.  Because of the
+internal resampling, we do not need to cross-validate (unless
+we really want to).
+
+<<sdass>>=
+set.seed(12345)
+<<dorf1,cache=TRUE>>=
+rf1 = MLearn(mol.biol~., ffbALL, randomForestI, xvalSpec("NOTEST"),
+  importance=TRUE)
+<<lkrc>>=
+confuMat(rf1, "train")
+@
+
+The variable importance measure can be rendered as follows:
+<<doimp,fig=TRUE>>=
+par(las=2, mar=c(5,9,5,5))
+plot(getVarImp(rf1, TRUE), plat="hgu95av2", toktype="SYMBOL")
+@
+
+\subsubsection*{Exercises}
+\bi
+\item Generate a textual report on the relative importance
+measures, using \texttt{getVarImp}.
+\item Compare the top genes identified via randomForest
+to those identified via limma.  Comment on the added
+learning provided by the machine learning algorithm.
+\ei
+
+\subsection{Regularized discriminant analysis}
+
+This is an interesting algorithm in which LDA
+is generalized in two directions.  First, the covariance
+matrix of the data is modeled as a linear combination of
+an identity matrix and the sample covariance matrix.
+Second, features are dropped according to their distance from
+sample centroids.  See the 2007 Biostatistics paper of Guo and Tibshirani for
+details.
+
+The code distributed by Guo et al has internal cross-validation
+by which parameters $\alpha \in [0,1]$ (weight on the sample covariance
+matrix, to which $1 - \alpha \times I$ is added to get the
+effective covariance to be used in discriminant computation) and
+$\delta$ (parameter dictating how features are dropped depending
+on their distance from data centroids) are selected.  We therefore
+use RDA in two stages, first to inspect the results of internal
+cross-validation, and then to compute the predictors for the
+`optimal' $\alpha$ and $\delta$.  (There are typically a range
+of attractive values for these parameters.)
+
+<<doadasd>>=
+set.seed(12345)
+<<do1,cache=TRUE>>=
+rda1 = MLearn(mol.biol~., ffbALL, rdacvI, xvalSpec("NOTEST"))
+@
+We now retrieve the summary of cross-validation results:
+<<do2>>=
+attr(RObject(rda1), "xvalAns")
+@
+We see that values of $\alpha$ around .11 and $\delta$ around .33
+lead to small numbers of errors in cross-validation.  Thus:
+<<do3>>=
+rda2 = MLearn(mol.biol~., ffbALL, rdaI, xvalSpec("NOTEST"), alpha=.11, delta=.333)
+confuMat(rda2, "train")
+@
+\subsubsection*{Exercises}
+\bi
+\item There is a problem with the rendering of the confusion
+matrix above.  Describe how to avoid it.
+\item Obtain the list of `retained genes' by inspecting the rda2 object.
+Compare to limma top table.
+\ei
+
+
+\subsection{Support vector machine}
+
+An important variation on LDA is the support vector machine (SVM)
+algorithm.  The basic ideas can be gleaned from a paper by
+Kristin Bennett to be distributed at the course.
+
+<<dosv>>=
+svm1 = MLearn(mol.biol~., ffbALL, svmI, 
+  xvalSpec("LOG", 5, balKfold.xvspec(5)), kernel="linear")
+confuMat(svm1)
+@
+
+\subsubsection*{Exercises}
+\bi
+\item Examine the \texttt{tune} infrastructure of package e1071
+and consider whether a selection of parameters for tuning
+the svm can improve performance in this case.  To use
+tune you will have to extract response and predictor
+data and convert to appropriate formats.
+\ei
+
+\subsection{Boosting}
+
+Random forests uses an ensemble of trees to generate
+predictions; boosting uses very simple trees generated
+along a sequence of data reweighting steps.  At each iteration,
+data that are easy to classify are downweighted.  We use the
+implementation in adaboost package; there are others.
+
+<<doada>>=
+ada1 = MLearn(mol.biol~., ffbALL, adaI, 
+  xvalSpec("LOG", 5, balKfold.xvspec(5)))
+confuMat(ada1)
+@
+
+\section{Unsupervised learning in brief}
+
+\subsection{PCA and biplots}
+
+In addition to the sample representation in PC1-PC2,
+we have a representation of the original variables
+and their roles in defining the principal components
+transformation.  The right-hand and top axes measure
+the first and second components of the eigenvectors
+corresponding to the original variables.
+
+A formal definition of the biplot procedure is given in
+Venables and Ripley, and is worth reviewing.  Rows of $X$ are
+observations and columns are variables.  A rank-2 approximation
+to $X$ is obtained via singular value decomposition, setting
+all but the largest two singular values to zero.
+Now
+\[
+X \approx [u_1 u_2] \left[ \begin{array}{cc}
+  \lambda_1 & 0 \\
+  0 & \lambda_2
+ \end{array}
+     \right] \left[
+   \begin{array}{c} v_1^t \\ v_2^t \end{array} \right] = GH^t
+\]
+and various approaches can
+be entertained for absorption of the eigenvalues $\lambda_i$ into $G$ and $H$.
+A two-parameter system for doing this is
+\[
+G = n^{\alpha/2}
+ [u_1 u_2] \left[ \begin{array}{cc}
+  \lambda_1 & 0 \\
+  0 & \lambda_2
+ \end{array}
+     \right]^{1-\theta}~,~~~
+H = n^{\alpha/2}
+ [v_1 v_2] \left[ \begin{array}{cc}
+  \lambda_1 & 0 \\
+  0 & \lambda_2
+ \end{array}
+     \right]^{\theta}.
+\]
+The ``principal component biplot'' sets $\alpha = \theta = 1$,
+and consists in plotting rows of $G$ and $H$ with distinguished
+symbols.  Euclidean distances between rows of $G$ represent
+Mahalanobis distances between observations; inner products betwen
+rows of $H$ represent covariances between variables.
 
 \end{document}
