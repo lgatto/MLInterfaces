@@ -255,11 +255,12 @@ ffbALL
 
 Now we construct a cross-validated linear discriminant analysis
 using all filtered genes.
-<<dold>>=
+<<dold,cache=TRUE>>=
 lda1 = MLearn(mol.biol~., ffbALL, ldaI, xvalSpec("LOG", 5, 
    balKfold.xvspec(5)))
+<<lklddd>>=
 mm = confuMat(lda1)
-mcr = (sum(mm)-diag(mm))/sum(mm)
+mcr = (sum(mm)-sum(diag(mm)))/sum(mm)
 mcr
 @
 
@@ -268,15 +269,57 @@ estimate of the misclassification rate of the procedure?  Perhaps
 not, because feature selection was conducted outside the cross-validation
 procedure.  The set of genes filtered away will differ from
 iteration to iteration of the cross-validation.  This process
-can be factored into our cross-validation using
+can be factored into our cross-validation using the \texttt{fsFun}
+parameter of \texttt{xvalSpec}.  Ideally we would apply this
+feature selection process to the full fbALL ExpressionSet but
+on a small computer this seems to cause problems.  We illustrate
+with only 2500 genes:
+
+<<doxv,cache=TRUE>>=
+lda2 = MLearn(mol.biol~., fbALL[1:2500,], ldaI, xvalSpec("LOG", 5, 
+   balKfold.xvspec(5), fsFun=fs.topVariance(.9)))
+<<lkcc>>=
+lda2
+confuMat(lda2)
+length(fsHistory(lda2)[[1]])
+@
+\subsection{Summary}
+\bi
+\item ExpressionSets store assay and sample-level data from microarray
+experiments;
+\item Manual application of standard statistical modeling tools to
+test specific gene effects is feasible, but variation in calling sequence
+and return values reduces efficiency of application and interpretation;
+\item MLInterfaces MLearn supports  direct application of supervised
+learning methods to ExpressionSet instances
+\bi
+\item standard formula interface may refer to any phenoData variable for
+response
+\item learnerSchema instances select the algorithm to be used; we
+looked at glmI.logistic and ldaI
+\item cross-validation is supported through the xvalSpec object
+\item algorithmic feature selection can be embedded in cross-validation
+\ei
+\item MLearn returns a structured object responding to \texttt{confuMat},
+\texttt{RObject}, and, when relevant, \texttt{fsHistory}
+\ei
 
 \section{Some technical details of MLInterfaces}
 \subsection{The signature of MLearn}
+<<lkm>>=
+showMethods("MLearn")
+@
 
 \subsection{Available learnerSchema instances}
 <<lkls>>=
 grep(".*I($|\\.)", ls("package:MLInterfaces"), value=TRUE)
 @
 
+You can add your own schemata for new learning functions.  See the
+vignette MLint\_devel.
+
+\section{Supervised learning: Additional illustrations}
+
+\subsection{Random forests and variable importance assessment}
 
 \end{document}
