@@ -3,6 +3,8 @@ import("tools")
 import("Biobase")
 import("annotate")
 
+importFrom("graphics", "plot")
+
 exportClasses( "MLOutput", "classifOutput", "clustOutput",
 	"MLScore", "probMat", "probArray", "membMat", "qualScore", "silhouetteVec",
 	"MLLabel", "predClass", "groupIndex",
