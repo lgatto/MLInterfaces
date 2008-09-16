@@ -14,7 +14,7 @@ setMethod("show", "classifierOutput", function(object) {
  if (length(object@fsHistory)>0) cat("history of feature selection in cross-validation available; use fsHistory()\n")
 })
 
-#setGeneric("RObject", function(x) standardGeneric("RObject"))
+setGeneric("RObject", function(x) standardGeneric("RObject"))
 setMethod("RObject", "classifierOutput", function(obj) obj@RObject)
 
 setGeneric("testScores", function(x) standardGeneric("testScores"))

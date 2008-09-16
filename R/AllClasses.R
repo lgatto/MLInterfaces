@@ -83,22 +83,22 @@ setClass("probArray", contains=c("MLScore", "array"))
 setClass("membMat", contains=c("MLScore", "matrix"))
 setClass("qualScore", contains=c("MLScore", "numeric"))
 setClass("silhouetteVec", contains=c("MLScore", "numeric"))
-setClass("classifOutput", representation(
-	predLabels="MLLabel", predScores="MLScore", predLabelsTr="MLLabel",
-	trainInds="integer", allClass="character"), contains="MLOutput",
-		prototype=prototype(method="", RObject=NULL,
-			call=new("call"), distMat=dist(0), 
-			allClass=character(0), trainInds=integer(0),
-			predLabels=newPredClass(character(0)),
-			predLabelsTr=newPredClass(character(0)),
-			predScores=newQualScore(numeric(0))))
-
-setClass("clustOutput", representation(
-	clustIndices="MLLabel", clustScores="MLScore"), contains="MLOutput",
-		prototype=prototype(method="", RObject=NULL,
-			call=new("call"), distMat=dist(0),
-			clustIndices=newGroupIndex(integer(0)),
-			clustScores=newSilhouetteVec(numeric(0))))
-
+#setClass("classifOutput", representation(
+#	predLabels="MLLabel", predScores="MLScore", predLabelsTr="MLLabel",
+#	trainInds="integer", allClass="character"), contains="MLOutput",
+##		prototype=prototype(method="", RObject=NULL,
+#			call=new("call"), distMat=dist(0), 
+#			allClass=character(0), trainInds=integer(0),
+#			predLabels=newPredClass(character(0)),
+#			predLabelsTr=newPredClass(character(0)),
+#			predScores=newQualScore(numeric(0))))
+#
+#setClass("clustOutput", representation(
+#	clustIndices="MLLabel", clustScores="MLScore"), contains="MLOutput",
+#		prototype=prototype(method="", RObject=NULL,
+#			call=new("call"), distMat=dist(0),
+#			clustIndices=newGroupIndex(integer(0)),
+#			clustScores=newSilhouetteVec(numeric(0))))
+#
 ########################################################
 

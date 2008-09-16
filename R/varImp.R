@@ -5,20 +5,20 @@ setClass("varImpStruct", representation(method="character",
 if(!isGeneric("getVarImp"))setGeneric("getVarImp",
  function(object,fixNames)standardGeneric("getVarImp"))
 
-setMethod("getVarImp", c("classifOutput","logical"), function(object,fixNames) {
-# watch out, people are using compound S3 classes c("randomForest.formula", "randomForest")
-	if (any(class(object@RObject) == "randomForest")) {
-		imp <- object@RObject$importance
-		return(new("varImpStruct", data.matrix(imp[,-1]), 
-			method="randomForest", varnames= row.names(imp)))
-		}
-	else if (any(class(object@RObject) == "gbm")) {
-		imp <- summary(object@RObject, plotit=FALSE)
-		return(new("varImpStruct", data.matrix(imp[,-1]), 
-                         method="gbm", varnames=as.character(imp[,1])))
-	        }
-	else stop("getVarImp defined only for randomForestB or gbmB output")
-})
+#setMethod("getVarImp", c("classifOutput","logical"), function(object,fixNames) {
+## watch out, people are using compound S3 classes c("randomForest.formula", "randomForest")
+#	if (any(class(object@RObject) == "randomForest")) {
+#		imp <- object@RObject$importance
+#		return(new("varImpStruct", data.matrix(imp[,-1]), 
+#			method="randomForest", varnames= row.names(imp)))
+#		}
+#	else if (any(class(object@RObject) == "gbm")) {
+#		imp <- summary(object@RObject, plotit=FALSE)
+#		return(new("varImpStruct", data.matrix(imp[,-1]), 
+#                         method="gbm", varnames=as.character(imp[,1])))
+#	        }
+#	else stop("getVarImp defined only for randomForestB or gbmB output")
+#})
 
 setMethod("getVarImp", c("classifierOutput","missing"), function(object,fixNames) {
    getVarImp(object, TRUE)
