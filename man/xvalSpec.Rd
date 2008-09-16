@@ -30,7 +30,7 @@ a series of indices that are approximately balanced with respect
 to frequency of outcome types.}
   \item{fsFun}{function, with parameters formula, data.  The function
 must return a formula suitable for defining a model on the basis of the
-main input data.  A candidate fsFun  is given in examples below.}
+main input data.  A candidate fsFun  is given in example for fsHistory function.}
 }
 \details{
 If \code{type == "LOO"}, no other parameters are inspected.

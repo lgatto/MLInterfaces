@@ -2,8 +2,8 @@
 \docType{methods}
 \alias{planarPlot}
 \alias{planarPlot-methods}
-\alias{planarPlot,classifOutput,ExpressionSet,character-method}
-\alias{planarPlot,classifOutput,data.frame,character-method}
+\alias{planarPlot,classifierOutput,ExpressionSet,character-method}
+\alias{planarPlot,classifierOutput,data.frame,character-method}
 \title{ Methods for Function planarPlot in Package `MLInterfaces' }
 \description{
 show the classification boundaries on the plane dictated
@@ -11,9 +11,9 @@ by two genes in an ExpressionSet
 }
 \section{Methods}{
 \describe{
-\item{clo = "classifOutput", eset = "ExpressionSet", classifLab = "character"}{ uses two genes in the ExpressionSet
+\item{clo = "classifierOutput", eset = "ExpressionSet", classifLab = "character"}{ uses two genes in the ExpressionSet
 to exhibit the decision boundaries in the plane}
-\item{clo = "classifOutput", eset = "data.frame", classifLab = "character"}{ uses two columns in the data.frame
+\item{clo = "classifierOutput", eset = "data.frame", classifLab = "character"}{ uses two columns in the data.frame
 to exhibit the decision boundaries in the plane}
 }
 }
@@ -36,7 +36,7 @@ all2 <- ALL[,kp]
 set.seed(1234)
 ng <- nrow(exprs(all2))
 pick <- sample(1:ng, size=2, replace=FALSE)
-library(hgu95av2)
+library(hgu95av2.db)
 gg <- all2[pick,]
 sym <- unlist(mget(featureNames(gg), hgu95av2SYMBOL))
 featureNames(gg) <- sym
@@ -52,7 +52,7 @@ trainInds <- c( sample(cl1, size=floor(length(cl1)/2) ),
 #
 # run rpart
 #
-tgg <- rpartB( gg, "class", trainInds, minsplit=4 )
+tgg <- MLearn(class~., gg, rpartI, trainInds, minsplit=4 )
 opar <- par(no.readonly=TRUE)
 par(mfrow=c(2,2))
 planarPlot( tgg, gg, "class" )
@@ -61,21 +61,21 @@ points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(gg$class[train
 #
 # run nnet
 #
-ngg <- nnetB( gg, "class", trainInds, size=8 )
+ngg <- MLearn( class~., gg, nnetI, trainInds, size=8 )
 planarPlot( ngg, gg, "class" )
 points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(gg$class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("nnet")
 #
 # run knn
 #
-kgg <- knnB( gg, "class", trainInds, k=3, l=1 )
+kgg <- MLearn( class~.,  gg, knnI(k=3,l=1), trainInds)
 planarPlot( kgg, gg, "class" )
 points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(gg$class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("3-nn")
 #
 # run svm
 #
-sgg <- svmB( gg, "class", trainInds )
+sgg <- MLearn( class~., gg, svmI, trainInds )
 planarPlot( sgg, gg, "class" )
 points(exprs(gg)[1,trainInds], exprs(gg)[2,trainInds], col=ifelse(gg$class[trainInds]=="NEG", "yellow", "black"), pch=16)
 title("svm")

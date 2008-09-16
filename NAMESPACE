@@ -7,39 +7,27 @@ importFrom("graphics", "plot")
 
 exportClasses( "MLOutput", "classifOutput", "clustOutput",
 	"MLScore", "probMat", "probArray", "membMat", "qualScore", "silhouetteVec",
-	"MLLabel", "predClass", "groupIndex",
+	"MLLabel", "groupIndex",
 	"varImpStruct",
 	"raboostCont", "daboostCont",
 	"somout", "SOMBout",
 	"classifierOutput", "learnerSchema", "nonstandardLearnerSchema",
-	"xvalSpec")#, "funcOrNULL" )
+	"xvalSpec")
 	
-exportMethods(
-  "ldaB", "qdaB", "isoMDSB", "knnB", "knn1B", "lvq1B", 
-  "lvq2B", "lvq3B", "olvq1B", "agnesB", "claraB", "dianaB", "fannyB", "pamB", 
-  "bclustB", "cmeansB", "cshellB", "lcaB", "naiveBayesB", "svmB", "baggingB", "ipredknnB", "sldaB", "randomForestB",
-  "nnetB", "pamrB", "rpartB", "stat.diag.daB", 
-  "somB", "SOMB", "hclustB", "kmeansB", "silhouetteB", 
-  "gbmB", "show", "RObject", "distMat", "predLabels", "predLabelsTr",
-  "allClass", "trainInds", "confuMat", "confuMatTrain", 
-  "MLearn", 
-  "getGrid", 
-  "planarPlot", 
-  "Predict", 
-  "getVarImp", 
-  "plot", 
-  "xval", 
-  "xvalLoop", "trainPredictions",
-  "xvalML", "testScores", "testPredictions", "fsHistory", "report")
+exportMethods( "show", "RObject", "confuMat", 
+  "MLearn", "planarPlot", "Predict", "getVarImp", "plot", 
+  "trainPredictions",
+  "testScores", "testPredictions", "fsHistory", "report")
 
-export(tellMLearnMethods, 
-	randomForestI, knnI, dldaI, nnetI, rpartI, 
+export( randomForestI, knnI, dldaI, nnetI, rpartI, 
 	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
-	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, rab, lvq, RAB, DAB,
-	balKfold, xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
+	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, 
+        rab, lvq, RAB, DAB,
+	xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
 	rdaI, rdaML,
         plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, Kfold,
-        fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, adaI )
+        fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
+        adaI, fs.topVariance )
 
 S3method("print", "rdacvML")
 S3method("print", "rdaML")

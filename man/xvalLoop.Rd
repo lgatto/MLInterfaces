@@ -12,7 +12,7 @@
   Cross-validiation usually involves repeated calls to the same
   function, but with different arguments. This provides an obvious
   place for using clustered computers to enhance execution. The method
-  \code{\link{xval}} is structured to exploit this; \code{xvalLoop}
+  xval is structured to exploit this; \code{xvalLoop}
   provides an easy mechanism to change how \code{xval} performs
   cross-validation.
 

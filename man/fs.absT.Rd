@@ -1,11 +1,13 @@
 \name{fs.absT}
 \alias{fs.absT}
 \alias{fs.probT}
+\alias{fs.topVariance}
 \title{ support for feature selection in cross-validation}
 \description{ support for feature selection in cross-validation}
 \usage{
 fs.absT(N)
 fs.probT(p)
+fs.topVariance(p)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,6 +33,10 @@ sense for two-sample prediction problems.  For selection based on
 linear models or other discrimination measures, you will need to create
 your own selection helper, following the code in these functions as
 examples.
+
+fs.topVariance performs non-specific feature selection based on the 
+variance.  Argument p is the variance percentile beneath which features are
+discarded.
 }
 \seealso{ \code{\link{MLearn}} }
 \examples{

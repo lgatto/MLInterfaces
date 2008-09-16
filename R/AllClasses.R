@@ -18,7 +18,7 @@ setClass("classifierOutput", representation(
 	trainScores="ANY", fsHistory="list",
 	RObject="ANY",
 	call="call",
-	embeddedCV="logical"),
+	embeddedCV="logical", learnerSchema="learnerSchema"),
 	  prototype=prototype(testOutcomes=factor(),
 				testPredictions=factor(),
 				testScores=NULL,
@@ -28,7 +28,8 @@ setClass("classifierOutput", representation(
 				fsHistory=list(), 
 				RObject=list(), 
                                 call=new("call"),
-                                embeddedCV=FALSE))
+                                embeddedCV=FALSE,
+                                learnerSchema=new("learnerSchema")))
 
 setClass("nonstandardLearnerSchema", representation(frontConverter="function",
    hasNamespace="logical"), contains="learnerSchema")

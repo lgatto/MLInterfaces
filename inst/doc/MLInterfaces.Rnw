@@ -162,27 +162,27 @@ is a numeric sequence isolating the samples to be used for
 training; it may also be bound by an instance of xvalSpec
 to define a cross-validation of a learning process (see section \ref{xval}).
 
-For unsupervised learning, there are a number of methods of the form
-\begin{verbatim}
-methB(eset, k, height, ...)
-\end{verbatim}
-The idea here is that one may specify a number {\tt k}
-of clusters, or a height of a clustering tree that will
-be cut to form clusters from the {\tt eset} samples.
-Note that there is no training/test dichotomy for clustering
-at this stage.
-
-The {\tt RObject} method will access the fit object
-from the basic procedure.  Thus, returning to the {\tt nnetB}
-invocation above, we have
-<<>>=
+%For unsupervised learning, there are a number of methods of the form
+%\begin{verbatim}
+%methB(eset, k, height, ...)
+%\end{verbatim}
+%The idea here is that one may specify a number {\tt k}
+%of clusters, or a height of a clustering tree that will
+%be cut to form clusters from the {\tt eset} samples.
+%Note that there is no training/test dichotomy for clustering
+%at this stage.
+%
+%The {\tt RObject} method will access the fit object
+%from the basic procedure.  Thus, returning to the {\tt nnetB}
+%invocation above, we have
+<<eval=FALSE,echo=FALSE>>=
 summary(RObject(nns))
 @
-which is the customary {\tt nnet} summary.  This also gives
-access to visualization.
-<<>>=
+%which is the customary {\tt nnet} summary.  This also gives
+%access to visualization.
+<<eval=FALSE,echo=FALSE>>=
 ags <- agnesB(smallG, k=4, height=0, stand=FALSE)
-<<fig=TRUE>>=
+<<eval=FALSE,echo=FALSE,fig=TRUE>>=
 plot(RObject(ags), which.plot=2)
 @
 
@@ -199,11 +199,11 @@ For output, we have only the classifierOutput class:
 <<lkcc>>=
 getClass("classifierOutput")
 @
-Some legacy classes for output structures exist
-but are too complex and will be abandoned after a
-deprecation cycle.  The clustOutput class
-will be replaced by a clusteringOutput class:
-<<lkcl>>=
+%Some legacy classes for output structures exist
+%but are too complex and will be abandoned after a
+%deprecation cycle.  The clustOutput class
+%will be replaced by a clusteringOutput class:
+<<lkcl,echo=FALSE,eval=FALSE>>=
 getClass("clustOutput")
 @
 
@@ -263,21 +263,16 @@ confuMat(lk3)
 
 Stephen Henderson of UC London supplied infrastructure to allow
 embedding of feature selection in the cross-validation process.
-See the manual page on xval for more details.
+These have been wrapped in fs.* closures that can be
+passed in xvalSpec:
+%See the manual page on xval for more details.
 <<dofs>>=
-#
-# use Stephen Henderson's feature selection extensions
-#
-t.fun<-function(data, fac)
-{
-        require(genefilter)
-        # deal with the integer storage of golubTrain@exprs!
-        xd <- matrix(as.double(exprs(data)), nrow=nrow(exprs(data)))
-        return(abs(rowttests(xd,pData(data)[[fac]], tstatOnly=FALSE)$statistic))
-}
-lk3f <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 0:0, fsFun=t.fun)
-table(lk3f$out, smallG$ALL.AML)
-
+data(iris)
+iris2 = iris[ iris$Species %in% levels(iris$Species)[1:2], ]
+iris2$Species = factor(iris2$Species) # drop unused levels
+x1 = MLearn(Species~., iris2, ldaI, xvalSpec("LOG", 3,
+   balKfold.xvspec(3), fs.absT(3)))
+fsHistory(x1)
 @
 
 @

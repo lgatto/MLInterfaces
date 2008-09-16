@@ -298,7 +298,7 @@ setGeneric("knn1B", function(exprObj, classifLab, trainInd, metric="euclidean"){
 })
 
 setMethod("knn1B", c("ExpressionSet", "character", "integer", "ANY"), 
-		function(exprObj, trainInd, classifLab, metric){
+		function(exprObj, classifLab, trainInd, metric){
 		#.Deprecated("MLearn", "MLInterfaces")
 				
 		cl <- pData(exprObj)[[classifLab]][trainInd]

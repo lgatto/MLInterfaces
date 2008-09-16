@@ -3,6 +3,7 @@
 \alias{classifierOutput-class}
 %\alias{confuMat,classifierOutput-method}
 \alias{RObject,classifierOutput-method}
+\alias{RObject}
 \alias{show,classifierOutput-method}
 \alias{testScores,classifierOutput-method}
 \alias{testPredictions,classifierOutput-method}

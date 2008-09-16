@@ -60,9 +60,8 @@ The first three statements load the \Rpackage{MLInterfaces} package and a data s
 The next line extracts a portion of the data set for use in the example.
 We then perform a ``leave one out'' (LOO) cross-validation, and summarize the results in a table:
 <<xval>>=
-lk1 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 
-            group=as.integer(0))
-table(lk1,smallG$ALL.AML)
+lk1 <- MLearn(ALL.AML~., smallG, knnI(k=1), xvalSpec("LOO"))
+confuMat(lk1)
 @ 
 
 A clustered version of the same calculation requires that the user have a computer cluster available for \R{} to use.
@@ -87,6 +86,7 @@ cl <- makeCluster(8, "MPI")
 clusterEvalQ(cl, library(MLInterfaces))
 @ 
 Finally, perform the calculation across the cluster\ldots{}
+FOR THIS TO WORK WE WILL HAVE TO EXTEND xvalSpec TO DEAL WITH makeCluster OBJECTS.
 <<clustercalc, eval=FALSE>>=
 lk1 <- xval(smallG, "ALL.AML", knnB, xvalMethod="LOO", 
             group=as.integer(0), cluster = cl)
@@ -96,6 +96,9 @@ Notice that the only change to the actual \Rfunction{xval} call is the inclusion
 Easy!
 
 \section{Caveats -- the `R programmer' experience}
+
+NOTE THAT THIS MATERIAL HAS TO BE UPDATED TO DEAL WITH THE
+MLearn/learnerSchema ARCHITECTURE THAT PREDATED THIS MATERIAL.
 
 Now the caveat.
 Someone has to tell \Rfunction{xval} how to do the calculation in clustered mode.

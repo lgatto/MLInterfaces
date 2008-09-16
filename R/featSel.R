@@ -39,3 +39,21 @@ fs.probT = function(p) function(formula, data) {
  as.formula( paste(respname, paste(btick(ans), collapse="+"), sep="~"))
 }
 
+fs.topVariance = function(p) function(formula, data) {
+ # take features using features giving variance over samples the 100pth percentile or above
+ if (p <= 0 | p >=1 ) stop("p in fs.topVariance must be in (0,1)")
+ mf = model.frame(formula, data)
+ mm = model.matrix(formula, data)
+ respind = attr( terms(formula, data=data), "response" )
+ respname = names(mf)[respind]
+ x = mm
+ if ("(Intercept)" %in% colnames(x)) x = x[,-which(colnames(x) == "(Intercept)")]
+ ans = apply(x, 2, var, na.rm=TRUE)
+ qv = quantile(ans, p)
+ kp = which(ans > qv)
+ names(ans) = colnames(x)
+ ans = names( ans[ which(ans > quantile(ans, p) ) ] )
+ btick = function(x) paste("`", x, "`", sep="")  # support for nonsyntactic varnames
+ as.formula( paste(respname, paste(btick(ans), collapse="+"), sep="~"))
+}
+

@@ -527,15 +527,88 @@ along a sequence of data reweighting steps.  At each iteration,
 data that are easy to classify are downweighted.  We use the
 implementation in adaboost package; there are others.
 
-<<doada>>=
-ada1 = MLearn(mol.biol~., ffbALL, adaI, 
-  xvalSpec("LOG", 5, balKfold.xvspec(5)))
+This seems to be a very intensive algorithm and we run it
+for a very short while for feasibility.  You may examine the
+effects of reducing the feature set.
+
+<<doada,cache=TRUE>>=
+ada1 = MLearn(mol.biol~., ffbALL, adaI, 1:40, type="discrete",
+  iter=20)
 confuMat(ada1)
 @
 
 \section{Unsupervised learning in brief}
 
+Unsupervised learning occurs in the absence of class labels.
+In essence, one is trying to learn both the class labels
+and the rules for attaching them to objects yet unseen.
+
+Cluster analysis is widely used, is propagated through
+heatmap displays, and has substantial conceptual defects.
+We will not discuss it unless there is extra time.
+
 \subsection{PCA and biplots}
+
+To discuss principal components and dimension reduction, we
+use a simpler data set: the crabs data set in the MASS package.
+Consider the following display:
+
+<<doap,fig=TRUE>>=
+pairs(crabs[,-c(1:3)], col=ifelse(crabs$sp=="B", "blue", "orange"))
+@
+
+Various crab body measurements are plotted against each other.
+Clearly there are high correlations between certain variables
+and it would be useful to focus on measures that are
+independently informative on the relationship between
+crab size and species.  Such independently informative
+measures can be constructed using linear combinations of the
+raw measurements.
+
+\subsubsection{PCA defined and illustrated}
+
+Principal components analysis transforms the multivariate
+data X into a new coordinate system.  If the original variables
+are X1, \ldots, Xp, then the variables in the new representation
+are denoted PC1, \ldots, PCp.  These new variables have
+the properties that PC1 is the linear combination of the X
+having maximal variance, PC2 is the variance-maximizing linear combination of
+residuals of X after projecting on PC1, and so on.
+If most of the variation in $X_{n \times p}$ can be captured in
+a low dimensional linear subspace of the space spanned
+by the columns of $X$, scatterplots of
+the first few principal
+components will depict this.
+
+Formally, we can compute the PC using the singular value decomposition of
+$X$, in which $X = UDV^t$, where $U_{n \times p}$ and $V_{p \times p}$
+are orthonormal, and $D$ is a diagonal matrix of $p$ nonnegative
+singular values.  The principal components transformation is
+$XV = UD$, and if $D$ is structured so that $D_{ii} \geq D_{jj}$ whenever
+$i > j$, then column $i$ of $XV$ is PCi.  Note also that $D_{ii} =
+\sqrt{n-1}\mbox{SD}$ PCi.
+
+<<dopc>>=
+library(MASS)
+data(crabs)
+pcs = prcomp( crabs[,-c(1:3)] )
+<<lkscr,fig=TRUE>>=
+plot(pcs)
+<<lkpc, fig=TRUE>>=
+pairs(pcs$x, col=ifelse(crabs$sp=="B", "blue", "orange"))
+@
+
+\subsubsection{Biplots: superimposing samples and variables after
+dimension reduction}
+
+The biplot shows the data in PC space and also shows the
+relative contributions of the original variables in composing
+the transformation.
+
+<<dobi,fig=TRUE>>=
+biplot(pcs, choices=2:3)
+@
+
 
 In addition to the sample representation in PC1-PC2,
 we have a representation of the original variables
@@ -580,5 +653,10 @@ and consists in plotting rows of $G$ and $H$ with distinguished
 symbols.  Euclidean distances between rows of $G$ represent
 Mahalanobis distances between observations; inner products betwen
 rows of $H$ represent covariances between variables.
+
+\subsubsection*{Exercise}
+Create a  biplot using the gene expression data from ALL,
+focusing on genes found to be predictive by randomForests.
+Interpret.
 
 \end{document}

@@ -20,7 +20,7 @@ setMethod("RObject", "classifierOutput", function(obj) obj@RObject)
 setGeneric("testScores", function(x) standardGeneric("testScores"))
 setMethod("testScores", "classifierOutput", function(x) x@testScores)
 
-#setGeneric("confuMat", function(obj,type) standardGeneric("confuMat"))
+setGeneric("confuMat", function(obj,type) standardGeneric("confuMat"))
 setMethod("confuMat", c("classifierOutput","missing"), function(obj,type) {
     confuMat(obj, "test") })
 setMethod("confuMat", c("classifierOutput","character"), 

@@ -1,4 +1,4 @@
-#setGeneric("MLearn", function(formula, data, method, trainInd, mlSpecials, ...)standardGeneric("MLearn"))
+setGeneric("MLearn", function(formula, data, method, trainInd, mlSpecials, ...)standardGeneric("MLearn"))
 
 #setGeneric("MLearn", function( formula, data, 
 #    method, trainInd, mlSpecials ...) standardGeneric("MLearn"))
@@ -33,6 +33,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
   }
   else tmp@testOutcomes = trout # if CV is embedded, the 'training' is 'test'
   tmp@call = thecall
+  tmp@learnerSchema = method
   tmp
 })
 
@@ -58,6 +59,7 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric", "m
 	thecall = match.call()
         ans = MLearn( formula, data, method, trainInd, ... )
  	ans@call = thecall
+        ans@learnerSchema = method
 	ans
  })
 
@@ -140,7 +142,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    if (do.fs) featsUsed = lapply(  out, function(x) x[["featInUse"]] )
    reord = match(inds, ords)
    testpred = factor(classif)[reord]
-   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall, RObject = out, fsHistory=featsUsed)
+   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall, RObject = out, fsHistory=featsUsed, learnerSchema=method)
 })
 
 
@@ -150,6 +152,7 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema",
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
 	ans = MLearn(formula, data, method, trainInd, ...)
 	ans@call = thecall
+        ans@learnerSchema = method
 	ans
 })
 

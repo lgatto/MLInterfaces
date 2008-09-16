@@ -13,6 +13,20 @@
  \alias{predict.knnP}
  \alias{print.knnP}
  \alias{wrapClust}
+\alias{MLLabel }
+\alias{MLOutput }
+\alias{MLScore }
+\alias{SOMBout }
+\alias{classifOutput }
+\alias{clustOutput }
+\alias{groupIndex}
+\alias{membMat }
+\alias{probArray }
+\alias{probMat }
+\alias{qualScore }
+\alias{silhouetteVec }
+\alias{somout}
+
 \title{MLInterfaces infrastructure}
 \description{
 These functions are internal tools for \code{MLInterfaces}.

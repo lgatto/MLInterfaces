@@ -1,4 +1,4 @@
-\name{MLearn_new}
+\name{MLearn}
 \alias{MLearn_new}
 \alias{MLearn}
 \alias{baggingI}

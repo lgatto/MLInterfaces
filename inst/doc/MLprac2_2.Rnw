@@ -433,7 +433,7 @@ crES = crES[ , sample(1:200, size=200, replace=FALSE)]
 A classic procedure is recursive partitioning.
 <<dotr>>=
 library(rpart)
-tr1 = MLearn(spsex~., crES, "rpart", 1:140)
+tr1 = MLearn(spsex~., crES, rpartI, 1:140)
 tr1
 confuMat(tr1)
 @
@@ -460,7 +460,7 @@ features available for splitting at nodes.
 <<dorf>>=
 set.seed(124)
 library(randomForest)
-rf1 = MLearn(spsex~., crES, "randomForest", 1:140 )
+rf1 = MLearn(spsex~., crES, randomForestI, 1:140 )
 rf1
 cm = confuMat(rf1)
 cm
@@ -480,7 +480,7 @@ with an xvalSpec().
 \subsubsection{Linear discriminants}
 
 <<dold>>=
-ld1 = MLearn(spsex~., crES, "lda", 1:140 )
+ld1 = MLearn(spsex~., crES, ldaI, 1:140 )
 ld1
 confuMat(ld1)
 xvld = MLearn( spsex~., crES, ldaI, xvalSpec("LOG", 5, balKfold.xvspec(5)))
