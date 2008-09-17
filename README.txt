@@ -1,3 +1,8 @@
+README.txt for MLInterfaces, Sep 16 2008
+
+The *B methods have been removed.  The NAMESPACE is used to reduce
+the number of symbols/classes/methods in play.  Handling of 
+unsupervised learning via MLearn is in design.
 
 README.txt for MLInterfaces, Sept 9 2007
 

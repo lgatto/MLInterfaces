@@ -262,6 +262,12 @@ confuMat(r1)
 RObject(r1)
 plotXvalRDA(r1)  # special interface to plots of parameter space
 
+# illustrate clustering support
+
+c1 = MLearn(~., crabs[,-c(1:3)], hclustI(distMethod="euclidean"), 4)
+c1
+
+
 }
 
 \keyword{ models }

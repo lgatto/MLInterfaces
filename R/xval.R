@@ -86,23 +86,23 @@
 #})
 #
 #
-balKfold <- function(K) function( data, clab, iternum ) {
-#
-# old approach that assumes data are ExpressionSet...
-#
- clabs <- pData(data)[[clab]]
- narr <- nrow(pData(data))
- cnames <- unique(clabs)
- ilist <- list()
- for (i in 1:length(cnames))
-   ilist[[cnames[i]]] <- which( clabs == cnames[i] )
- clens <- lapply(ilist,length)
- nrep <- lapply(clens, function(x) ceiling(x/K))
- grpinds <- list()
- for (i in 1:length(nrep))
-   grpinds[[i]] <- rep(1:K, nrep[[i]])[1:clens[[i]]]
- (1:narr)[ - which( unlist(grpinds)==iternum ) ]
-}
+#balKfold <- function(K) function( data, clab, iternum ) {
+##
+## old approach that assumes data are ExpressionSet...
+##
+# clabs <- pData(data)[[clab]]
+# narr <- nrow(pData(data))
+# cnames <- unique(clabs)
+# ilist <- list()
+# for (i in 1:length(cnames))
+#   ilist[[cnames[i]]] <- which( clabs == cnames[i] )
+# clens <- lapply(ilist,length)
+# nrep <- lapply(clens, function(x) ceiling(x/K))
+# grpinds <- list()
+# for (i in 1:length(nrep))
+#   grpinds[[i]] <- rep(1:K, nrep[[i]])[1:clens[[i]]]
+# (1:narr)[ - which( unlist(grpinds)==iternum ) ]
+#}
 
 balKfold.xvspec <- function(K) function( data, clab, iternum ) {
 # redefined for data.frame application in xvalSpec usage

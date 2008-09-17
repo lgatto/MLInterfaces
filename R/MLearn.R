@@ -156,3 +156,24 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema",
 	ans
 })
 
+setMethod("MLearn", c("formula", "data.frame", "clusteringSchema",
+   "numeric", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
+## find software
+  k = trainInd
+  pname = method@packageName
+  fname = method@mlFunName
+## create the requested function
+  lfun = do.call("::", list(pname, fname))
+  if (method@distMethod == "identity")
+     dstruct = data
+  else dstruct = dist(data, method=method@distMethod)
+  ans = lfun( dstruct, ...)
+## tell what was done
+  thecall = match.call()
+## convert the execute result into an MLinterfaces output container
+  tmp = method@converter( ans, dstruct, k )
+  tmp@call = thecall
+  tmp@learnerSchema = method
+  tmp
+})
+

@@ -4,6 +4,7 @@ import("Biobase")
 import("annotate")
 
 importFrom("graphics", "plot")
+importFrom("cluster", "silhouette")
 
 exportClasses( #"MLOutput", 
 #	"MLScore", "probMat", "probArray", "membMat", "qualScore", "silhouetteVec",
@@ -26,9 +27,9 @@ export( randomForestI, knnI, dldaI, nnetI, rpartI,
         rab, lvq, RAB, DAB,
 	xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
 	rdaI, rdaML,
-        plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, Kfold,
+        plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
         fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
-        adaI, fs.topVariance )
+        adaI, fs.topVariance, hclustI )
 
 S3method("print", "rdacvML")
 S3method("print", "rdaML")

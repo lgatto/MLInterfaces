@@ -183,3 +183,9 @@ MLIConverter.knncv = function(k=1, l=0) function(obj, data, trainInd) {
    new("classifierOutput", testPredictions=factor(trpr), testScores=attr(trpr, "prob"),
        trainPredictions=factor(), RObject=obj, embeddedCV=TRUE)
    }
+
+dendroConverter = function(obj, dstruct, k) {
+   part = cutree(obj, k)
+   sil = silhouette(part, dstruct)
+   new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
+}

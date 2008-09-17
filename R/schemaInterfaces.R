@@ -64,3 +64,6 @@ ksvmI = makeLearnerSchema("kernlab", "ksvm",
 
 adaI = makeLearnerSchema("ada", "ada",
     standardMLIConverter)
+
+hclustI = function(distMethod="euclidean") makeClusteringSchema(
+  "stats", "hclust", distMethod, dendroConverter)

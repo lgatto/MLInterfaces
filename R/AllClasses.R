@@ -9,6 +9,9 @@ setClass("learnerSchema", representation(
 				mlFunName="",
 				converter=function(obj, data, trainInd){}))
 
+setClass("clusteringSchema", representation(distMethod="character"), 
+     contains="learnerSchema")
+
 setClass("classifierOutput", representation(
         testOutcomes="factor",
 	testPredictions="factor",
@@ -37,7 +40,8 @@ setClass("nonstandardLearnerSchema", representation(frontConverter="function",
 setOldClass("silhouette")
 setClass("clusteringOutput", representation(
 	partition="integer", silhouette="silhouette", distEnv="environment",
-	metric="character", call="call", RObject="ANY"))
+	metric="character", call="call", learnerSchema="learnerSchema",
+        RObject="ANY"))
 
 #setClassUnion("funcOrNull", c("function", "NULL"))
 setClass("xvalSpec", representation(type="character", niter="numeric", partitionFunc="function", fsFun="function"))
