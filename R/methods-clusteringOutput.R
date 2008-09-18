@@ -5,5 +5,16 @@ setMethod("show", "clusteringOutput", function(object) {
  print(object@call)
 })
 
-setMethod("RObject", "classifierOutput", function(obj) obj@RObject)
+setMethod("RObject", "clusteringOutput", function(x) x@RObject)
 
+
+setMethod("plot", "clusteringOutput", function(x, y, ...) {
+ opar = par(no.readonly=TRUE)
+ on.exit(par(opar))
+ par(mfrow=c(2,2))
+ plclust(RObject(x))
+ plot(x@silhouette, main="silhouette")
+ plot(x@prcomp, main="PCA screeplot")
+ plot(x@prcomp$x[,1], x@prcomp$x[,2], col=x@partition,
+   xlab="PC1", ylab="PC2", main="PCA colored by partition")
+})

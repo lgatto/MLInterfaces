@@ -65,5 +65,8 @@ ksvmI = makeLearnerSchema("kernlab", "ksvm",
 adaI = makeLearnerSchema("ada", "ada",
     standardMLIConverter)
 
-hclustI = function(distMethod="euclidean") makeClusteringSchema(
-  "stats", "hclust", distMethod, dendroConverter)
+hclustI = function(distMethod, agglomMethod) {
+    if (missing(distMethod)) stop("distMethod must be explicitly supplied")
+    if (missing(agglomMethod)) stop("agglomMethod must be explicitly supplied")
+    makeClusteringSchema( "stats", 
+        "hclust", distMethod, hclustConverter, agglomMethod) }

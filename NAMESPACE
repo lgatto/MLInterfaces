@@ -6,20 +6,16 @@ import("annotate")
 importFrom("graphics", "plot")
 importFrom("cluster", "silhouette")
 
-exportClasses( #"MLOutput", 
-#	"MLScore", "probMat", "probArray", "membMat", "qualScore", "silhouetteVec",
-#	"MLLabel", "groupIndex",
+exportClasses( 
 	"varImpStruct",
 	"raboostCont", "daboostCont",
-#	"somout", "SOMBout",
 	"classifierOutput", "learnerSchema", "nonstandardLearnerSchema",
-	"xvalSpec")
+	"xvalSpec", "clusteringOutput")
 	
 exportMethods( "show", "RObject", "confuMat", 
   "MLearn", "planarPlot", "Predict", "getVarImp", "plot", 
-  "trainPredictions",
-"testScores", "testPredictions", 
-"fsHistory", "report")
+  "trainPredictions", "testScores", "testPredictions", 
+  "fsHistory", "report")
 
 export( randomForestI, knnI, dldaI, nnetI, rpartI, 
 	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 

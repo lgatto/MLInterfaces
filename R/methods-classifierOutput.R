@@ -15,7 +15,7 @@ setMethod("show", "classifierOutput", function(object) {
 })
 
 setGeneric("RObject", function(x) standardGeneric("RObject"))
-setMethod("RObject", "classifierOutput", function(obj) obj@RObject)
+setMethod("RObject", "classifierOutput", function(x) x@RObject)
 
 setGeneric("testScores", function(x) standardGeneric("testScores"))
 setMethod("testScores", "classifierOutput", function(x) x@testScores)

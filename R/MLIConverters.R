@@ -184,8 +184,8 @@ MLIConverter.knncv = function(k=1, l=0) function(obj, data, trainInd) {
        trainPredictions=factor(), RObject=obj, embeddedCV=TRUE)
    }
 
-dendroConverter = function(obj, dstruct, k) {
-   part = cutree(obj, k)
+hclustConverter = function(obj, dstruct, k) {
+   part = stats::cutree(obj, k)
    sil = silhouette(part, dstruct)
    new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
 }

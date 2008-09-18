@@ -156,6 +156,7 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema",
 	ans
 })
 
+
 setMethod("MLearn", c("formula", "data.frame", "clusteringSchema",
    "numeric", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
 ## find software
@@ -164,16 +165,29 @@ setMethod("MLearn", c("formula", "data.frame", "clusteringSchema",
   fname = method@mlFunName
 ## create the requested function
   lfun = do.call("::", list(pname, fname))
-  if (method@distMethod == "identity")
-     dstruct = data
-  else dstruct = dist(data, method=method@distMethod)
-  ans = lfun( dstruct, ...)
+  dframe = try(model.frame(formula, data, na.action=na.fail))
+  if (inherits(dframe, "try-error")) 
+     stop("problem in model.frame -- could be NA in data.  must stop.")
+  rawdata = data = data.matrix(dframe)
+  resp = model.response(dframe)
+  if (!is.null(resp)) {
+    kpcol = attr(attr(dframe, "terms"), "term.labels")
+    data = data[, kpcol]
+    rawdata = rawdata[, kpcol]
+    }
+  if (method@distMethod != "identity")
+     data = dist(data, method=method@distMethod)
+  if (method@mlFunName == "hclust")
+        ans = lfun( data, method=method@agglomMethod, ...)
+  else ans = lfun( data, ... )
+  pca = new("prcompObj", prcomp( rawdata ))
 ## tell what was done
   thecall = match.call()
 ## convert the execute result into an MLinterfaces output container
-  tmp = method@converter( ans, dstruct, k )
+  tmp = method@converter( ans, data, k )
   tmp@call = thecall
   tmp@learnerSchema = method
+## add the PCA result
+  tmp@prcomp = pca
   tmp
 })
-

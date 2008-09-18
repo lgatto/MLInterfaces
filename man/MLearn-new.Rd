@@ -30,11 +30,13 @@
 \alias{MLearn,formula,data.frame,learnerSchema,numeric,missing-method}
 \alias{MLearn,formula,data.frame,learnerSchema,xvalSpec,missing-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
+\alias{MLearn,formula,data.frame,clusteringSchema,numeric,missing-method}
 \alias{plotXvalRDA}
 \alias{rdacvI}
 \alias{rdaI}
 \alias{rdaML}
 \alias{rdacvML}
+\alias{hclustI}
 \alias{makeLearnerSchema}
 \alias{standardMLIConverter}
 
@@ -137,6 +139,8 @@ is an interface to the plot method for objects of class rdacv defined in
 package rda.  You can use xvalSpec("NOTEST") with this procedure to
 use all the samples to build the discriminator.}
 \item{ksvmI}{\link[kernlab]{ksvm}}
+\item{hclustI(distMethod, agglomMethod)}{\link[stats]{hclust} --
+you must explicitly specify distance and agglomeration procedure.}
 } % end list of schemas
 } % end details
 \value{
@@ -264,8 +268,10 @@ plotXvalRDA(r1)  # special interface to plots of parameter space
 
 # illustrate clustering support
 
-c1 = MLearn(~., crabs[,-c(1:3)], hclustI(distMethod="euclidean"), 4)
+c1 = MLearn(~CL+CW+RW, crabs, hclustI(distMethod="euclidean",
+   agglomMethod="complete"), 4)
 c1
+plot(c1)
 
 
 }
