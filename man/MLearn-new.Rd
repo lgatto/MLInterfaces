@@ -37,6 +37,7 @@
 \alias{rdaML}
 \alias{rdacvML}
 \alias{hclustI}
+\alias{kmeansI}
 \alias{makeLearnerSchema}
 \alias{standardMLIConverter}
 
@@ -141,6 +142,8 @@ use all the samples to build the discriminator.}
 \item{ksvmI}{\link[kernlab]{ksvm}}
 \item{hclustI(distMethod, agglomMethod)}{\link[stats]{hclust} --
 you must explicitly specify distance and agglomeration procedure.}
+\item{kmeansI(centers, algorithm)}{\link[stats]{kmeans} --
+you must explicitly specify centers and algorithm name.}
 } % end list of schemas
 } % end details
 \value{
@@ -272,6 +275,10 @@ c1 = MLearn(~CL+CW+RW, crabs, hclustI(distMethod="euclidean",
    agglomMethod="complete"), 4)
 c1
 plot(c1)
+c2 = MLearn(~CL+CW+RW, crabs, 
+  kmeansI(centers=5, algorithm="Hartigan-Wong"), 0)
+c2
+plot(c2, crabs[,-c(1,3)])
 
 
 }

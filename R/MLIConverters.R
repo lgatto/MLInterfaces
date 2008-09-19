@@ -189,3 +189,9 @@ hclustConverter = function(obj, dstruct, k) {
    sil = silhouette(part, dstruct)
    new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
 }
+
+kmeansConverter = function(obj, dstruct, k) {
+   part = obj$clust
+   sil = silhouette(part, dist(dstruct))
+   new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
+}

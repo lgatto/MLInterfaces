@@ -70,3 +70,10 @@ hclustI = function(distMethod, agglomMethod) {
     if (missing(agglomMethod)) stop("agglomMethod must be explicitly supplied")
     makeClusteringSchema( "stats", 
         "hclust", distMethod, hclustConverter, agglomMethod) }
+
+kmeansI = function(centers, algorithm, distMethod="identity") {
+    if (missing(centers)) stop("centers (numeric or matrix) must be explicitly supplied")
+    if (missing(algorithm)) stop("algorithm must be explicitly supplied")
+    makeClusteringSchema( "stats", 
+        "kmeans", distMethod=distMethod, algorithm=algorithm, 
+         converter=kmeansConverter, centers=centers) }

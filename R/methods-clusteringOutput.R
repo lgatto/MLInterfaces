@@ -12,7 +12,11 @@ setMethod("plot", "clusteringOutput", function(x, y, ...) {
  opar = par(no.readonly=TRUE)
  on.exit(par(opar))
  par(mfrow=c(2,2))
- plclust(RObject(x))
+ if (x@learnerSchema@mlFunName=="hclust") plclust(RObject(x))
+ else {
+    if (missing(y)) stop("second arg must be matrix with feature data on all records")
+    partPlot(y, x@partition, las=2)
+    }
  plot(x@silhouette, main="silhouette")
  plot(x@prcomp, main="PCA screeplot")
  plot(x@prcomp$x[,1], x@prcomp$x[,2], col=x@partition,

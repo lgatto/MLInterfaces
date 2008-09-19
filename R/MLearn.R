@@ -179,6 +179,9 @@ setMethod("MLearn", c("formula", "data.frame", "clusteringSchema",
      data = dist(data, method=method@distMethod)
   if (method@mlFunName == "hclust")
         ans = lfun( data, method=method@agglomMethod, ...)
+  else if (method@mlFunName == "kmeans")
+        ans = lfun( data, centers = method@extras$centers, 
+           algorithm=method@algorithm, ...)
   else ans = lfun( data, ... )
   pca = new("prcompObj", prcomp( rawdata ))
 ## tell what was done
