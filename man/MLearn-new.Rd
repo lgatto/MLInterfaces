@@ -38,6 +38,7 @@
 \alias{rdacvML}
 \alias{hclustI}
 \alias{kmeansI}
+\alias{pamI}
 \alias{makeLearnerSchema}
 \alias{standardMLIConverter}
 
@@ -279,10 +280,9 @@ plot(cl1a)
 cl2 = MLearn(~CW+RW+CL+FL+BD, data=crabs, kmeansI, centers=5, algorithm="Hartigan-Wong")
 plot(cl2, crabs[,-c(1:3)])
 
-#c3 = MLearn(~CL+CW+RW, crabs, 
-#  pamI(distMethod="euclidean"), k=5)
-#c3
-#plot(c3)
+c3 = MLearn(~CL+CW+RW, crabs, pamI(dist), k=5)
+c3
+plot(c3, data=crabs[,c("CL", "CW", "RW")])
 
 }
 
