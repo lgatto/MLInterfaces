@@ -9,13 +9,13 @@ importFrom("cluster", "silhouette")
 exportClasses( 
 	"varImpStruct",
 	"raboostCont", "daboostCont",
-	"classifierOutput", "learnerSchema", "nonstandardLearnerSchema",
+	"classifierOutput", "learnerSchema", #"nonstandardLearnerSchema",
 	"xvalSpec", "clusteringOutput")
 	
 exportMethods( "show", "RObject", "confuMat", 
   "MLearn", "planarPlot", "Predict", "getVarImp", "plot", 
   "trainPredictions", "testScores", "testPredictions", 
-  "fsHistory", "report")
+  "fsHistory", "report", "getDist", "getConverter")
 
 export( randomForestI, knnI, dldaI, nnetI, rpartI, 
 	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
@@ -25,7 +25,7 @@ export( randomForestI, knnI, dldaI, nnetI, rpartI,
 	rdaI, rdaML,
         plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
         fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
-        adaI, fs.topVariance, hclustI, kmeansI )
+        adaI, fs.topVariance, hclustI, kmeansI ) # kmeansI is just data...
 
 S3method("print", "rdacvML")
 S3method("print", "rdaML")

@@ -9,9 +9,9 @@ setClass("learnerSchema", representation(
 				mlFunName="",
 				converter=function(obj, data, trainInd){}))
 
-setClass("clusteringSchema", representation(distMethod="character", 
-     agglomMethod="character", 
-     algorithm="character", extras="list"), contains="learnerSchema")
+#setClass("clusteringSchema", representation(distMethod="character", 
+#     agglomMethod="character", 
+#     algorithm="character", extras="list"), contains="learnerSchema")
 
 setClass("classifierOutput", representation(
         testOutcomes="factor",
@@ -35,20 +35,20 @@ setClass("classifierOutput", representation(
                                 embeddedCV=FALSE,
                                 learnerSchema=new("learnerSchema")))
 
-setClass("nonstandardLearnerSchema", representation(frontConverter="function",
-   hasNamespace="logical"), contains="learnerSchema")
+#setClass("nonstandardLearnerSchema", representation(frontConverter="function",
+#   hasNamespace="logical"), contains="learnerSchema")
 
-setOldClass("silhouette")
-
-setOldClass("prcomp")
-
-setClass("prcompObj", contains="prcomp")
-
-setClass("clusteringOutput", representation(
-	partition="integer", silhouette="silhouette", distEnv="environment",
-	prcomp="prcompObj",
-	metric="character", call="call", learnerSchema="learnerSchema",
-        RObject="ANY"))
+#setOldClass("silhouette")
+#
+#setOldClass("prcomp")
+#
+#setClass("prcompObj", contains="prcomp")
+#
+#setClass("clusteringOutput", representation(
+#	partition="integer", silhouette="silhouette", distEnv="environment",
+#	prcomp="prcompObj",
+#	metric="character", call="call", learnerSchema="learnerSchema",
+#        RObject="ANY"))
 
 setClass("xvalSpec", representation(type="character", niter="numeric", 
    partitionFunc="function", fsFun="function"))

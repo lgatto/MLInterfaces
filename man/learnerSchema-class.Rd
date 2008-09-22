@@ -2,8 +2,6 @@
 \docType{class}
 \alias{learnerSchema-class}
 \alias{nonstandardLearnerSchema-class}
-%\alias{MLearn,formula,ExpressionSet,learnerSchema,numeric,missing-method}
-%\alias{MLearn,formula,data.frame,learnerSchema,numeric,missing-method}
 \alias{show,learnerSchema-method}
 
 \title{Class "learnerSchema" -- convey information on a machine learning
@@ -25,9 +23,9 @@ obj, data, trainInd, that will produce a classifierOutput instance }
 }
 \section{Methods}{
   \describe{
-    \item{MLearn}{\code{signature(formula = "formula", data = "ExpressionSet", method = "learnerSchema", trainInd = "numeric", mlSpecials = "missing")}: execute desired learner passing a formula
+    \item{MLearn}{\code{signature(formula = "formula", data = "ExpressionSet", method = "learnerSchema", trainInd = "numeric")}: execute desired learner passing a formula
 and ExpressionSet}
-    \item{MLearn}{\code{signature(formula = "formula", data = "data.frame", method = "learnerSchema", trainInd = "numeric", mlSpecials = "missing")}: execute desired learner passing a formula }
+    \item{MLearn}{\code{signature(formula = "formula", data = "data.frame", method = "learnerSchema", trainInd = "numeric")}: execute desired learner passing a formula }
     \item{show}{\code{signature(object = "learnerSchema")}: concise display }
 	 }
 }

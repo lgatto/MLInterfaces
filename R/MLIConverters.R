@@ -184,14 +184,25 @@ MLIConverter.knncv = function(k=1, l=0) function(obj, data, trainInd) {
        trainPredictions=factor(), RObject=obj, embeddedCV=TRUE)
    }
 
-hclustConverter = function(obj, dstruct, k) {
-   part = stats::cutree(obj, k)
-   sil = silhouette(part, dstruct)
-   new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
-}
-
-kmeansConverter = function(obj, dstruct, k) {
-   part = obj$clust
-   sil = silhouette(part, dist(dstruct))
-   new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
-}
+## for unsupervised case all converters are of form
+## obj [RObject], dstruct [distance structure or raw data for kmeans],
+## ... for functions requiring additional data, like cutree, which takes
+## k or h
+#
+#hclustConverter = function(obj, dstruct, ...) {
+#   part = stats::cutree(obj, ...)
+#   sil = silhouette(part, dstruct)
+#   new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
+#}
+#
+#kmeansConverter = function(obj, dstruct, ...) {
+#   part = obj$clust
+#   sil = silhouette(part, dist(dstruct))
+#   new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
+#}
+#
+#pamConverter = function(obj, dstruct, ...) {
+#   part = obj$clustering
+#   sil = silhouette(part, dist(dstruct))
+#   new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
+#}

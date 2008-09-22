@@ -1,13 +1,11 @@
-setGeneric("MLearn", function(formula, data, method, trainInd, mlSpecials, ...)standardGeneric("MLearn"))
+setGeneric("MLearn", function(formula, data, .method, trainInd, ...)standardGeneric("MLearn"))
 
-#setGeneric("MLearn", function( formula, data, 
-#    method, trainInd, mlSpecials ...) standardGeneric("MLearn"))
 
 setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
-   "numeric", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
+   "numeric" ), function( formula, data, .method, trainInd, ...) {
 ## find software
-  pname = method@packageName
-  fname = method@mlFunName
+  pname = .method@packageName
+  fname = .method@mlFunName
 ## create the requested function
   lfun = do.call("::", list(pname, fname))
 ## build test and train subsets
@@ -25,7 +23,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
 ## tell what was done
   thecall = match.call()
 ## convert the execute result into an MLint output container
-  tmp = method@converter( ans, data, trainInd )
+  tmp = .method@converter( ans, data, trainInd )
 ## add some stuff to the converted representation
   if (!tmp@embeddedCV) {
       tmp@testOutcomes = teout
@@ -33,7 +31,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
   }
   else tmp@testOutcomes = trout # if CV is embedded, the 'training' is 'test'
   tmp@call = thecall
-  tmp@learnerSchema = method
+  tmp@learnerSchema = .method
   tmp
 })
 
@@ -49,22 +47,22 @@ es2df = function(x,keep=NULL) {
         }
 }
 
-setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric", "missing"),
-  function(formula, data, method, trainInd, mlSpecials, ...) {
+setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric" ),
+  function(formula, data, .method, trainInd, ...) {
 #
 # the keep setting below says just keep the response variable
 # from pData
 #
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
 	thecall = match.call()
-        ans = MLearn( formula, data, method, trainInd, ... )
+        ans = MLearn( formula, data, .method, trainInd, ... )
  	ans@call = thecall
-        ans@learnerSchema = method
+        ans@learnerSchema = .method
 	ans
  })
 
 
-# this method for MLearn is devoted essentially to cross-validation.  it structures
+# this .method for MLearn is devoted essentially to cross-validation.  it structures
 # a series of calls to MLearn[numeric trainInd] and collects the output, suitably
 # ordered, into a classifierOutput structure, in contrast to the older xvalML
 
@@ -72,7 +70,7 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric", "m
 # the sequence of cross-validations.  i think we can as long as we are not in LOO
 
 setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
-   "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
+   "xvalSpec" ), function( formula, data, .method, trainInd, ...) {
    xvspec = trainInd # rationalize parameter name
    xvalMethod = xvspec@type
    if (!(xvspec@type %in% c("LOO", "LOG", "NOTEST"))) stop("only supporting NOTEST (fit to all data), or LOO or LOG type xvalidation at this time")
@@ -87,7 +85,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
 
    if (xvspec@type == "NOTEST")
         {
-        ans = MLearn(formula, data, method, 1:N, ...)
+        ans = MLearn(formula, data, .method, 1:N, ...)
 	ans@call = thecall
         return(ans)
         }
@@ -128,7 +126,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
      if (do.fs) fmla2use=fsFun(formula, data[inds[idx],])  # we are clobbering input formula
       else fmla2use=formula
      rhs_fmla = function (f) colnames(attr(terms(f, data=data), "factors"))
-     list( test.idx=(setdiff(inds,idx)), mlans=MLearn( fmla2use, data, method=method, trainInd=inds[idx], ...),
+     list( test.idx=(setdiff(inds,idx)), mlans=MLearn( fmla2use, data, .method=.method, trainInd=inds[idx], ...),
              featInUse= rhs_fmla(fmla2use) ) # package result -- test.idx kept for rearrangement
      }
 
@@ -142,55 +140,18 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    if (do.fs) featsUsed = lapply(  out, function(x) x[["featInUse"]] )
    reord = match(inds, ords)
    testpred = factor(classif)[reord]
-   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall, RObject = out, fsHistory=featsUsed, learnerSchema=method)
+   new("classifierOutput", testPredictions=factor(testpred), testOutcomes=teo, call=thecall, RObject = out, fsHistory=featsUsed, learnerSchema=.method)
 })
 
 
 setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema",
-   "xvalSpec", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
+   "xvalSpec" ), function( formula, data, .method, trainInd, ...) {
 	thecall = match.call()
         data = es2df(data, keep=as.character(as.list(formula)[[2]]))
-	ans = MLearn(formula, data, method, trainInd, ...)
+	ans = MLearn(formula, data, .method, trainInd, ...)
 	ans@call = thecall
-        ans@learnerSchema = method
+        ans@learnerSchema = .method
 	ans
 })
 
 
-setMethod("MLearn", c("formula", "data.frame", "clusteringSchema",
-   "numeric", "missing"), function( formula, data, method, trainInd, mlSpecials, ...) {
-## find software
-  k = trainInd
-  pname = method@packageName
-  fname = method@mlFunName
-## create the requested function
-  lfun = do.call("::", list(pname, fname))
-  dframe = try(model.frame(formula, data, na.action=na.fail))
-  if (inherits(dframe, "try-error")) 
-     stop("problem in model.frame -- could be NA in data.  must stop.")
-  rawdata = data = data.matrix(dframe)
-  resp = model.response(dframe)
-  if (!is.null(resp)) {
-    kpcol = attr(attr(dframe, "terms"), "term.labels")
-    data = data[, kpcol]
-    rawdata = rawdata[, kpcol]
-    }
-  if (method@distMethod != "identity")
-     data = dist(data, method=method@distMethod)
-  if (method@mlFunName == "hclust")
-        ans = lfun( data, method=method@agglomMethod, ...)
-  else if (method@mlFunName == "kmeans")
-        ans = lfun( data, centers = method@extras$centers, 
-           algorithm=method@algorithm, ...)
-  else ans = lfun( data, ... )
-  pca = new("prcompObj", prcomp( rawdata ))
-## tell what was done
-  thecall = match.call()
-## convert the execute result into an MLinterfaces output container
-  tmp = method@converter( ans, data, k )
-  tmp@call = thecall
-  tmp@learnerSchema = method
-## add the PCA result
-  tmp@prcomp = pca
-  tmp
-})

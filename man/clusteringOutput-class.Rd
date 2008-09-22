@@ -38,7 +38,11 @@ to learnerSchema }
     \item{plot}{\code{signature(x = "clusteringOutput", y = "ANY")}: 
 a 4-panel plot showing features of the clustering, including the
 scree plot for a principal components transformation and a display
-of the partition in PC1xPC2 plane }
+of the partition in PC1xPC2 plane.  For a clustering method that
+does not have a native plot procedure, such as kmeans, the parameter
+y should be bound to a data frame or matrix with feature data for all records;
+an image plot of robust feature z-scores (z=(x-median(x))/mad(x)) and
+the cluster indices is produced in the northwest panel.  }
     \item{show}{\code{signature(object = "clusteringOutput")}: concise
 report }
 	 }

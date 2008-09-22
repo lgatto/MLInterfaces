@@ -25,12 +25,12 @@
 \alias{lvq}
 \alias{rab}
 \alias{adaI}
-\alias{MLearn,formula,ExpressionSet,character,numeric,missing-method}
-\alias{MLearn,formula,ExpressionSet,learnerSchema,numeric,missing-method}
-\alias{MLearn,formula,data.frame,learnerSchema,numeric,missing-method}
-\alias{MLearn,formula,data.frame,learnerSchema,xvalSpec,missing-method}
-\alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec,missing-method}
-\alias{MLearn,formula,data.frame,clusteringSchema,numeric,missing-method}
+\alias{MLearn,formula,ExpressionSet,character,numeric-method}
+\alias{MLearn,formula,ExpressionSet,learnerSchema,numeric-method}
+\alias{MLearn,formula,data.frame,learnerSchema,numeric-method}
+\alias{MLearn,formula,data.frame,learnerSchema,xvalSpec-method}
+\alias{MLearn,formula,ExpressionSet,learnerSchema,xvalSpec-method}
+\alias{MLearn,formula,data.frame,clusteringSchema,ANY-method}
 \alias{plotXvalRDA}
 \alias{rdacvI}
 \alias{rdaI}
@@ -48,17 +48,15 @@
 a schematic description of external learning functions like knn, lda, nnet, etc.
 }
 \usage{
-MLearn( formula, data, method, trainInd, mlSpecials, ... )
+MLearn( formula, data, .method, trainInd, ... )
 makeLearnerSchema(packname, mlfunname, converter)
 }
 \arguments{
   \item{formula}{ standard model formula }
   \item{data}{ data.frame or ExpressionSet instance}
-  \item{method}{ instance of learnerSchema }
+  \item{.method}{ instance of learnerSchema }
   \item{trainInd}{ obligatory numeric vector of indices of data to be used for training;
 all other data are used for testing, or instance of the xvalSpec class }
-  \item{mlSpecials}{ see help(MLearn-OLD) for this parameter; learnerSchema design
-obviates need for this parameter, which is retained only for back-compatibility.}
   \item{\dots}{ additional named arguments passed to external learning function }
   \item{packname}{character -- name of package harboring a learner function}
   \item{mlfunname}{character -- name of function to use}
@@ -82,7 +80,7 @@ to diverse machine learning algorithms.  In R package, machine learning function
 can have parameters \code{(x, y, ...)} or \code{(formula, data, ...)} or some
 other sequence, and these functions can return lists or vectors or other
 sorts of things.  With MLearn, we
-always have calling sequence \code{MLearn(formula, data, method, trainInd, ...)}, 
+always have calling sequence \code{MLearn(formula, data, .method, trainInd, ...)}, 
 and \code{data} can be a \code{data.frame} or \code{ExpressionSet}.  \code{MLearn}
 will always return an S4 instance of \code{classifierObject} or \code{clusteringObject}.
 
@@ -200,7 +198,7 @@ rp2
 #
 # new approach to adaboost
 #
-ada1 = MLearn(sp ~ CW+RW, data = crabs, method = adaI, 
+ada1 = MLearn(sp ~ CW+RW, data = crabs, .method = adaI, 
     trainInd = kp, type = "discrete", iter = 200)
 ada1
 confuMat(ada1)
@@ -271,15 +269,20 @@ plotXvalRDA(r1)  # special interface to plots of parameter space
 
 # illustrate clustering support
 
-c1 = MLearn(~CL+CW+RW, crabs, hclustI(distMethod="euclidean",
-   agglomMethod="complete"), 4)
-c1
-plot(c1)
-c2 = MLearn(~CL+CW+RW, crabs, 
-  kmeansI(centers=5, algorithm="Hartigan-Wong"), 0)
-c2
-plot(c2, crabs[,-c(1,3)])
+cl1 = MLearn(~CW+RW+CL+FL+BD, data=crabs, hclustI(distFun=dist, cutParm=list(k=4)))
+plot(cl1)
 
+cl1a = MLearn(~CW+RW+CL+FL+BD, data=crabs, hclustI(distFun=dist, cutParm=list(k=4)), 
+   method="complete")
+plot(cl1a)
+
+cl2 = MLearn(~CW+RW+CL+FL+BD, data=crabs, kmeansI, centers=5, algorithm="Hartigan-Wong")
+plot(cl2, crabs[,-c(1:3)])
+
+#c3 = MLearn(~CL+CW+RW, crabs, 
+#  pamI(distMethod="euclidean"), k=5)
+#c3
+#plot(c3)
 
 }
 
