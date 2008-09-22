@@ -4,6 +4,11 @@
 \alias{RObject,clusteringOutput-method}
 \alias{plot,clusteringOutput,ANY-method}
 \alias{show,clusteringOutput-method}
+\alias{show,clusteringSchema-method}
+\alias{getConverter,clusteringSchema-method}
+\alias{getDist,clusteringSchema-method}
+\alias{getConverter}
+\alias{getDist}
 
 \title{container for clustering outputs in uniform structure}
 \description{container for clustering outputs in uniform structure}
