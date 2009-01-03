@@ -117,7 +117,8 @@ factor as response variable, not bulletproofed against other responses yet.  If 
 probability estimate exceeds threshold, predict 1, else 0}
 %\item{RABI}{\link[MLint]{RAB} -- an experimental implementation of real Adaboost
 %of Friedman Hastie Tibshirani Ann Stat 2001}
-\item{ada}{\link[ada]{ada}}
+\item{adaI}{\link[ada]{ada}}
+\item{logitboostI}{\link[boost]{logitboost}}
 \item{lvqI}{\link[class]{lvqtest} after building codebook with lvqinit and updating with
 olvq1.  You will need to write your own detailed schema if you want to tweak tuning
 parameters.}
@@ -284,6 +285,8 @@ c3 = MLearn(~CL+CW+RW, crabs, pamI(dist), k=5)
 c3
 plot(c3, data=crabs[,c("CL", "CW", "RW")])
 
+lb = MLearn(sp~CW+RW+CL+FL+BD, data=crabs, logitboostI, sample(1:200,size=100))
+confuMat(lb)
 }
 
 \keyword{ models }

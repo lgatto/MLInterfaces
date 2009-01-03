@@ -25,7 +25,8 @@ export( randomForestI, knnI, dldaI, nnetI, rpartI,
 	rdaI, rdaML,
         plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
         fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
-        adaI, fs.topVariance, hclustI, kmeansI, pamI )
+        adaI, fs.topVariance, hclustI, kmeansI, pamI,
+        logitboost2, logitboostI )
 
 S3method("print", "rdacvML")
 S3method("print", "rdaML")

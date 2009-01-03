@@ -81,3 +81,6 @@ adaI = makeLearnerSchema("ada", "ada",
 #    if (missing(distMethod)) stop("distMethod must be explicitly supplied")
 #    makeClusteringSchema( "cluster", 
 ##        "pam", distMethod, pamConverter) }
+
+logitboostI = makeLearnerSchema("MLInterfaces", "logitboost2",
+    standardMLIConverter)
