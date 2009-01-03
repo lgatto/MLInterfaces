@@ -25,6 +25,8 @@
 \alias{lvq}
 \alias{rab}
 \alias{adaI}
+\alias{logitboostI}
+\alias{logitboost2}
 \alias{MLearn,formula,ExpressionSet,character,numeric-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,numeric-method}
 \alias{MLearn,formula,data.frame,learnerSchema,numeric-method}
