@@ -206,3 +206,18 @@ MLIConverter.knncv = function(k=1, l=0) function(obj, data, trainInd) {
 #   sil = silhouette(part, dist(dstruct))
 #   new("clusteringOutput", partition=part, silhouette=sil, RObject=obj)
 #}
+
+MLIConverter.Bgbm = function(n.trees.pred=1000, thresh=.5) function(obj, data, trainInd) {
+   anac = function(x) as.numeric(as.character(x))
+   teData = data[-trainInd,] # key distinction -- typical predict methods allow
+   trData = data[trainInd,]  # variables in newdata to be superset of those in formula, not gbm
+   tepr = predict(obj, teData, n.trees=n.trees.pred) # our special predict.gbm2
+   trpr = predict(obj, trData, n.trees=n.trees.pred)
+   tesco = anac(tepr)
+   tepr = anac(tepr) > thresh
+   trpr = anac(trpr) > thresh
+   names(tepr) = rownames(teData)
+   names(trpr) = rownames(trData)
+   new("classifierOutput", testPredictions=factor(tepr), testScores=tesco,
+       trainPredictions=factor(trpr), RObject=obj)
+   }

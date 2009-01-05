@@ -36,6 +36,8 @@
 \alias{plotXvalRDA}
 \alias{rdacvI}
 \alias{rdaI}
+\alias{BgbmI}
+\alias{gbm2}
 \alias{rdaML}
 \alias{rdacvML}
 \alias{hclustI}
@@ -120,6 +122,7 @@ probability estimate exceeds threshold, predict 1, else 0}
 %\item{RABI}{\link[MLint]{RAB} -- an experimental implementation of real Adaboost
 %of Friedman Hastie Tibshirani Ann Stat 2001}
 \item{adaI}{\link[ada]{ada}}
+\item{BgbmI}{\link[gbm]{gbm}, forcing the Bernoulli loss function.}
 \item{logitboostI}{\link[boost]{logitboost}}
 \item{lvqI}{\link[class]{lvqtest} after building codebook with lvqinit and updating with
 olvq1.  You will need to write your own detailed schema if you want to tweak tuning

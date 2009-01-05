@@ -272,3 +272,36 @@ predict.logitboost2 = function(object, newdata, ...) {
  tmp = apply(app, 1, function(x)1*(mean(x>=.5)>=.5))
  factor(ifelse(tmp==1, cllev[1], cllev[2]))
 }
+
+## gbm -- the problem here is that it cannot use a factor as dependent
+## variable, and only returns numeric predictions -- unusual for classification procedures
+
+# our solution -- continue to require user to supply a factor reponse variable
+# but coerce it to 0-1 setting first level of response to zero and second to one
+# then call gbm
+
+gbm2 = function(formula, data, ...) {
+ require(gbm, quietly=TRUE)
+ mf = model.frame(formula, data)
+ resp = model.response(mf)
+ if (!is(resp, "factor")) stop("dependent variable must be a factor in MLearn")
+ if (length(levels(resp)) !=2 ) stop("dependent variable must have two levels")
+ nresp = as.numeric(resp == levels(resp)[2])
+ fwn = formula
+ fwn[[2]] = as.name("nresp")
+ newf = as.formula(fwn)
+ data$nresp = nresp
+ ans = gbm( newf, data, ... )
+ class(ans) = "gbm2"
+ ans
+}
+ 
+# now we need a suitable prediction method.  we know predict.gbm will only return
+#  a numeric vector.  so just hand it back as a factor; to make sense of it
+#  need to use as.numeric(as.character())
+
+predict.gbm2 = function(object, newdata, ...) {
+ require(gbm, quietly=TRUE)
+ ans = predict.gbm(object, newdata, ...)
+ factor(ans)
+}

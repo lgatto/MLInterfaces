@@ -84,3 +84,8 @@ adaI = makeLearnerSchema("ada", "ada",
 
 logitboostI = makeLearnerSchema("MLInterfaces", "logitboost2",
     standardMLIConverter)
+
+BgbmI = function(n.trees.pred=1000, thresh=.5) {
+     makeLearnerSchema("MLInterfaces", "gbm2", 
+             MLIConverter.Bgbm(n.trees.pred,thresh)) }
+

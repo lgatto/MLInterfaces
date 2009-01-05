@@ -142,6 +142,31 @@ What is the standardMLIConverter?
 standardMLIConverter
 @
 
+\subsection{Dealing with gbm}
+
+The \Rpackage{gbm} package workhorse fitter is \texttt{gbm}.  The formula
+input must have a numeric response, and the predict method only returns
+a numeric vector.  There is also no namespace.  We introduced a gbm2 function
+<<lkggg>>=
+gbm2
+@
+that requires a two-level factor response and recodes for use by gbm.
+It also returns an S3 object of newly defined class gbm2, which only
+returns a factor.  At this stage, we could use a standard interface, but
+the prediction values will be unpleasant to work with.  Furthermore the
+predict method requires specification of \texttt{n.trees}.
+So we pass a parameter \texttt{n.trees.pred}.
+<<tryg>>=
+BgbmI
+set.seed(1234)
+gbrun = MLearn(sp~CL+RW+FL+CW+BD, data=crabs, BgbmI(n.trees.pred=25000,thresh=.5), 
+   kp, n.trees=25000, 
+   distribution="bernoulli", verbose=FALSE )
+gbrun
+confuMat(gbrun)
+summary(testScores(gbrun))
+@
+
 \subsection{A harder example: rda}
 
 The \Rpackage{rda} package includes the rda function for regularized
