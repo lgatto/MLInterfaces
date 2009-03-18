@@ -85,6 +85,14 @@ MLIConverter.logistic = function(threshold) function(obj, data, trainInd) {
    trData = data[trainInd,]
    tepr = 1*(predict(obj, teData, type="response") > threshold)
    trpr = 1*(predict(obj, trData, type="response") > threshold)
+# from Jason Vertrees, to restore codes for levels of response
+    dDf <- model.frame(obj, data)
+    dRs <- model.response(dDf)
+#    # Why not try the following?
+#    # This just makes a decision -- as we do above that everything on one
+#    # side of the threshold is class1 else class2.  Is this valid?
+   tepr <- as.factor(levels(dRs)[as.integer(tepr)+1])
+   trpr <- as.factor(levels(dRs)[as.integer(trpr)+1])
    tesco = predict(obj, teData, type="response")
    names(tepr) = rownames(teData)
    names(trpr) = rownames(trData)
