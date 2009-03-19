@@ -1,10 +1,10 @@
 Package: MLInterfaces
 Title: Uniform interfaces to R machine learning procedures for data in Bioconductor containers
-Version: 1.23.4
+Version: 1.23.5
 Author: Vince Carey <stvjc@channing.harvard.edu>, Robert Gentleman, Jess Mar,
 	and contributions from Jason Vertrees <jv@cs.dartmouth.edu>
 Description: Uniform interfaces to machine learning code for data in Bioconductor containers
-biocViews: Statistics, Classification, Clustering
+biocViews: Bioinformatics, Classification, Clustering
 Maintainer: V. Carey <stvjc@channing.harvard.edu>
 License: LGPL
 Depends: R (>= 2.1), Biobase, MASS, methods, genefilter, rpart, rda, annotate, cluster
