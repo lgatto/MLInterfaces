@@ -141,8 +141,8 @@ MLIConverter.RAB = function(obj, data, trainInd) {
 
 MLIConverter.naiveBayes = function(obj, data, trainInd) {
    kpn = names(obj$tables)
-   teData = data[-trainInd,kpn] # key distinction -- typical predict methods allow
-   trData = data[trainInd,kpn]  # variables in newdata to be superset of those in formula, not allowed here
+   teData = data[-trainInd,kpn,drop=FALSE] # key distinction -- typical predict methods allow
+   trData = data[trainInd,kpn,drop=FALSE]  # variables in newdata to be superset of those in formula, not allowed here
    tepr = predict(obj, teData, type="class")
    trpr = predict(obj, trData, type="class")
    names(tepr) = rownames(teData)
