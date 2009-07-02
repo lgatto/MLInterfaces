@@ -19,6 +19,7 @@ to exhibit the decision boundaries in the plane}
 }
 \examples{
 library(ALL)
+library(hgu95av2.db)
 data(ALL)
 #
 # restrict to BCR/ABL or NEG
@@ -36,7 +37,6 @@ all2 <- ALL[,kp]
 set.seed(1234)
 ng <- nrow(exprs(all2))
 pick <- sample(1:ng, size=2, replace=FALSE)
-library(hgu95av2.db)
 gg <- all2[pick,]
 sym <- unlist(mget(featureNames(gg), hgu95av2SYMBOL))
 featureNames(gg) <- sym

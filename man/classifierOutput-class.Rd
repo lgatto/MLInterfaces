@@ -60,6 +60,12 @@ iteration, and \code{mlans}, which is the \code{\linkS4class{classifierOutput}}
 for the associated iteration.  See the example for an illustration
 of 'digging out' the predicted probabilities associated with each
 cross-validation iteration executed through an xvalSpec specification. }
+    \item{\code{embeddedCV}:}{logical value that is TRUE if
+the procedure in use performs its own cross-validation}
+    \item{\code{fsHistory}:}{list of features selected
+through cross-validation process}
+    \item{\code{learnerSchema}:}{propagation of the learner
+schema object used in the call}
     \item{\code{call}:}{Object of class \code{"call"} -- records the
 call used to generate the classifierOutput RObject }
   }

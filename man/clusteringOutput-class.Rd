@@ -22,17 +22,18 @@ observations as clustered }
     \item{\code{silhouette}:}{Object of class \code{"silhouette"},
 structure from Rousseeuw cluster package measuring cluster
 membership strength per observation}
-    \item{\code{distEnv}:}{Object of class \code{"environment"} not in use }
     \item{\code{prcomp}:}{Object of class \code{"prcompObj"} a wrapped
 instance of stats package prcomp output }
-    \item{\code{metric}:}{Object of class \code{"character"} string
-identifying the distance function used to orient objects in feature space }
+%    \item{\code{metric}:}{Object of class \code{"character"} string
+%identifying the distance function used to orient objects in feature space }
     \item{\code{call}:}{Object of class \code{"call"} for auditing }
     \item{\code{learnerSchema}:}{Object of class \code{"learnerSchema"}, a
 formal object indicating the package, function, and other attributes
 of the clustering algorithm employed to generate this object  }
     \item{\code{RObject}:}{Object of class \code{"ANY"}, the
 unaltered output of the function called according to learnerSchema }
+    \item{\code{converter}:}{converter propagated from call}
+    \item{\code{distFun}:}{distfun propagated from call}
   }
 }
 \section{Methods}{
