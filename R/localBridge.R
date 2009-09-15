@@ -248,30 +248,30 @@ cverrs = function (x, type = c("both", "error", "gene"), nice = FALSE,
 }
 
 # -- logitboost
-logitboost2 = function (formula, data, ...) 
-{
-    require(boost, quietly=TRUE)
-    mf = model.frame(formula, data)
-    cl = model.response(mf)
-    cll = levels(cl)
-    cl = 1*(cl==levels(cl)[1])
-    x = data.matrix(mf[, -1])
-    ans = boost::logitboost(x, cl, x, ...)
-    ans = list(traindat = data.matrix(x), ans = ans, traincl = cl,
-       cll=cll)
-    class(ans) = "logitboost2"
-    ans
-}
+#logitboost2 = function (formula, data, ...) 
+#{
+#    require(boost, quietly=TRUE)
+#    mf = model.frame(formula, data)
+#    cl = model.response(mf)
+#    cll = levels(cl)
+#    cl = 1*(cl==levels(cl)[1])
+#    x = data.matrix(mf[, -1])
+#    ans = boost::logitboost(x, cl, x, ...)
+#    ans = list(traindat = data.matrix(x), ans = ans, traincl = cl,
+#       cll=cll)
+#    class(ans) = "logitboost2"
+#    ans
+#}
 
-predict.logitboost2 = function(object, newdata, ...) {
- require(boost, quietly=TRUE)
- cllev = object$cll
- vars = colnames(object$traindat)
- newdata = newdata[,vars,drop=FALSE]
- app = boost::logitboost( object$traindat, object$traincl,  data.matrix(newdata), ... )
- tmp = apply(app, 1, function(x)1*(mean(x>=.5)>=.5))
- factor(ifelse(tmp==1, cllev[1], cllev[2]))
-}
+#predict.logitboost2 = function(object, newdata, ...) {
+# require(boost, quietly=TRUE)
+# cllev = object$cll
+# vars = colnames(object$traindat)
+# newdata = newdata[,vars,drop=FALSE]
+# app = boost::logitboost( object$traindat, object$traincl,  data.matrix(newdata), ... )
+# tmp = apply(app, 1, function(x)1*(mean(x>=.5)>=.5))
+# factor(ifelse(tmp==1, cllev[1], cllev[2]))
+#}
 
 ## gbm -- the problem here is that it cannot use a factor as dependent
 ## variable, and only returns numeric predictions -- unusual for classification procedures

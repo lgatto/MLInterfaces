@@ -25,8 +25,8 @@
 \alias{lvq}
 \alias{rab}
 \alias{adaI}
-\alias{logitboostI}
-\alias{logitboost2}
+%\alias{logitboostI}
+%\alias{logitboost2}
 \alias{MLearn,formula,ExpressionSet,character,numeric-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,numeric-method}
 \alias{MLearn,formula,data.frame,learnerSchema,numeric-method}
@@ -123,14 +123,14 @@ probability estimate exceeds threshold, predict 1, else 0}
 %of Friedman Hastie Tibshirani Ann Stat 2001}
 \item{adaI}{\link[ada]{ada}}
 \item{BgbmI}{\link[gbm]{gbm}, forcing the Bernoulli loss function.}
-\item{logitboostI}{\link[boost]{logitboost}}
+%\item{logitboostI}{\link[boost]{logitboost}}
 \item{lvqI}{\link[class]{lvqtest} after building codebook with lvqinit and updating with
 olvq1.  You will need to write your own detailed schema if you want to tweak tuning
 parameters.}
 \item{naiveBayesI}{\link[e1071]{naiveBayes}}
 \item{baggingI}{\link[ipred]{bagging}}
 \item{sldaI}{\link[ipred]{slda}}
-\item{rdaI}{\link[ipred]{rda} -- you must supply the alpha and delta parameters to
+\item{rdaI}{\link[rda]{rda} -- you must supply the alpha and delta parameters to
 use this.  Typically cross-validation is used to select these.  See \code{rdacvI} below.}
 \item{rdacvI}{\link[rda]{rda.cv}.  This interface is complicated.  The typical
 use includes cross-validation internal to the rda.cv function.  That process
@@ -290,8 +290,8 @@ c3 = MLearn(~CL+CW+RW, crabs, pamI(dist), k=5)
 c3
 plot(c3, data=crabs[,c("CL", "CW", "RW")])
 
-lb = MLearn(sp~CW+RW+CL+FL+BD, data=crabs, logitboostI, sample(1:200,size=100))
-confuMat(lb)
+#lb = MLearn(sp~CW+RW+CL+FL+BD, data=crabs, logitboostI, sample(1:200,size=100))
+#confuMat(lb)
 }
 
 \keyword{ models }

@@ -8,7 +8,7 @@ importFrom("cluster", "silhouette")
 
 exportClasses( 
 	"varImpStruct",
-	"raboostCont", "daboostCont",
+#	"raboostCont", "daboostCont",
 	"classifierOutput", "learnerSchema", #"nonstandardLearnerSchema",
 	"xvalSpec", "clusteringOutput")
 	
@@ -26,7 +26,8 @@ export( randomForestI, knnI, dldaI, nnetI, rpartI,
         plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
         fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
         adaI, fs.topVariance, hclustI, kmeansI, pamI,
-        logitboost2, logitboostI, gbm2, BgbmI ) # latter temporary )
+#        logitboost2, logitboostI, 
+        gbm2, BgbmI ) # latter temporary )
 
 S3method("print", "rdacvML")
 S3method("print", "rdaML")
