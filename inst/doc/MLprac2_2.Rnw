@@ -88,7 +88,7 @@ to identify boundary cases and downweight the mass of data (e.g., boosting,
 svm).
 \item Different learning tools have different capabilities.
 There is little \textit{a priori} guidance on matching learning algorithms to
-aspects of problems.  While it is convenient to sift through a variety
+aspects of problems.  While it is convenient to shift through a variety
 of approaches, one must pay a price for the model search.
 \item Data and model/learner visualization are  important, but
 visualization in higher dimensional data structures is hard.
