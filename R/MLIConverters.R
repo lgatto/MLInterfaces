@@ -229,3 +229,16 @@ MLIConverter.Bgbm = function(n.trees.pred=1000, thresh=.5) function(obj, data, t
    new("classifierOutput", testPredictions=factor(tepr), testScores=tesco,
        trainPredictions=factor(trpr), RObject=obj)
    }
+
+MLIConverter.blackboost = function (obj, data, trainInd) 
+{
+    teData = data[-trainInd, ]
+    trData = data[trainInd, ]
+    tepr = predict(obj, teData, type="response")
+    trpr = predict(obj, trData, type="response")
+    names(tepr) = rownames(teData)
+    names(trpr) = rownames(trData)
+    new("classifierOutput", testPredictions = factor(tepr), trainPredictions = factor(trpr), 
+        RObject = obj)
+}
+

@@ -82,10 +82,12 @@ adaI = makeLearnerSchema("ada", "ada",
 #    makeClusteringSchema( "cluster", 
 ##        "pam", distMethod, pamConverter) }
 
-logitboostI = makeLearnerSchema("MLInterfaces", "logitboost2",
-    standardMLIConverter)
+#logitboostI = makeLearnerSchema("MLInterfaces", "logitboost2",
+#    standardMLIConverter)
 
 BgbmI = function(n.trees.pred=1000, thresh=.5) {
      makeLearnerSchema("MLInterfaces", "gbm2", 
              MLIConverter.Bgbm(n.trees.pred,thresh)) }
 
+blackboostI = makeLearnerSchema("mboost", "blackboost",
+           MLIConverter.blackboost)

@@ -2,6 +2,7 @@ import("methods")
 import("tools")
 import("Biobase")
 import("annotate")
+import("mboost")
 
 importFrom("graphics", "plot")
 importFrom("cluster", "silhouette")
@@ -26,7 +27,7 @@ export( randomForestI, knnI, dldaI, nnetI, rpartI,
         plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
         fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
         adaI, fs.topVariance, hclustI, kmeansI, pamI,
-#        logitboost2, logitboostI, 
+	blackboostI,
         gbm2, BgbmI ) # latter temporary )
 
 S3method("print", "rdacvML")

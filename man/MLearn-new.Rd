@@ -19,14 +19,13 @@
 \alias{dlda2}
 \alias{dldaI}
 \alias{sldaI}
+\alias{blackboostI}
 \alias{knn2}
 \alias{knn.cv2}
 \alias{ldaI.predParms}
 \alias{lvq}
 \alias{rab}
 \alias{adaI}
-%\alias{logitboostI}
-%\alias{logitboost2}
 \alias{MLearn,formula,ExpressionSet,character,numeric-method}
 \alias{MLearn,formula,ExpressionSet,learnerSchema,numeric-method}
 \alias{MLearn,formula,data.frame,learnerSchema,numeric-method}
@@ -123,7 +122,8 @@ probability estimate exceeds threshold, predict 1, else 0}
 %of Friedman Hastie Tibshirani Ann Stat 2001}
 \item{adaI}{\link[ada]{ada}}
 \item{BgbmI}{\link[gbm]{gbm}, forcing the Bernoulli loss function.}
-%\item{logitboostI}{\link[boost]{logitboost}}
+\item{blackboostI}{\link[mboost]{blackboost} -- you MUST supply
+a family parameter relevant for mboost package procedures}
 \item{lvqI}{\link[class]{lvqtest} after building codebook with lvqinit and updating with
 olvq1.  You will need to write your own detailed schema if you want to tweak tuning
 parameters.}
@@ -217,6 +217,11 @@ confuMat(nb.1)
 bb.1 = MLearn(sp~CW+RW, data=crabs, baggingI, kp )
 confuMat(bb.1)
 #
+# new mboost interface -- you MUST supply family for nonGaussian response
+#
+blb.1 = MLearn(sp~CW+RW+FL, data=crabs, blackboostI, kp, family=mboost::Binomial() )
+confuMat(blb.1)
+#
 # ExpressionSet illustration
 # 
 data(sample.ExpressionSet)
@@ -290,8 +295,6 @@ c3 = MLearn(~CL+CW+RW, crabs, pamI(dist), k=5)
 c3
 plot(c3, data=crabs[,c("CL", "CW", "RW")])
 
-#lb = MLearn(sp~CW+RW+CL+FL+BD, data=crabs, logitboostI, sample(1:200,size=100))
-#confuMat(lb)
 }
 
 \keyword{ models }
