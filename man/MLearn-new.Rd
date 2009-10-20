@@ -109,7 +109,7 @@ using \code{knnI} with an \code{xvalSpec}, but it will be slower.
 When using this learner schema, you should use the
 numerical \code{trainInd} setting with \code{1:N} where
 \code{N} is the number of samples.}
-\item{dldaI}{\link[sma]{stat.diag.da}; special support bridge required, defined in MLint}
+\item{dldaI}{\link[sfsmisc]{diagDA}; special support bridge required, defined in MLint}
 \item{nnetI}{\link[nnet]{nnet}}
 \item{rpartI}{\link[rpart]{rpart}}
 \item{ldaI}{\link[MASS]{lda}}
