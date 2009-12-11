@@ -219,6 +219,7 @@ confuMat(bb.1)
 #
 # new mboost interface -- you MUST supply family for nonGaussian response
 #
+require(party)  # trafo ... killing cmd check
 blb.1 = MLearn(sp~CW+RW+FL, data=crabs, blackboostI, kp, family=mboost::Binomial() )
 confuMat(blb.1)
 #
