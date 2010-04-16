@@ -670,12 +670,12 @@ the problem.  We can also assess the incremental effect of
 combining gene sets, relative to using them separately.
 
 One collection of gene sets that is straightforward to use
-and interpret is provided by the keggorth package (see also
+and interpret is provided by the keggorthology package (see also
 GSEABase).  Here's how we can define the ExpressionSets for
 genes annotated by KEGG to Environmental (Genetic) Information
 Processing:
 <<getko>>=
-library(keggorth)
+library(keggorthology)
 data(KOgraph)
 adj(KOgraph, nodes(KOgraph)[1])
 EIP = getKOprobes("Environmental Information Processing")
