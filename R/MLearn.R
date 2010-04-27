@@ -132,7 +132,17 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
 
 #   xvalLoop = xvalLoop(NULL) # eventually will allow clusters
 
-   out <- lapply( 1:n, xvalidator, ... )
+   out <-
+       if (is.loaded("mc_fork", PACKAGE="multicore")) {
+           mcLapply <- get("mclapply", envir=getNamespace("multicore"))
+           mcLapply(1:n, xvalidator, ...)
+       } else {
+           lapply( 1:n, xvalidator, ... )
+       }  # thanks Martin Morgan!
+   classif <- unlist( sapply( out, function(x) testPredictions(x[["mlans"]]) ) )
+ # now want the test sets for the various iterations
+   ords <- unlist( lapply( out, function(x) x[["test.idx"]] ) )
+
    classif <- unlist( sapply( out, function(x) testPredictions(x[["mlans"]]) ) )
 # now want the test sets for the various iterations
    ords <- unlist( lapply( out, function(x) x[["test.idx"]] ) )

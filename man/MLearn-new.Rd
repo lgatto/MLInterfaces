@@ -150,6 +150,10 @@ you must explicitly specify distance and agglomeration procedure.}
 \item{kmeansI(centers, algorithm)}{\link[stats]{kmeans} --
 you must explicitly specify centers and algorithm name.}
 } % end list of schemas
+
+If the \code{multicore} package is attached, cross-validation will
+be distributed to cores using \code{\link[multicore]{mclapply}}.
+
 } % end details
 \value{
 Instances of classifierOutput or clusteringOutput

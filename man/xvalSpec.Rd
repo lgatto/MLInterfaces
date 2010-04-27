@@ -38,6 +38,9 @@ If \code{type == "LOG"} a value for \code{partitionFunc} must be
 supplied.  We recommend using \code{balKfold.xvspec(K)}.  The
 values of \code{niter} and \code{K} in this usage must be the same.
 This redundancy will be removed in a future upgrade.
+
+If the \code{multicore} package is attached, cross-validation will
+be distributed to cores using \code{\link[multicore]{mclapply}}.
 } % end details
 \value{
 An instance of \code{\linkS4class{classifierOutput}}, with a special
