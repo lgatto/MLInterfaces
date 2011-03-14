@@ -291,7 +291,7 @@ gbm2 = function(formula, data, ...) {
  fwn[[2]] = as.name("nresp")
  newf = as.formula(fwn)
  data$nresp = nresp
- ans = gbm( newf, data, ... )
+ ans = gbm( newf, data=data, ... )
  class(ans) = "gbm2"
  ans
 }

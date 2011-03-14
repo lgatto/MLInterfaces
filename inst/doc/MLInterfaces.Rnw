@@ -310,7 +310,7 @@ Now replace the labels for those predictions that are
 very close to .5.
 <<repla>>=
 douPred <- simpPred
-douPred[smallDou(.48,.52)] <- "doubt"
+douPred[smallDou(.35,.65)] <- "doubt"
 @
 The resulting modified predictions are in the fourth column:
 <<lkpr>>=
