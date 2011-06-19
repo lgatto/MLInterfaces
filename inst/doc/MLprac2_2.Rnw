@@ -328,44 +328,50 @@ Biplot of the principal component analysis of the \Robject{crabs} data.}
 
 \subsubsection{Clustering}
 
-A familiar technique for displaying multivariate data
-in high-throughput biology is called the heatmap.
-In this display, samples are clustered as columns, and
-features as rows.  The clustering technique used
-by default is R 'hclust'.
-This procedure builds a clustering
-tree for the data as follows.
-Distances are computed between feature
-vectors for all $N$ observations.
-The two closest observations are joined and
-are regarded as a new object,
-so there
-are $N-1$ objects (clusters) at this point.  
-This process is repeated until 1 cluster is formed;
-the clustering tree shows the process by which
-clusters are created via agglomeration.
+A familiar technique for displaying multivariate data in
+high-throughput biology is called the heatmap.  In this display,
+samples are clustered as columns, and features as rows.  The
+clustering technique used by default is R \Rfunction{hclust}.  This
+procedure builds a clustering tree for the data as follows.  Distances
+are computed between each pair of feature vectors for all $N$ observations.  The
+two closest pair is joined and regarded as a new object,
+so there are $N-1$ objects (clusters) at this point.  This process is
+repeated until 1 cluster is formed; the clustering tree shows the
+process by which clusters are created via this agglomeration process.
 
-There are several ways to measure distances
-between clusters, once these
-have been formed.  Single-linkage clustering
+The most crucial choice when applying this method is the initial choice of the distance
+metric between the features. 
+
+Once clusters are being formed, there are several ways to measure distances
+between them, based on the initial between-feature distances.  Single-linkage clustering
 takes the distance between two clusters
 to be the shortest distance between any two
 members of the different clusters;
 average linkage averages all the distances
 between members; complete-linkage uses hte
 maximum distance between any two members of the different
-clusters.  Other methods are available in hclust.
+clusters.  Other methods are also available in \Rfunction{hclust}.
 
-The following figure shows cluster trees
-for samples and features, using all defaults
-for the heatmap function.
-A tiled display at the top shows the
-species codes for the samples.
-
-<<dohm,fig=TRUE>>=
+Figure~\ref{figdohm} shows cluster trees for samples and features. The
+default color choice is not great, thus we specify own using the
+\Robject{col} argument.  A tiled display at the top, defined via the argument
+\Robject{ColSideColors} shows the species codes for the samples. An important
+choice to be made when calling \Rfunction{heatmap} is the value of the argument
+\Robject{scale}, whose default setting is to scale the rows, but not the columns.
+%
+<<checkClaim,echo=FALSE>>=
+stopifnot(eval(formals(heatmap)$scale)[1]=="row")
+@ 
+%
+<<figdohm,fig=TRUE,include=FALSE,height=6.5,width=6.5>>=
 X = data.matrix(crabs[,-c(1:3)])
-heatmap(t(X), ColSideColors=ifelse(crabs$sp=="O", "orange", "blue"))
+heatmap(t(X), 
+    ColSideColors=ifelse(crabs$sp=="O", "orange", "blue"),
+    col = colorRampPalette(c("blue", "white", "red"))(255))
 @
+\myfig{figdohm}{.8\textwidth}{%
+Heatmap plot of the \Robject{crabs} data, including dendrograms representing 
+hierarchical clustering of the rows and columns.}
 
 Typically clustering is done in the absence of labels -- it is
 an example of unsupervised machine learning.  We can ask
