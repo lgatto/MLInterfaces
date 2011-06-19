@@ -1,30 +1,19 @@
-%\VignetteIndexEntry{MLInterfaces Exercises, post Bioc 2.1}
+%\VignetteIndexEntry{A machine learning tutorial: applications of the Bioconductor MLInterfaces package to expression and ChIP-Seq data}
+%\VignettePackage{MLInterfaces}
 %\VignetteDepends{ALL}
 %\VignetteKeywords{Genomics, MachineLearning}
-%\VignettePackage{MLInterfaces}
 
+% To compile this document
+% library('weaver'); rm(list=ls()); Sweave('MLprac2_2.Rnw', driver=weaver()); system('pdflatex MLprac2_2')
 
-%
-% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
-% likely to be overwritten.
-%
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 
 \usepackage{amsmath}
 \usepackage[authoryear,round]{natbib}
 \usepackage{hyperref}
-
-
-\textwidth=6.2in
-\textheight=8.5in
-%\parskip=.3cm
-\oddsidemargin=.1in
-\evensidemargin=.1in
-\headheight=-.3in
-
-\newcommand{\scscst}{\scriptscriptstyle}
-\newcommand{\scst}{\scriptstyle}
-
+\usepackage{hyperref,graphicx}
+\usepackage{color}
+\usepackage{geometry}
 
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
 \newcommand{\Robject}[1]{{\texttt{#1}}}
@@ -35,18 +24,27 @@
 \newcommand{\bi}{\begin{itemize}}
 \newcommand{\ei}{\end{itemize}}
 
-\textwidth=6.2in
+\renewcommand{\floatpagefraction}{0.9}	
 
-\bibliographystyle{plainnat} 
- 
+\newcommand{\fixme}[1]{{\textbf{Fixme:} \textit{\textcolor{blue}{#1}}}}
+\newcommand{\myfig}[3]{%
+  \begin{figure}[tb!]
+    \begin{center}
+      \includegraphics[width=#2]{#1}
+      \caption{\label{#1}#3}
+    \end{center}
+  \end{figure}
+}
+
+\SweaveOpts{keep.source=TRUE,eps=FALSE,prefix=FALSE,width=4,height=4.5} 
+
 \begin{document}
-%\setkeys{Gin}{width=0.55\textwidth}
 
-\title{Practicalities of machine learning: applications to high-throughput genomics
-with Bioconductor MLInterfaces 2.2}
+\title{A machine learning tutorial: applications of the Bioconductor MLInterfaces 
+  package to expression and ChIP-Seq data}
 \author{VJ Carey}
-\maketitle
 
+\maketitle
 \tableofcontents
 
 \section{Overview}
@@ -68,8 +66,8 @@ of objects into clusters.
 
 This practical introduction to machine learning will begin
 with a survey of a low-dimensional dataset to fix concepts,
-and will then address problems coming from expression arrays
-and array CGH data.
+and will then address problems coming from genomic data analysis,
+using RNA expression and chromatin state data.
 
 Some basic points to consider at the start:
 \bi
@@ -88,10 +86,10 @@ to identify boundary cases and downweight the mass of data (e.g., boosting,
 svm).
 \item Different learning tools have different capabilities.
 There is little \textit{a priori} guidance on matching learning algorithms to
-aspects of problems.  While it is convenient to shift through a variety
+aspects of problems.  While it is convenient to sift through a variety
 of approaches, one must pay a price for the model search.
 \item Data and model/learner visualization are  important, but
-visualization in higher dimensional data structures is hard.
+visualization of higher dimensional data structures is hard.
 Dynamic graphics can help; look at ggobi and Rggobi for this.
 \item These notes provide very little mathematical background
 on the methods; see for example Ripley (\textit{Pattern recognition and neural networks},
@@ -109,19 +107,25 @@ The following steps bring the crabs data into scope and
 illustrate aspects of its structure.
 
 <<intro1>>=
-library(MASS)
-data(crabs)
+library("MASS")
+data("crabs")
 dim(crabs)
 crabs[1:4,]
 table(crabs$sex)
 @
-<<dolat,fig=TRUE>>=
-library(lattice)
+<<figbwplot,fig=TRUE,include=FALSE,width=5.2,height=4>>=
+library("lattice")
 print(bwplot(RW~sp|sex, data=crabs))
 @
+The plot is shown in Figure~\ref{figbwplot}.
+\myfig{figbwplot}{.5\textwidth}{%
+Boxplots of \Robject{RW}, the rear width in mm, stratified by
+species ("B" or "O" for blue or orange)
+and sex ("F" and "M").}
 
-We will regard these data as providing five features
-(FL, RW,   CL,   CW,  BD) and a pair of class labels (sex, sp=species).
+We will regard these data as providing five quantitative features
+(FL, RW,   CL,   CW,  BD)\footnote{You may consult the manual page of \Robject{crabs} 
+for an explanation of these abbreviations.} and a pair of class labels (sex, sp=species).
 We may regard this as a four class problem, or as two two class
 problems.
 
@@ -135,8 +139,7 @@ but use prose first.
 \setcounter{mlq}{1}
 \newcommand{\MLQ}{\arabic{mlq}}
 \bi
-\item \textit{Question \MLQ.}  On the basis of the lattice
-plot given above, comment on the prospects
+\item \textit{Question \MLQ.}  On the basis of the boxplots in Figure~\ref{figbwplot}, comment on the prospects
 for predicting species on the basis of RW.  State a
 rule for computing the predictions.  Describe how to assess the
 performance of your rule.
@@ -146,7 +149,7 @@ performance of your rule.
 
 A simple approach to prediction involves logistic regression.
 <<dop>>=
-m1 = glm(sp~RW, data=crabs, fam=binomial)
+m1 = glm(sp~RW, data=crabs, family=binomial)
 summary(m1)
 @
 
@@ -162,20 +165,24 @@ a classifier from this model?
 \item \textit{Question \MLQ.}  Perform the following
 computations.  Discuss their interpretation.
 What are the estimated error rates of the two
-models?  Is the second model better?
+models?  Is the second model, on the subset, better?
 \ei
 
 <<domods, results=hide>>=
+plot(predict(m1,type="response"), crabs$sp)
 table(predict(m1,type="response")>.5, crabs$sp)
-m2 = update(m1, subset=sex=="F")
+m2 = update(m1, subset=(sex=="F"))
 table(predict(m2,type="response")>.5, crabs$sp[crabs$sex=="F"])
 @
 
 \subsection{The cross-validation concept}
 
 Cross-validation is a technique that is widely used for
-reducing bias in estimation of predictive accuracy.
-Briefly, the dataset is deterministically partitioned into
+reducing bias in the estimation of predictive accuracy. If no precautions are taken,
+bias can be caused by \emph{overfitting} a classification algorithm to a particular
+dataset; the algorithm learns the classification ''by heart'', but performs poorly 
+when asked to generalise it to new, unseen examples.
+Briefly, in cross-validation the dataset is deterministically partitioned into
 a series of training and test sets.  The model is built
 for each training set and evaluated on the test set.
 The accuracy measures are averaged over this series
@@ -189,9 +196,9 @@ of size 1.
 %to such a structure in the next few commands.
 
 
-First let's use \texttt{MLearn} from the 
+First let us use \texttt{MLearn} from the 
 \textit{MLInterfaces} package to fit a single logistic model.
-\texttt{MLearn} requires you to specify a training index set.
+\texttt{MLearn} requires you to specify an index set for training.
 We use \texttt{c(1:30, 51:80)} to choose a training set of
 size 60, balanced between two species (because we know the
 ordering of records).  This procedure also requires you
@@ -201,7 +208,8 @@ of being "O" exceeds 0.5, we classify to "O", otherwise to "B".
 <<doml1>>=
 library(MLInterfaces)
 fcrabs = crabs[crabs$sex == "F", ]
-ml1 = MLearn( sp~RW, fcrabs, glmI.logistic(thresh=.5), c(1:30, 51:80), family=binomial)
+ml1 = MLearn( sp~RW, fcrabs, glmI.logistic(thresh=.5), c(1:30, 51:80), 
+              family=binomial)
 ml1
 confuMat(ml1)
 @
@@ -230,16 +238,20 @@ random samples.
 
 <<doscra>>=
 set.seed(123)
-sfcrabs = fcrabs[ sample(1:100, size=100, replace=FALSE),  ]
+sfcrabs = fcrabs[ sample(nrow(fcrabs)),  ]
 @
 
-We invoke the MLearn method in two ways -- first specifying a training 
+We invoke the \Rfunction{MLearn} method in two ways -- first specifying a training 
 index set, then specifying a five-fold cross-validation.
 <<domods>>=
-sml1 = MLearn( sp~RW, sfcrabs, glmI.logistic(thresh=.5), c(1:30, 51:80), family=binomial)
+sml1 = MLearn( sp~RW, sfcrabs, glmI.logistic(thresh=.5), 
+  c(1:30, 51:80), 
+  family=binomial)
 confuMat(sml1)
-smx1 = MLearn( sp~RW, sfcrabs, glmI.logistic(thresh=.5), xvalSpec("LOG",
-   5, function(data, clab, iternum) { which(rep(1:5, each=20) == iternum) }), family=binomial)
+smx1 = MLearn( sp~RW, sfcrabs, glmI.logistic(thresh=.5), 
+  xvalSpec("LOG", 5, function(data, clab, iternum) { 
+    which(rep(1:5, each=20) == iternum) }), 
+  family=binomial)
 confuMat(smx1)
 @
 
@@ -258,28 +270,32 @@ model.
 \addtocounter{mlq}{1}
 \bi
 \item \textit{Question \MLQ.}  Interpret the following
-code.  Modify it to depict the pairwise configurations
+code, whose result is shown in Figure~\ref{figdopa}.  
+Modify it to depict the pairwise configurations
 with different colors for crab genders.
 \ei
 
-<<dopa,fig=TRUE>>=
+<<figdopa,fig=TRUE,include=FALSE,width=7,height=7>>=
 pairs(crabs[,-c(1:3)], col=ifelse(crabs$sp=="B", "blue", "orange"))
 @
+
+\myfig{figdopa}{.8\textwidth}{%
+Pairs plot of the \Sexpr{ncol(crabs)-3} quantitative features of the
+\Robject{crabs} data. Points are colored by species.}
 
 \subsubsection{Principal components; biplot}
 
 Principal components analysis transforms the multivariate
-data X into a new coordinate system.  If the original variables
+data $X$ into a new coordinate system.  If the original variables
 are X1, \ldots, Xp, then the variables in the new representation
 are denoted PC1, \ldots, PCp.  These new variables have
-the properties that PC1 is the linear combination of the X
+the properties that PC1 is the linear combination of the X1, \ldots, Xp
 having maximal variance, PC2 is the variance-maximizing linear combination of
-residuals of X after projecting on PC1, and so on.
+residuals of X after projecting into the hyperplane normal to PC1, and so on.
 If most of the variation in $X_{n \times p}$ can be captured in 
 a low dimensional linear subspace of the space spanned
-by the columns of $X$, scatterplots of
-the first few principal
-components will depict this.
+by the columns of $X$, then the scatterplots of
+the first few principal components give a good representation of the structure in the data.
 
 Formally, we can compute the PC using the singular value decomposition of
 $X$, in which $X = UDV^t$, where $U_{n \times p}$ and $V_{p \times p}$
@@ -287,21 +303,28 @@ are orthonormal, and $D$ is a diagonal matrix of $p$ nonnegative
 singular values.  The principal components transformation is
 $XV = UD$, and if $D$ is structured so that $D_{ii} \geq D_{jj}$ whenever
 $i > j$, then column $i$ of $XV$ is PCi.  Note also that $D_{ii} =
-\sqrt{n-1}\mbox{SD}$ PCi.
+\sqrt{n-1}\;\mbox{sd}(\mbox{PCi})$.
 
 <<dopc>>=
 pc1 = prcomp( crabs[,-c(1:3)] )
-<<lkpc, fig=TRUE>>=
+<<figdopc, fig=TRUE,include=FALSE,width=7,height=7>>=
 pairs(pc1$x, col=ifelse(crabs$sp=="B", "blue", "orange"))
 @
+The plot is shown in Figure~\ref{figdopc}.  
 
-The biplot shows the data in PC space and also shows the
+\myfig{figdopc}{.8\textwidth}{%
+Pairs plot of the \Robject{crabs} data in principal component coordinates.}
+
+The biplot, Figure~\ref{figdobi}, shows the data in PC space and also shows the
 relative contributions of the original variables in composing
 the transformation.
 
-<<dobi,fig=TRUE>>=
-biplot(pc1, choices=2:3)
+<<figdobi,fig=TRUE,include=FALSE>>=
+biplot(pc1, choices=2:3, col=c("#80808080", "red"))
 @
+\myfig{figdobi}{.5\textwidth}{%
+Biplot of the principal component analysis of the \Robject{crabs} data.}
+
 
 \subsubsection{Clustering}
 
@@ -543,9 +566,9 @@ We will identify expression patterns
 that discriminate individuals with BCR/ABL fusion in
 B-cell leukemia.
 
-<<setupALL>>=
-library(ALL)
-data(ALL)
+<<setupALL,cache=TRUE>>=
+library("ALL")
+data("ALL")
 bALL = ALL[, substr(ALL$BT,1,1) == "B"]
 fus = bALL[, bALL$mol.biol %in% c("BCR/ABL", "NEG")]
 fus$mol.biol = factor(fus$mol.biol)
@@ -612,14 +635,19 @@ defining the PCs.
 Diagonal LDA has a good reputation.  Let's try it first, followed by
 neural net and random forests.  We will not attend to tuning the latter
 two, defaults or guesses for key parameters  are used.
-<<dld>>=
+<<dld1,cache=TRUE>>=
 dld1 = MLearn( mol.biol~., fusk, dldaI, 1:40 )
+<<dld2>>=
 dld1
 confuMat(dld1)
+<<dld3,cache=TRUE>>=
 nnALL = MLearn( mol.biol~., fusk, nnetI, 1:40, size=5, decay=.01,
   MaxNWts=2000 )
+<<dld4>>=
 confuMat(nnALL)
+<<dld5,cache=TRUE>>=
 rfALL = MLearn( mol.biol~., fusk, randomForestI, 1:40 )
+<<dld6>>=
 rfALL
 confuMat(rfALL)
 @
@@ -633,7 +661,7 @@ very inaccurate, so the estimator is shrunk towards the identity.
 We have a rudimentary interface, in which the
 key parameters are chosen by native cross-validation (in rda.cv)
 and then applied once to get the final object.
-<<lkrda,results=hide>>=
+<<lkrda,results=hide,cache=TRUE>>=
 rdaALL = MLearn( mol.biol~., fusk, rdacvI, 1:40 )
 <<lkrda2>>=
 rdaALL
@@ -815,5 +843,13 @@ CGH profile to learn about gene cluster activation and phenotype.
 %to expression data?
 %\ei
 %
+
+
+\bibliographystyle{plainnat} 
+\bibliography{MLInterfaces}
+
 \end{document}
+
+
+
 
