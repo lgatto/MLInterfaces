@@ -41,7 +41,7 @@
 \begin{document}
 
 \title{A machine learning tutorial: applications of the Bioconductor MLInterfaces 
-  package to expression and ChIP-Seq data}
+  package to gene expression data}
 \author{VJ Carey}
 
 \maketitle
