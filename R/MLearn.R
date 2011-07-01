@@ -126,8 +126,8 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
      if (do.fs) fmla2use=fsFun(formula, data[inds[idx],])  # we are clobbering input formula
       else fmla2use=formula
      rhs_fmla = function (f) colnames(attr(terms(f, data=data), "factors"))
-     list( test.idx=(setdiff(inds,idx)), mlans=MLearn( fmla2use, data, .method=.method, trainInd=inds[idx], ...),
-             featInUse= rhs_fmla(fmla2use) ) # package result -- test.idx kept for rearrangement
+     try(list( test.idx=(setdiff(inds,idx)), mlans=MLearn( fmla2use, data, .method=.method, trainInd=inds[idx], ...),
+             featInUse= rhs_fmla(fmla2use) )) # package result -- test.idx kept for rearrangement
      }
 
 #   xvalLoop = xvalLoop(NULL) # eventually will allow clusters
@@ -139,6 +139,8 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
        } else {
            lapply( 1:n, xvalidator, ... )
        }  # thanks Martin Morgan!
+   chkout = sapply(out, function(z) inherits(z, "try-error"))
+   if (any(chkout)) stop("xvalidator iteration threw error")
    classif <- unlist( sapply( out, function(x) testPredictions(x[["mlans"]]) ) )
  # now want the test sets for the various iterations
    ords <- unlist( lapply( out, function(x) x[["test.idx"]] ) )

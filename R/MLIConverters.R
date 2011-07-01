@@ -234,8 +234,8 @@ MLIConverter.blackboost = function (obj, data, trainInd)
 {
     teData = data[-trainInd, ]
     trData = data[trainInd, ]
-    tepr = predict(obj, teData, type="response")
-    trpr = predict(obj, trData, type="response")
+    tepr = predict(obj, teData, type="class")
+    trpr = predict(obj, trData, type="class")
     names(tepr) = rownames(teData)
     names(trpr) = rownames(trData)
     new("classifierOutput", testPredictions = factor(tepr), trainPredictions = factor(trpr), 

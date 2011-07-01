@@ -659,7 +659,7 @@ confuMat(rfALL)
 @
 
 None of these are extremely impressive, but the problem may just
-be very hard.  An interesting new proposal is RDA, regularized
+be very hard.  An interesting proposal is RDA, regularized
 discriminant analysis (package rda, Guo, Hastie, Tibshirani 2007
 Biostatistics).  This algorithm recognizes the fact that
 covariance matrix estimation in high dimensional data is
@@ -748,15 +748,15 @@ confuMat(dldFS)
 @
 
 
-\section{Learning with array CGH}
-
-This section contains two parts, one of which is left as a pair
-of open questions.  In the first part, we use rpart as a \textit{device}
-to perform segmentation of aCGH log intensity ratios.
-In the second part, we consider how to extract features from the
-CGH profile to learn about gene cluster activation and phenotype.
-
-
+%\section{Learning with array CGH}
+%
+%This section contains two parts, one of which is left as a pair
+%of open questions.  In the first part, we use rpart as a \textit{device}
+%to perform segmentation of aCGH log intensity ratios.
+%In the second part, we consider how to extract features from the
+%CGH profile to learn about gene cluster activation and phenotype.
+%
+%
 %\subsection{Working with Neve2006}
 %
 %We are going to examine some aCGH copy number data
@@ -850,6 +850,15 @@ CGH profile to learn about gene cluster activation and phenotype.
 %\ei
 %
 
+\clearpage
+
+\section{Session information}
+
+<<lksess>>=
+sessionInfo()
+@
+
+\clearpage
 
 \bibliographystyle{plainnat} 
 \bibliography{MLInterfaces}

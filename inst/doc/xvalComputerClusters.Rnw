@@ -54,6 +54,7 @@ A non-clustered cross-validation might involve the following \R{} commands, take
 <<init>>=
 library(MLInterfaces)
 library(golubEsets)
+data(Golub_Merge)
 smallG <- Golub_Merge[200:250,]
 @ 
 The first three statements load the \Rpackage{MLInterfaces} package and a data set.

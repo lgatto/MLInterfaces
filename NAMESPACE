@@ -6,6 +6,7 @@ import("mboost")
 
 importFrom("graphics", "plot")
 importFrom("cluster", "silhouette")
+importFrom("sfsmisc", "diagDA")
 
 exportClasses( 
 	"varImpStruct",
