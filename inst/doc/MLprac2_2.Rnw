@@ -858,10 +858,10 @@ confuMat(dldFS)
 sessionInfo()
 @
 
-\clearpage
+%\clearpage
 
-\bibliographystyle{plainnat} 
-\bibliography{MLInterfaces}
+%\bibliographystyle{plainnat} 
+%\bibliography{MLInterfaces}
 
 \end{document}
 
