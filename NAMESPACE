@@ -22,14 +22,14 @@ exportMethods( "show", "RObject", "confuMat",
 export( randomForestI, knnI, dldaI, nnetI, rpartI, 
 	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
 	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, 
-        rab, lvq, RAB, DAB,
+        rab, lvq, RAB, DAB, plsda2,
 	xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
 	rdaI, rdaML,
         plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
         fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
         adaI, fs.topVariance, hclustI, kmeansI, pamI,
 	blackboostI,
-        gbm2, BgbmI ) # latter temporary )
+        gbm2, BgbmI, plsdaI ) 
 
 S3method("print", "rdacvML")
 S3method("print", "rdaML")

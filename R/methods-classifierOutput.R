@@ -21,12 +21,27 @@ setMethod("RObject", "classifierOutput", function(x) x@RObject)
 setGeneric("testScores", function(x) standardGeneric("testScores"))
 setMethod("testScores", "classifierOutput", function(x) x@testScores)
 
-setGeneric("confuMat", function(obj,type) standardGeneric("confuMat"))
-setMethod("confuMat", c("classifierOutput","missing"), function(obj,type) {
-    confuMat(obj, "test") })
+# threshold-related code added by L. Gatto 2011 Brixen
+
+setGeneric("confuMat", function(obj,type,...) standardGeneric("confuMat"))
+setMethod("confuMat", c("classifierOutput","missing"), function(obj,type, ...) {
+    confuMat(obj, "test", ...) })
+setMethod("confuMat", c("classifierOutput","numeric"), function(obj,type) {
+  confuMat(obj, "test", type) }) ## 'type' is 't' here
+
+
 setMethod("confuMat", c("classifierOutput","character"), 
-function (obj, type)   # revised brixen 2011 to give better output table column order
+function (obj, type, t)   # revised brixen 2011 to give better output table column order
 {
+            if (missing(t)) {
+              tePredictions <- testPredictions(obj)
+              trPredictions <- trainPredictions(obj)
+            } else {
+              tePredictions <- testPredictions(obj,t)
+              trPredictions <- trainPredictions(obj,t)
+            }
+
+
 #  we are banking hard on the use of factors to represent response and
 # predictions
     if (type == "test") {
@@ -63,10 +78,68 @@ function (obj, type)   # revised brixen 2011 to give better output table column 
 })
       
 
-setGeneric("testPredictions", function(x) standardGeneric("testPredictions"))
-setMethod("testPredictions", "classifierOutput", function(x) x@testPredictions)
+#setGeneric("testPredictions", function(x) standardGeneric("testPredictions"))
+#setMethod("testPredictions", "classifierOutput", function(x) x@testPredictions)
 
-setGeneric("trainPredictions", function(x) standardGeneric("trainPredictions"))
-setMethod("trainPredictions", "classifierOutput", function(x) x@trainPredictions)
+## modified by L. Gatto to allow setting a threshold and
+## adjust the predictions dynamically
+setGeneric("testPredictions", function(x,...) standardGeneric("testPredictions"))
+setMethod("testPredictions", "classifierOutput", function(x,t) {
+  if (missing(t)) {
+    return(x@testPredictions)
+  } else {
+    teScores <- testScores(x)
+    if (is.vector(teScores))
+      return(x@testPredictions[teScores<t])
+    ## assuming teScores is a matrix with
+    ## columns named to classes
+    if (!is.matrix(teScores)) {
+      warning("testScores is not of class ",class(teScores),
+              ", expecting vector or matrix - no threshold applied.")
+      return(x@testPredictions)
+    }
+    teScores[teScores<t] <- -1
+    clindex <- apply(teScores,1,function(x) {
+      k <- names(which(max(x)==x))
+      ## ties (?) or no value >= t - returning 'NA'
+      ifelse((length(k)!=1 | is.null(k)),NA,k)
+    })
+    return(factor(clindex,exclude=NULL))
+  }
+})
+
+
+  
+
+#setGeneric("trainPredictions", function(x) standardGeneric("trainPredictions"))
+#setMethod("trainPredictions", "classifierOutput", function(x) x@trainPredictions)
+
+## modified by L. Gatto to allow setting a threshold and
+## adjust the predictions dynamically
+setGeneric("trainPredictions", function(x,...) standardGeneric("trainPredictions"))
+setMethod("trainPredictions", "classifierOutput", function(x,t) {
+  if (missing(t)) {
+    return(x@trainPredictions)
+  } else {
+    trScores <- x@trainScores
+    if (is.vector(trScores))
+      return(x@trainPredictions[trScores<t])
+    ## assuming trScores is a matrix with
+    ## columns named to classes
+    if (!is.matrix(trScores)) {
+      warning("testScores is not of class ",class(trScores),
+              ", expecting vector or matrix - no threshold applied.")
+      return(x@trainPredictions)
+    }
+    trScores[trScores<t] <- -1
+    clindex <- apply(trScores,1,function(x) {
+      k <- names(which(max(x)==x))
+      ## ties (?) or no value >= t - returning NA
+      ifelse((length(k)!=1 | is.null(k)),NA,k)
+    })
+    return(factor(clindex,exclude=NULL))
+  }
+})
+
 setGeneric("fsHistory", function(x) standardGeneric("fsHistory"))
 setMethod("fsHistory", "classifierOutput", function(x) x@fsHistory)
