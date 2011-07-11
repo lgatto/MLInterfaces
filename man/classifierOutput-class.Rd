@@ -85,10 +85,18 @@ call used to generate the classifierOutput RObject }
     \item{testScores}{\code{signature(object = "classifierOutput")}: ... }
     \item{testPredictions}{\code{signature(object = "classifierOutput")}: Print
      the predicted classes for each sample/individual in the test set. }
-    \item{trainPredictions}{\code{signature(object = "classifierOutput")}: Print
-     the predicted classes for each sample/individual in the training set. }
+   \item{testPredictions}{\code{signature(object = "classifierOutput", t
+     = "numeric")}: Print the predicted classes for each
+     sample/individual in the test set that have a \code{testScore}
+     greater or equal than \code{t}. Non-predicted cases and cases that
+     matche multiple classes are returned as \code{NA}s.}
+   \item{trainPredictions}{\code{signature(object = "classifierOutput", t
+       = "numeric")}: Print the predicted classes for each
+     sample/individual in the train set that have a \code{testScore}
+     greater or equal than \code{t}. Non-predicted cases and cases that
+     matche multiple classes are returned as \code{NA}s.}
     \item{fsHistory}{\code{signature(object = "classifierOutput")}: ... }
-	 }
+  }
 }
 \author{ V. Carey }
 %\seealso{

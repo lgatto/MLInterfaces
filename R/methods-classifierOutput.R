@@ -26,57 +26,47 @@ setMethod("testScores", "classifierOutput", function(x) x@testScores)
 setGeneric("confuMat", function(obj,type,...) standardGeneric("confuMat"))
 setMethod("confuMat", c("classifierOutput","missing"), function(obj,type, ...) {
     confuMat(obj, "test", ...) })
+
 setMethod("confuMat", c("classifierOutput","numeric"), function(obj,type) {
   confuMat(obj, "test", type) }) ## 'type' is 't' here
 
-
 setMethod("confuMat", c("classifierOutput","character"), 
-function (obj, type, t)   # revised brixen 2011 to give better output table column order
-{
-            if (missing(t)) {
-              tePredictions <- testPredictions(obj)
-              trPredictions <- trainPredictions(obj)
-            } else {
-              tePredictions <- testPredictions(obj,t)
-              trPredictions <- trainPredictions(obj,t)
+          function (obj, type, t) {  ## revised brixen 2011 to give better output table column order
+            ## we are banking hard on the use of factors to represent response and
+            ## predictions
+            if (type == "test") {
+              if (missing(t)) predictions <- testPredictions(obj)
+              else predictions <- testPredictions(obj,t)
+              giv = obj@testOutcomes
+            } else if (type == "train") {
+              if (missing(t)) predictions <- trainPredictions(obj)
+              else predictions <- trainPredictions(obj,t)
+              giv = obj@trainOutcomes
+            } else stop("non-missing type must be either 'test' or 'train'")
+            templ = table(given=giv, predicted=giv)
+            templ = templ * 0
+            if (all(is.na(levels(predictions))))
+              return(cbind(templ,'NA'=table(giv)))
+            if (length(giv) == 0) 
+              stop("there is no test set in this classifier output")
+            ans = table(given = giv, predicted = predictions)
+            if (ncol(templ)!=ncol(ans)) {
+              ## this is generally the case when some items have not been
+              ## predicted with a score >= t and have been returned as NA
+              ## predictions. Adding that column to the template.
+              oldcolnames <- colnames(templ)
+              templ <-  cbind(templ,0)
+              colnames(templ) <- c(oldcolnames,'NA')
             }
+            if (!isTRUE(all.equal(dim(ans), dim(templ)))) {
+              used = colnames(ans)
+              for (i in 1:ncol(ans)) templ[, used[i]] = ans[, used[i]]
+              ans = templ
+            }
+            if (all(colnames(ans) %in% levels(giv))) return(ans[, levels(giv)])  # can reorder
+            return(ans)
+          })
 
-
-#  we are banking hard on the use of factors to represent response and
-# predictions
-    if (type == "test") {
-        giv = obj@testOutcomes
-        templ = table(given=giv, predicted=giv)
-        templ = templ * 0
-        if (length(giv) == 0) 
-            stop("there is no test set in this classifier output")
-        ans = table(given = giv, predicted = obj@testPredictions)
-        if (!isTRUE(all.equal(dim(ans), dim(templ)))) {
-            used = colnames(ans)
-            for (i in 1:ncol(ans)) templ[, used[i]] = ans[, used[i]]
-            ans = templ
-        }
-        if (all(colnames(ans) %in% levels(giv))) return(ans[, levels(giv)])  # can reorder
-        return(ans)
-    }
-    else if (type == "train") {
-        giv = obj@trainOutcomes
-        templ = table(given=giv, predicted=giv)
-        templ = templ * 0
-        if (length(giv) == 0) 
-            stop("there is no training set in this classifier output")
-        ans = table(given = giv, predicted = obj@trainPredictions)
-        if (!isTRUE(all.equal(dim(ans), dim(templ)))) {
-            used = colnames(ans)
-            for (i in 1:ncol(ans)) templ[, used[i]] = ans[, used[i]]
-            ans = templ
-        }
-        if (all(colnames(ans) %in% levels(giv))) return(ans[, levels(giv)])  # can reorder
-        return(ans)
-    }
-    else stop("non-missing type must be either 'test' or 'train'")
-})
-      
 
 #setGeneric("testPredictions", function(x) standardGeneric("testPredictions"))
 #setMethod("testPredictions", "classifierOutput", function(x) x@testPredictions)
@@ -85,12 +75,15 @@ function (obj, type, t)   # revised brixen 2011 to give better output table colu
 ## adjust the predictions dynamically
 setGeneric("testPredictions", function(x,...) standardGeneric("testPredictions"))
 setMethod("testPredictions", "classifierOutput", function(x,t) {
+  tePredictions <- x@testPredictions
   if (missing(t)) {
-    return(x@testPredictions)
+    return(tePredictions)
   } else {
     teScores <- testScores(x)
-    if (is.vector(teScores))
-      return(x@testPredictions[teScores<t])
+    if (is.vector(teScores)) {
+      tePredictions[teScores<t] <- NA
+      return(factor(tePredictions,exclude=NULL))
+    }
     ## assuming teScores is a matrix with
     ## columns named to classes
     if (!is.matrix(teScores)) {
@@ -109,8 +102,6 @@ setMethod("testPredictions", "classifierOutput", function(x,t) {
 })
 
 
-  
-
 #setGeneric("trainPredictions", function(x) standardGeneric("trainPredictions"))
 #setMethod("trainPredictions", "classifierOutput", function(x) x@trainPredictions)
 
@@ -118,16 +109,19 @@ setMethod("testPredictions", "classifierOutput", function(x,t) {
 ## adjust the predictions dynamically
 setGeneric("trainPredictions", function(x,...) standardGeneric("trainPredictions"))
 setMethod("trainPredictions", "classifierOutput", function(x,t) {
+  trPredictions <- x@trainPredictions
   if (missing(t)) {
-    return(x@trainPredictions)
+    return(trPredictions)
   } else {
     trScores <- x@trainScores
-    if (is.vector(trScores))
-      return(x@trainPredictions[trScores<t])
+    if (is.vector(trScores)) {
+      trPredictions[trScores<t] <- NA
+      return(factor(trPredictions,exclude=NULL))
+    }
     ## assuming trScores is a matrix with
     ## columns named to classes
     if (!is.matrix(trScores)) {
-      warning("testScores is not of class ",class(trScores),
+      warning("testScores is of class ",class(trScores),
               ", expecting vector or matrix - no threshold applied.")
       return(x@trainPredictions)
     }

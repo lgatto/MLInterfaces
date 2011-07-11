@@ -16,6 +16,8 @@
 \alias{randomForestI} 
 \alias{rpartI}
 \alias{svmI}
+\alias{plsda2}
+\alias{plsdaI}
 \alias{dlda2}
 \alias{dldaI}
 \alias{sldaI}
