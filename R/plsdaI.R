@@ -40,4 +40,3 @@ plsda2 <- function (formula,
   ##class(ans) <- "plsda2" ## only required to define a plsda2.predict method
   return(ans)
 }
-

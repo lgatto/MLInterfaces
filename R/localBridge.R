@@ -305,3 +305,11 @@ predict.gbm2 = function(object, newdata, ...) {
  ans = predict.gbm(object, newdata, ...)
  factor(ans)
 }
+
+svm2 <- function (formula, 
+                  data, ## training data (prepared in MLearn)
+                  probability=TRUE, ## to use probabilities as test|trainScores
+                  ...   ## other args for svm
+                  ) {
+  e1071::svm(formula, data, probability=probability, ...)
+}

@@ -50,15 +50,20 @@ setClass("classifierOutput", representation(
 #	metric="character", call="call", learnerSchema="learnerSchema",
 #        RObject="ANY"))
 
-setClass("xvalSpec", representation(type="character", niter="numeric", 
-   partitionFunc="function", fsFun="function"))
+setClass("xvalSpec",
+         representation(type="character",
+                        niter="numeric", 
+                        partitionFunc="function",
+                        fsFun="function"))
 
 # constructor defined here for now
 
- xvalSpec = function(type, niter=0, partitionFunc=function(data, classLab, 
-       iternum){(1:nrow(data))[-iternum]}, fsFun=function(formula, data)formula) {
+xvalSpec <- function(type,
+                     niter = 0,
+                     partitionFunc = function(data, classLab,iternum){ (1:nrow(data))[-iternum] },
+                     fsFun = function(formula, data) formula ) {
   new("xvalSpec", type=type, niter=niter, partitionFunc=partitionFunc, fsFun=fsFun)
-  }
+}
 
 # -- below find the legacy classes as of sep 9 2007
 

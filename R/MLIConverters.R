@@ -19,8 +19,12 @@ MLIConverter.knn = function(k=1, l=0) function(obj, data, trainInd) {
    trpr = predict(obj, trData, k, l)
    names(tepr) = rownames(teData)
    names(trpr) = rownames(trData)
-   new("classifierOutput", testPredictions=factor(tepr), testScores=attr(tepr, "prob"),
-       trainPredictions=factor(trpr), RObject=obj)
+   new("classifierOutput",
+       testPredictions=factor(tepr),
+       testScores=attr(tepr, "prob"),
+       trainPredictions=factor(trpr),
+       trainScores=attr(trpr, "prob"),
+       RObject=obj)
    }
 
 MLIConverter.dlda = function(obj, data, trainInd) {
@@ -61,12 +65,19 @@ MLIConverterListEl.class = function(obj, data, trainInd) {
 MLIConverter.svm = function(obj, data, trainInd) { # decision.values parm needed
    teData = data[-trainInd,]
    trData = data[trainInd,]
-   tepr = predict(obj, teData, decision.values=FALSE)
-   trpr = predict(obj, trData, decision.values=FALSE)
-   names(tepr) = rownames(teData)
-   names(trpr) = rownames(trData)
-   new("classifierOutput", testPredictions=factor(tepr),
-       trainPredictions=factor(trpr), RObject=obj)
+   ##tepr = predict(obj, teData, decision.values=FALSE)
+   ##trpr = predict(obj, trData, decision.values=FALSE)
+   ## From ?svn: The center and scale values are returned and used for later predictions.
+   tepr = predict(obj, teData, decision.values=TRUE, probability=TRUE)
+   trpr = predict(obj, trData, decision.values=TRUE, probability=TRUE)   
+   ## names(tepr) = rownames(teData)
+   ## names(trpr) = rownames(trData)
+   new("classifierOutput",
+       testPredictions =factor(tepr[1:length(tepr)]),
+       trainPredictions=factor(trpr[1:length(trpr)]),
+       testScores=attr(tepr,"probabilities"),
+       trainScores=attr(trpr,"probabilities"),
+       RObject=obj)
    }
 
 MLIConverter.ldaPredMeth = function(method) function(obj, data, trainInd) { # get binding for method to predict
@@ -122,8 +133,12 @@ MLIConverter.nnet = function(obj, data, trainInd) {
    trpr = predict(obj, trData, type="class")
    names(tepr) = rownames(teData)
    names(trpr) = rownames(trData)
-   new("classifierOutput", testPredictions=factor(tepr), testScores=predict(obj,teData),
-       trainPredictions=factor(trpr), RObject=obj)
+   new("classifierOutput",
+       testPredictions=factor(tepr),
+       testScores=predict(obj,teData),
+       trainScores=predict(obj,trData),
+       trainPredictions=factor(trpr),
+       RObject=obj)
    }
 
 MLIConverter.RAB = function(obj, data, trainInd) {
@@ -145,10 +160,16 @@ MLIConverter.naiveBayes = function(obj, data, trainInd) {
    trData = data[trainInd,kpn,drop=FALSE]  # variables in newdata to be superset of those in formula, not allowed here
    tepr = predict(obj, teData, type="class")
    trpr = predict(obj, trData, type="class")
+   tesc <- predict(obj, teData, type="raw")
+   trsc <- predict(obj, trData, type="raw")
    names(tepr) = rownames(teData)
    names(trpr) = rownames(trData)
-   new("classifierOutput", testPredictions=factor(tepr),
-       trainPredictions=factor(trpr), RObject=obj)
+   new("classifierOutput",
+       testPredictions=factor(tepr),
+       trainPredictions=factor(trpr),
+       trainScores=trsc,
+       testScores=tesc,
+       RObject=obj)
    }
 
 MLIConverter.selftesting = function(obj, data, trainInd) {
@@ -239,6 +260,23 @@ MLIConverter.blackboost = function (obj, data, trainInd)
     names(tepr) = rownames(teData)
     names(trpr) = rownames(trData)
     new("classifierOutput", testPredictions = factor(tepr), trainPredictions = factor(trpr), 
+        RObject = obj)
+}
+
+MLIConverter.randomForest = function (obj, data, trainInd) {
+    teData = data[-trainInd, ]
+    trData = data[trainInd, ]
+    tepr = predict(obj, teData, type="response")
+    tesco = predict(obj, teData, type="prob")    
+    trpr = predict(obj, trData, type="response")
+    trsco = predict(obj, trData, type="prob")    
+    names(tepr) = rownames(teData)
+    names(trpr) = rownames(trData)
+    new("classifierOutput",
+        testPredictions = factor(tepr),
+        testScores = tesco,
+        trainPredictions = factor(trpr),
+        trainScores = trsco,
         RObject = obj)
 }
 

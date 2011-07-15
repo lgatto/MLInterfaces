@@ -1,5 +1,7 @@
+## randomForestI = makeLearnerSchema("randomForest", "randomForest",
+##     standardMLIConverter)
 randomForestI = makeLearnerSchema("randomForest", "randomForest",
-    standardMLIConverter)
+    MLIConverter.randomForest)
 
 knnI = function(k=1, l=0) {makeLearnerSchema("MLInterfaces", "knn2",
     MLIConverter.knn(k, l))}
@@ -19,8 +21,10 @@ rpartI = makeLearnerSchema("rpart", "rpart",
 ldaI = makeLearnerSchema("MASS", "lda",
     MLIConverterListEl.class)
 
-svmI = makeLearnerSchema("e1071", "svm",
-    MLIConverter.svm)
+## svmI = makeLearnerSchema("e1071", "svm",
+##     MLIConverter.svm)
+svmI <- makeLearnerSchema("MLInterfaces", "svm2",
+                          MLIConverter.svm)
 
 ldaI.predParms = function(method) { # use this one with argument picking method
    makeLearnerSchema("MASS", "lda", # for predict.lda

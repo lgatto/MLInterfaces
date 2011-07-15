@@ -21,6 +21,9 @@ setMethod("RObject", "classifierOutput", function(x) x@RObject)
 setGeneric("testScores", function(x) standardGeneric("testScores"))
 setMethod("testScores", "classifierOutput", function(x) x@testScores)
 
+setGeneric("trainScores", function(x) standardGeneric("trainScores"))
+setMethod("trainScores", "classifierOutput", function(x) x@trainScores)
+
 # threshold-related code added by L. Gatto 2011 Brixen
 
 setGeneric("confuMat", function(obj,type,...) standardGeneric("confuMat"))
@@ -50,6 +53,7 @@ setMethod("confuMat", c("classifierOutput","character"),
             if (length(giv) == 0) 
               stop("there is no test set in this classifier output")
             ans = table(given = giv, predicted = predictions)
+            colnames(ans)[which(is.na(colnames(ans)))] <- 'NA' ## fixes 'strange' bug
             if (ncol(templ)!=ncol(ans)) {
               ## this is generally the case when some items have not been
               ## predicted with a score >= t and have been returned as NA

@@ -6,12 +6,14 @@
 \alias{RObject}
 \alias{show,classifierOutput-method}
 \alias{testScores,classifierOutput-method}
+\alias{trainScores,classifierOutput-method}
 \alias{testPredictions,classifierOutput-method}
 \alias{testPredictions}
 \alias{trainPredictions}
 \alias{trainPredictions,classifierOutput-method}
 \alias{fsHistory,classifierOutput-method}
 \alias{testScores}
+\alias{trainScores}
 \alias{testPredictions}
 %\alias{fsHistory}
 
@@ -90,11 +92,12 @@ call used to generate the classifierOutput RObject }
      sample/individual in the test set that have a \code{testScore}
      greater or equal than \code{t}. Non-predicted cases and cases that
      matche multiple classes are returned as \code{NA}s.}
-   \item{trainPredictions}{\code{signature(object = "classifierOutput", t
-       = "numeric")}: Print the predicted classes for each
-     sample/individual in the train set that have a \code{testScore}
-     greater or equal than \code{t}. Non-predicted cases and cases that
-     matche multiple classes are returned as \code{NA}s.}
+    \item{trainScores}{\code{signature(object = "classifierOutput")}: ... }
+    \item{trainPredictions}{\code{signature(object = "classifierOutput", t
+	= "numeric")}: Print the predicted classes for each
+      sample/individual in the train set that have a \code{testScore}
+      greater or equal than \code{t}. Non-predicted cases and cases that
+      matche multiple classes are returned as \code{NA}s.}
     \item{fsHistory}{\code{signature(object = "classifierOutput")}: ... }
   }
 }

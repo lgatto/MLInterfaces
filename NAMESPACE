@@ -14,15 +14,16 @@ exportClasses(
 	"classifierOutput", "learnerSchema", #"nonstandardLearnerSchema",
 	"xvalSpec", "clusteringOutput")
 	
-exportMethods( "show", "RObject", "confuMat", 
-  "MLearn", "planarPlot", "Predict", "getVarImp", "plot", 
-  "trainPredictions", "testScores", "testPredictions", 
-  "fsHistory", "report", "getDist", "getConverter")
+exportMethods("show", "RObject", "confuMat", 
+              "MLearn", "planarPlot", "Predict", "getVarImp", "plot", 
+              "trainScores","trainPredictions",
+              "testScores", "testPredictions", 
+              "fsHistory", "report", "getDist", "getConverter")
 
 export( randomForestI, knnI, dldaI, nnetI, rpartI, 
 	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
 	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, 
-        rab, lvq, RAB, DAB, plsda2,
+        rab, lvq, RAB, DAB, plsda2, svm2, 
 	xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
 	rdaI, rdaML,
         plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
