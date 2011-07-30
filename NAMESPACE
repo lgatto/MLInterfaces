@@ -14,7 +14,8 @@ exportClasses(
 	"classifierOutput", "learnerSchema", #"nonstandardLearnerSchema",
 	"xvalSpec", "clusteringOutput")
 	
-exportMethods("show", "RObject", "confuMat", 
+exportMethods("show", "RObject", "confuMat",
+              "precision", "recall", "macroF1",
               "MLearn", "planarPlot", "Predict", "getVarImp", "plot", 
               "trainScores","trainPredictions",
               "testScores", "testPredictions", 

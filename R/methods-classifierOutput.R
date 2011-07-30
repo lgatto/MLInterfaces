@@ -24,8 +24,87 @@ setMethod("testScores", "classifierOutput", function(x) x@testScores)
 setGeneric("trainScores", function(x) standardGeneric("trainScores"))
 setMethod("trainScores", "classifierOutput", function(x) x@trainScores)
 
-# threshold-related code added by L. Gatto 2011 Brixen
 
+## recall, precision and macroF1 methods - L. Gatto <lg390@cam.ac.uk>, 30 July 2011
+setGeneric("recall",function(obj,type,...) standardGeneric("recall"))
+setGeneric("precision",function(obj,type,...) standardGeneric("precision"))
+setGeneric("macroF1",function(obj,type,...) standardGeneric("macroF1"))
+
+.recall <- function(mat) {
+  ans <- numeric(nrow(mat))
+  names(ans) <- rownames(mat)
+  for (i in 1:nrow(mat))
+    ans[i] <- mat[i,i]/sum(mat[,i])
+  return(ans)
+}
+
+setMethod("recall",
+          c("classifierOutput","missing"),
+          function(obj, type, ...) return(.recall(confuMat(obj, "test", ...))))
+
+setMethod("recall",
+          c("classifierOutput","character"),
+          function(obj, type, ...) return(.recall(confuMat(obj, type, ...))))
+
+setMethod("recall",
+          c("classifierOutput","numeric"),
+          function(obj, type) return(.recall(confuMat(obj, "test", type))))
+
+.precision <- function(mat) {
+  ans <- numeric(nrow(mat))
+  names(ans) <- rownames(mat)
+  for (i in 1:nrow(mat))
+    ans[i] <- mat[i,i]/sum(mat[i,])
+  return(ans)
+}
+
+setMethod("precision",
+          c("classifierOutput","missing"),
+          function(obj, type, ...) return(.precision(confuMat(obj, "test", ...))))
+
+setMethod("precision",
+          c("classifierOutput","character"),
+          function(obj, type, ...) return(.precision(confuMat(obj, type, ...))))
+
+setMethod("precision",
+          c("classifierOutput","numeric"),
+          function(obj, type) return(.precision(confuMat(obj, "test", type))))
+
+.macroF1 <- function(p, r) {
+  if (all(names(p) != names(r)))
+    stop("precision and recall do not match.")
+  p <- mean(p)
+  r <- mean(r)
+  return((2*p*r)/(p+r))
+}
+
+setMethod("macroF1",
+          c("classifierOutput","missing"),
+          function(obj, type, ...) {
+            p <- precision(obj, "test", ...)
+            r <- recall(obj, "test", ...)
+            return(.macroF1(p,r))
+          })
+
+setMethod("macroF1",
+          c("classifierOutput","character"),
+          function(obj, type, ...) {
+            p <- precision(obj, type, ...)
+            r <- recall(obj, type, ...)
+            return(.macroF1(p,r))
+          })
+
+setMethod("macroF1",
+          c("classifierOutput","numeric"),
+          function(obj, type) {
+            p <- precision(obj, "test", type)
+            r <- recall(obj, "test", type)
+            return(.macroF1(p,r))
+          })
+
+
+
+# threshold-related code added by L. Gatto 2011 Brixen
 setGeneric("confuMat", function(obj,type,...) standardGeneric("confuMat"))
 setMethod("confuMat", c("classifierOutput","missing"), function(obj,type, ...) {
     confuMat(obj, "test", ...) })
