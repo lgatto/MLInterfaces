@@ -313,3 +313,21 @@ svm2 <- function (formula,
                   ) {
   e1071::svm(formula, data, probability=probability, ...)
 }
+
+plsda2 <- function (formula, 
+                    data, ## training data (prepared in MLearn)
+                    probMethod="Bayes", ## using bayes rule to form posterior probs (default in caret::plsda is 'softmax')
+                    ncomp=2,    ## as in caret::plsda
+                    prior=NULL, ## as in caret::plsda
+                    ...   ## other args for plsr
+                    ) {
+  mf <- model.frame(formula, data)
+  cl <- factor(model.response(mf))
+  x <- mf[, -1]
+  ans <- caret::plsda(x, cl,
+                      probMethod=probMethod,
+                      ncomp=ncomp,
+                      prior=prior, ...)    
+  ##class(ans) <- "plsda2" ## only required to define a plsda2.predict method
+  return(ans)
+}

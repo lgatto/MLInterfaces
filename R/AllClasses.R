@@ -1,13 +1,38 @@
 # first comes the schema-based class collection, then
 # the legacy classes for back-compatibility
 
-setClass("learnerSchema", representation(
-	packageName="character",
-	mlFunName="character",
-	converter="function"), 
-          prototype=prototype(packageName="",
-				mlFunName="",
-				converter=function(obj, data, trainInd){}))
+## setClass("learnerSchema", representation(
+## 	packageName="character",
+## 	mlFunName="character",
+## 	converter="function"), 
+##           prototype=prototype(packageName="",
+## 				mlFunName="",
+## 				converter=function(obj, data, trainInd){}))
+
+## L. Gatto <lg390@cam.ac.uk>, 1 Aug 2011
+## new learnerSchema with predictor function
+## - converters are defined in MLIConverters.R
+## - predicters are defined in MLIPredicters.R
+## This change requires to update the schema interfaces
+## defined in schemaInterfaces.R by adding the
+## predicter slot.
+setClass("learnerSchema",
+         representation(packageName="character",
+                        mlFunName="character",
+                        converter="function",
+                        predicter="function"), 
+         prototype=prototype(
+           packageName="",
+           mlFunName="",
+           converter = function(obj, data, trainInd){},
+           predicter = function(obj, newdata){
+             .predClass <- predict(obj, newdata)
+             ## no .predScores in standard predicter
+             ## write specific ones to get prediction scores
+             .predScores <- numeric()
+             return(list(testPredictions=.predClass,
+                         testScores=.predScores))
+           }))
 
 #setClass("clusteringSchema", representation(distMethod="character", 
 #     agglomMethod="character", 

@@ -61,6 +61,53 @@ setMethod("MLearn", c("formula", "ExpressionSet", "learnerSchema", "numeric" ),
  })
 
 
+##############################################################################
+## TODO
+## Methods below will be equivalent to MLearn(class~.,eset,svnI,1:nrow(eset)),
+## i.e use all features in the data to generate the model and subsequently use
+## that resulting classifierOutput's model to predict new data with the
+## predict method.
+##
+## setMethod("MLearn",
+##           c("formula", "data.frame", "learnerSchema", "missing" ),
+##           function( formula, data, .method, trainInd, ...) { ... })
+##
+## setMethod("MLearn",
+##           c("formula", "ExpressionSet", "learnerSchema", "missing" ),
+##           function( formula, data, .method, trainInd, ...) { ... })
+##
+## Using 1:nrow(eset) seems to work for knnI, randomForestI, nnetI,
+## but not for svmI, plsdaI:
+##
+## > aa <- MLearn(train~.,trainSet,svmI,1:142)
+## Error in matrix(ret$dec, nrow = nrow(newdata), byrow = TRUE, dimnames = list(rowns,  : 
+##   negative extents to matrix
+## > traceback()
+## 12: matrix(ret$dec, nrow = nrow(newdata), byrow = TRUE, dimnames = list(rowns, 
+##         colns))
+## 11: napredict.default(act, matrix(ret$dec, nrow = nrow(newdata), 
+##         byrow = TRUE, dimnames = list(rowns, colns)))
+## 10: napredict(act, matrix(ret$dec, nrow = nrow(newdata), byrow = TRUE, 
+##         dimnames = list(rowns, colns)))
+## 9: predict.svm(obj, teData, decision.values = TRUE, probability = TRUE)
+## 8: predict(obj, teData, decision.values = TRUE, probability = TRUE)
+## 7: .method@converter(ans, data, trainInd)
+## 6: MLearn(formula, data, .method, trainInd, ...)
+## 5: MLearn(formula, data, .method, trainInd, ...)
+## 4: MLearn(formula, data, .method, trainInd, ...)
+## 3: MLearn(formula, data, .method, trainInd, ...)
+## 2: MLearn(train ~ ., trainSet, svmI, 1:142)
+## 1: MLearn(train ~ ., trainSet, svmI, 1:142)
+##
+## This could be handled in the respective MLIConverters by checking if
+## there is any test data left before calling predict.
+##
+## Other related point:missing values; svm ignores the NA's in a factor, and just
+## does not use these features to train the classifier.
+## In MLearn, stop("missing values in object") comes up (probably from model.frame).
+##
+##############################################################################
+
 # this .method for MLearn is devoted essentially to cross-validation.  it structures
 # a series of calls to MLearn[numeric trainInd] and collects the output, suitably
 # ordered, into a classifierOutput structure, in contrast to the older xvalML

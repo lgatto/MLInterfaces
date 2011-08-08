@@ -56,7 +56,7 @@ a schematic description of external learning functions like knn, lda, nnet, etc.
 }
 \usage{
 MLearn( formula, data, .method, trainInd, ... )
-makeLearnerSchema(packname, mlfunname, converter)
+makeLearnerSchema(packname, mlfunname, converter, predicter)
 }
 \arguments{
   \item{formula}{ standard model formula }
@@ -68,9 +68,13 @@ all other data are used for testing, or instance of the xvalSpec class }
   \item{packname}{character -- name of package harboring a learner function}
   \item{mlfunname}{character -- name of function to use}
   \item{converter}{function -- with parameters (obj, data, trainInd) that tells
-how to convert the material in obj [produced by [packname::mlfunname] ] into a
-classifierOutput instance.}
+    how to convert the material in obj [produced by [packname::mlfunname] ] into a
+    classifierOutput instance.}
+  \item{predicter}{function -- with parameters (obj, newdata, ...) that
+    tells how to use the material in \code{obj} to predict
+    \code{newdata}.}
 }
+
 \details{
 %This implementation attempts to reduce complexity of the basic
 %MLInterfaces engine.  The primary MLearn method, which includes 
@@ -318,6 +322,11 @@ plsda.2 = MLearn(type~., data=sample.ExpressionSet[100:250,], plsdaI, 1:16)
 plsda.2
 confuMat(plsda.2)
 confuMat(plsda.2,t=.65) ## requires at least 0.65 post error prob to assign outcome
+
+## examples for predict
+clout <- MLearn(type~., sample.ExpressionSet[100:250,], svmI , 1:16)
+predict(clout, sample.ExpressionSet[100:250,17:26])
+
 }
 
 \keyword{ models }

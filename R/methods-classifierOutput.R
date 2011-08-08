@@ -150,7 +150,6 @@ setMethod("confuMat", c("classifierOutput","character"),
             return(ans)
           })
 
-
 #setGeneric("testPredictions", function(x) standardGeneric("testPredictions"))
 #setMethod("testPredictions", "classifierOutput", function(x) x@testPredictions)
 
@@ -220,3 +219,24 @@ setMethod("trainPredictions", "classifierOutput", function(x,t) {
 
 setGeneric("fsHistory", function(x) standardGeneric("fsHistory"))
 setMethod("fsHistory", "classifierOutput", function(x) x@fsHistory)
+
+
+predict.classifierOutput <- function(object, newdata, ...) {
+  if (class(newdata)[1] == "ExpressionSet")
+    newdata <- data.frame(t(exprs(newdata)))
+  if (class(newdata)[1] == "matrix")
+    newdata <- data.frame(newdata)
+  model <- RObject(object)
+  if (class(model)[1]=="list")
+    stop("The 'classifierOutput' has", length(model),
+         "models.", "Expecting only 1.")
+  predict <- object@learnerSchema@predicter ## MLIPredicter
+  ans <- predict(model, newdata, ...)
+  ## ans is a list(testPredictions, testScores)
+  ## testScores is numeric() and testPredictions should be
+  ## factor(,levels=levels(trainPredictions))
+  ## not sure if all original levels will always be included
+  ## and possible downstream repercutions
+  ## Will be more elaborated at a later stage
+  return(ans)
+}

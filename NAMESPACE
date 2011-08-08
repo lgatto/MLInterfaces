@@ -35,4 +35,5 @@ export( randomForestI, knnI, dldaI, nnetI, rpartI,
 
 S3method("print", "rdacvML")
 S3method("print", "rdaML")
+S3method("predict", "classifierOutput")
 

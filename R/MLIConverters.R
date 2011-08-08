@@ -25,7 +25,7 @@ MLIConverter.knn = function(k=1, l=0) function(obj, data, trainInd) {
        trainPredictions=factor(trpr),
        trainScores=attr(trpr, "prob"),
        RObject=obj)
-   }
+ }
 
 MLIConverter.dlda = function(obj, data, trainInd) {
    kpn = names(obj$traindat)
@@ -280,3 +280,21 @@ MLIConverter.randomForest = function (obj, data, trainInd) {
         RObject = obj)
 }
 
+
+MLIConverter.plsda <- function(obj, data, trainInd) {
+  rhs <- colnames(obj$model$x)
+  trData <- data[ trainInd,rhs]
+  teData <- data[-trainInd,rhs]
+  tePredProb <- predict(obj,teData,type="prob")
+  tePredClass <- predict(obj,teData,type="class")   
+  names(tePredClass) <- rownames(teData)  
+  trPredProb <- predict(obj,trData,type="prob")
+  trPredClass <- predict(obj,trData,type="class")   
+  names(trPredClass) <- rownames(trData)
+  new("classifierOutput",
+      testPredictions = tePredClass, 
+      testScores = tePredProb,
+      trainPredictions = trPredClass, 
+      trainScores = trPredProb,
+      RObject = obj)
+}
