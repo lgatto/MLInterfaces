@@ -21,7 +21,7 @@ Collate: AllClasses.R
 	RAB.R pplot.R varImp.R xval.R
 	MLearn.R
 	MLIConverters.R
-	predict.R MLIPredicters.R
+	MLIPredicters.R
 	localBridge.R
 	methods-classifierOutput.R
 	methods-clusteringOutput.R
