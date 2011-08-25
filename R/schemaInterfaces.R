@@ -54,8 +54,11 @@ naiveBayesI = makeLearnerSchema("e1071", "naiveBayes",
 # to do as of 12 Sep 2007 -- inclass, inbagg [ need good cFUN examples before going there ]
 # pamr, gbm, logitBoost
 
-ksvmI = makeLearnerSchema("kernlab", "ksvm",
-  standardMLIConverter)
+## ksvmI = makeLearnerSchema("kernlab", "ksvm",
+##   standardMLIConverter)
+ksvmI <- makeLearnerSchema("MLInterfaces", "ksvm2",
+                           MLIConverter.ksvm,
+                           MLIPredicter.ksvm)
 
 adaI = makeLearnerSchema("ada", "ada",
   standardMLIConverter)

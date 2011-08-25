@@ -314,6 +314,14 @@ svm2 <- function (formula,
   e1071::svm(formula, data, probability=probability, ...)
 }
 
+ksvm2 <- function (formula, 
+                  data, ## training data (prepared in MLearn)
+                  prob.model=TRUE, ## to use probabilities as test|trainScores
+                  ...   ## other args for ksvm
+                  ) {
+  kernlab::ksvm(formula, data, prob.model=prob.model, ...)
+}
+
 plsda2 <- function (formula, 
                     data, ## training data (prepared in MLearn)
                     probMethod="Bayes", ## using bayes rule to form posterior probs (default in caret::plsda is 'softmax')

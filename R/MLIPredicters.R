@@ -10,8 +10,16 @@ MLIPredicter.plsda <- function(model, newdata, ...) {
 }
 
 MLIPredicter.svm <- function(model, newdata, ...) {
-  .predClass <- predict(model, newdata, decision.values=TRUE, probability=TRUE)
+  .predClass <- predict(model, newdata,
+                        decision.values=TRUE, probability=TRUE, ...)
   .predProb <- attr(.predClass,"probabilities")
+  return(list(testPredictions=factor(.predClass),
+              testScores=.predProb))
+}
+
+MLIPredicter.ksvm <- function(model, newdata, ...) {
+  .predClass <- predict(model, newdata, type="response", ...)
+  .predProb <- predict(model, newdata, type="probabilities", ...)
   return(list(testPredictions=factor(.predClass),
               testScores=.predProb))
 }

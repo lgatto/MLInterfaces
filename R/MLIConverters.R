@@ -63,22 +63,38 @@ MLIConverterListEl.class = function(obj, data, trainInd) {
    }
 
 MLIConverter.svm = function(obj, data, trainInd) { # decision.values parm needed
-   teData = data[-trainInd,]
-   trData = data[trainInd,]
-   ##tepr = predict(obj, teData, decision.values=FALSE)
-   ##trpr = predict(obj, trData, decision.values=FALSE)
-   ## From ?svn: The center and scale values are returned and used for later predictions.
-   tepr = predict(obj, teData, decision.values=TRUE, probability=TRUE)
-   trpr = predict(obj, trData, decision.values=TRUE, probability=TRUE)   
-   ## names(tepr) = rownames(teData)
-   ## names(trpr) = rownames(trData)
-   new("classifierOutput",
-       testPredictions =factor(tepr[1:length(tepr)]),
-       trainPredictions=factor(trpr[1:length(trpr)]),
-       testScores=attr(tepr,"probabilities"),
-       trainScores=attr(trpr,"probabilities"),
-       RObject=obj)
-   }
+  teData = data[-trainInd,]
+  trData = data[trainInd,]
+  ##tepr = predict(obj, teData, decision.values=FALSE)
+  ##trpr = predict(obj, trData, decision.values=FALSE)
+  ## From ?svn: The center and scale values are returned and used for later predictions.
+  tepr = predict(obj, teData, decision.values=TRUE, probability=TRUE)
+  trpr = predict(obj, trData, decision.values=TRUE, probability=TRUE)   
+  ## names(tepr) = rownames(teData)
+  ## names(trpr) = rownames(trData)
+  new("classifierOutput",
+      testPredictions =factor(tepr[1:length(tepr)]),
+      trainPredictions=factor(trpr[1:length(trpr)]),
+      testScores=attr(tepr,"probabilities"),
+      trainScores=attr(trpr,"probabilities"),
+      RObject=obj)
+}
+
+MLIConverter.ksvm <- function(obj, data, trainInd) {
+  teData <- data[-trainInd,]
+  trData <- data[trainInd,]
+  require(kernlab)
+  teprob <- predict(obj, teData, type="probabilities")
+  trprob <- predict(obj, trData, type="probabilities")
+  tepred <- predict(obj, teData, type="response")
+  trpred <- predict(obj, trData, type="response")
+  new("classifierOutput",
+      testPredictions =factor(tepred),
+      trainPredictions=factor(trpred),
+      testScores=teprob,
+      trainScores=trprob,
+      RObject=obj)
+}
 
 MLIConverter.ldaPredMeth = function(method) function(obj, data, trainInd) { # get binding for method to predict
    teData = data[-trainInd,]                                              # at call time

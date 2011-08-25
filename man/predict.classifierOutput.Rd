@@ -64,6 +64,9 @@ trainInd <- 1:16
 clout.svm <- MLearn(type~., sample.ExpressionSet[100:250,], svmI, trainInd)
 predict(clout.svm, sample.ExpressionSet[100:250,-trainInd])
 
+clout.ksvm <- MLearn(type~., sample.ExpressionSet[100:250,], ksvmI, trainInd)
+predict(clout.ksvm, sample.ExpressionSet[100:250,-trainInd])
+
 clout.nnet <- MLearn(type~., sample.ExpressionSet[100:250,], nnetI, trainInd, size=3, decay=.01 )
 predict(clout.nnet, sample.ExpressionSet[100:250,-trainInd])
 
