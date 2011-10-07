@@ -18,6 +18,9 @@ setMethod("show", "classifierOutput", function(object) {
 setGeneric("RObject", function(x) standardGeneric("RObject"))
 setMethod("RObject", "classifierOutput", function(x) x@RObject)
 
+setGeneric("trainInd", function(x) standardGeneric("trainInd"))
+setMethod("trainInd", "classifierOutput", function(x) x@trainInd)
+
 setGeneric("testScores", function(x) standardGeneric("testScores"))
 setMethod("testScores", "classifierOutput", function(x) x@testScores)
 
@@ -216,6 +219,21 @@ setMethod("trainPredictions", "classifierOutput", function(x,t) {
     return(factor(clindex,exclude=NULL))
   }
 })
+
+
+setGeneric("predictions", function(x,...) standardGeneric("predictions"))
+setMethod("predictions", "classifierOutput", function(x,t) {
+  trainInd <- x@trainInd
+  if (missing(t))
+    t <- 0
+  trout <- as.character(x@trainOutcomes)
+  tepred <- as.character(testPredictions(x,t))
+  out <- rep(NA,length(trout)+length(tepred))
+  out[trainInd] <- trout
+  out[-trainInd] <- tepred
+  factor(out)
+})
+
 
 setGeneric("fsHistory", function(x) standardGeneric("fsHistory"))
 setMethod("fsHistory", "classifierOutput", function(x) x@fsHistory)

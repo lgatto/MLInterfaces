@@ -1,4 +1,4 @@
-setGeneric("MLearn", function(formula, data, .method, trainInd, ...)standardGeneric("MLearn"))
+setGeneric("MLearn", function(formula, data, .method, trainInd, ...) standardGeneric("MLearn"))
 
 setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
    "numeric" ), function( formula, data, .method, trainInd, ...) {
@@ -31,6 +31,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
   else tmp@testOutcomes = trout # if CV is embedded, the 'training' is 'test'
   tmp@call = thecall
   tmp@learnerSchema = .method
+  tmp@trainInd = trainInd
   tmp
 })
 

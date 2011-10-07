@@ -15,11 +15,12 @@ exportClasses(
 	"classifierOutput", "learnerSchema", #"nonstandardLearnerSchema",
 	"xvalSpec", "clusteringOutput")
 	
-exportMethods("show", "RObject", "confuMat",
+exportMethods("show", "RObject", "confuMat", "trainInd",
               "precision", "recall", "macroF1",
               "MLearn", "planarPlot", "Predict", "getVarImp", "plot", 
               "trainScores","trainPredictions",
-              "testScores", "testPredictions", 
+              "testScores", "testPredictions",
+              "predictions",
               "fsHistory", "report", "getDist", "getConverter")
 
 export( randomForestI, knnI, dldaI, nnetI, rpartI, 
