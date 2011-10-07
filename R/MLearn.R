@@ -8,14 +8,14 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
 ## create the requested function
   lfun = do.call("::", list(pname, fname))
 ## build test and train subsets
-  tedata = data[-trainInd,]
-  trdata = data[trainInd,]
+  tedata = gdata::drop.levels(data[-trainInd,])
+  trdata = gdata::drop.levels(data[trainInd,])
 ## execute on training data 
   ans = lfun( formula, trdata, ...)
 ## collect response subsets
   trFrame = try(model.frame(formula, trdata, na.action=na.fail))
   if (inherits(trFrame, "try-error")) stop("NA encountered in data.  Please rectify.")
-  teFrame = model.frame(formula, tedata, na.action=na.fail)
+  teFrame = try(model.frame(formula, tedata, na.action=na.fail))
   if (inherits(teFrame, "try-error")) stop("NA encountered in data.  Please rectify.")
   trout = model.response( trFrame )
   teout = model.response( teFrame )
