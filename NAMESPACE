@@ -20,7 +20,7 @@ exportMethods("show", "RObject", "confuMat", "trainInd",
               "MLearn", "planarPlot", "Predict", "getVarImp", "plot", 
               "trainScores","trainPredictions",
               "testScores", "testPredictions",
-              "predictions",
+              "predictions", "predScores", 
               "fsHistory", "report", "getDist", "getConverter")
 
 export( randomForestI, knnI, dldaI, nnetI, rpartI, 

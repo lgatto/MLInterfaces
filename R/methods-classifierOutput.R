@@ -231,7 +231,23 @@ setMethod("predictions", "classifierOutput", function(x,t) {
   out <- rep(NA,length(trout)+length(tepred))
   out[trainInd] <- trout
   out[-trainInd] <- tepred
-  factor(out)
+  return(factor(out))
+})
+
+setGeneric("predScores", function(x,...) standardGeneric("predScores"))
+setMethod("predScores", "classifierOutput", function(x,t) {
+  trainInd <- x@trainInd
+  if (missing(t))
+    t <- 0
+  n <- length(x@trainOutcomes) + length(x@testOutcomes)
+  out <- rep(1,n)
+  trscores <- testScores(x)
+  if (is.matrix(trscores)) {
+    out[-trainInd] <- rowMax(trscores)
+  } else {
+    out[-trainInd] <- trscores
+  }
+  return(out)
 })
 
 
