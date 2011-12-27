@@ -58,6 +58,7 @@
 }
 
 \examples{
+set.seed(1234)
 data(sample.ExpressionSet)
 trainInd <- 1:16
 
@@ -80,6 +81,9 @@ predict(clout.plsda, sample.ExpressionSet[100:250,-trainInd])
 clout.nb <- MLearn(type~., sample.ExpressionSet[100:250,], naiveBayesI, trainInd)
 predict(clout.nb, sample.ExpressionSet[100:250,-trainInd])
 
+# this can fail if training set does not yield sufficient diversity in response vector;
+# setting seed seems to help with this example, but other applications may have problems
+#
 clout.rf <- MLearn(type~., sample.ExpressionSet[100:250,], randomForestI, trainInd)
 predict(clout.rf, sample.ExpressionSet[100:250,-trainInd])
 }
