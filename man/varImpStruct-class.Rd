@@ -1,6 +1,7 @@
 \name{varImpStruct-class}
 \docType{class}
 \alias{varImpStruct-class}
+\alias{plot}
 \alias{plot,varImpStruct-method}
 \alias{plot,varImpStruct,ANY-method}
 \alias{show,varImpStruct-method}

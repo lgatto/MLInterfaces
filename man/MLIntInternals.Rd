@@ -37,7 +37,5 @@ Functions with `new' as prefix are constructor helpers.
 
 \author{VJ Carey <stvjc@channing.harvard.edu>}
 
-\examples{
-}
 \keyword{ classif }
 
