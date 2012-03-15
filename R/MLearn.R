@@ -173,7 +173,7 @@ setMethod("MLearn",
 
             ##   xvalLoop = xvalLoop(NULL) # eventually will allow clusters
             out <-
-              if (is.loaded("mc_fork", PACKAGE="multicore")) {
+              if (is.loaded("mc_fork", PACKAGE="parallel")) {
                 mcLapply <- get("mclapply", envir=getNamespace("multicore"))
                 mcLapply(1:n, xvalidator, ...)
               } else {
