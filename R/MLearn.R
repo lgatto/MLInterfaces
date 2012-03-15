@@ -8,6 +8,7 @@ setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
 ## create the requested function
   lfun = do.call("::", list(pname, fname))
 ## build test and train subsets
+ if (length(trainInd) != nrow(data))
   tedata = gdata::drop.levels(data[-trainInd,])
   trdata = gdata::drop.levels(data[trainInd,])
 ## execute on training data 
