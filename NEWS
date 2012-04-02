@@ -1,0 +1,11 @@
+CHANGES IN VERSION 1.37.1
+-------------------------
+ o added NEWS file (lgatto) <2012-04-02 Mon>
+ o renamed 'predScores' to 'predScore' and 
+   new 'predScores' method that returns the full 
+   prediction score matrix (lgatto) <2012-04-02 Mon>
+ o remove ununsed t argument for predScore (lgatto) <2012-04-02 Mon>
+ o changed maxit to maxiter in RAB4es and decr to decreasing 
+   in fs.absT (partial argument matching note during checking) 
+   (lgatto) <2012-04-02 Mon>
+

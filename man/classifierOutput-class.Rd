@@ -13,6 +13,8 @@
 \alias{predictions}
 \alias{predScores,classifierOutput-method}
 \alias{predScores}
+\alias{predScore,classifierOutput-method}
+\alias{predScore}
 \alias{testPredictions,classifierOutput-method}
 \alias{testPredictions}
 \alias{trainPredictions}
@@ -104,9 +106,13 @@ unlikely that any user would create such an object by hand.
      than \code{t}. The predictions for the training set are the
      training outcomes.  Non-predicted cases and cases that 
      matche multiple classes are returned as \code{NA}s.}
+   \item{predScore}{\code{signature(object = "classifierOutput")}:
+     Returns the scores for predicted class for each 
+     sample/individual. The scores for the training set are set to 1. } 
    \item{predScores}{\code{signature(object = "classifierOutput")}:
-     Returns the prediction scores for each sample/individual. The
-     scores for the training set are set to 1. }
+     Returns the prediction scores for all classes for each
+     sample/individual. The scores for the training set are set to 1 for
+     the appropriate class, 0 otherwise.}
    \item{testScores}{\code{signature(object = "classifierOutput")}: ... }
    \item{testPredictions}{\code{signature(object = "classifierOutput")}: Print
      the predicted classes for each sample/individual in the test set. }

@@ -234,11 +234,9 @@ setMethod("predictions", "classifierOutput", function(x,t) {
   return(factor(out))
 })
 
-setGeneric("predScores", function(x,...) standardGeneric("predScores"))
-setMethod("predScores", "classifierOutput", function(x,t) {
+setGeneric("predScore", function(x,...) standardGeneric("predScore"))
+setMethod("predScore", "classifierOutput", function(x) {
   trainInd <- x@trainInd
-  if (missing(t))
-    t <- 0
   n <- length(x@trainOutcomes) + length(x@testOutcomes)
   out <- rep(1,n)
   trscores <- testScores(x)
@@ -248,6 +246,33 @@ setMethod("predScores", "classifierOutput", function(x,t) {
     out[-trainInd] <- trscores
   }
   return(out)
+})
+
+
+setGeneric("predScores", function(x,...) standardGeneric("predScores"))
+setMethod("predScores", "classifierOutput", function(x) {
+  tescores <- testScores(x)
+  if (!is.matrix(tescores)) {
+    ans <- matrix(predScore(x), ncol = 1)
+  } else {
+    trainOut <- as.character(x@trainOutcomes)
+    testOut <- as.character(x@testOutcomes)
+    trainInd <- x@trainInd
+    testInd <- (1:nrow(ans))[ -trainInd ]
+    ans <-  matrix(0,
+                   nrow = nrow(tescores) + nrow(trainScores(x)),
+                   ncol = ncol(tescores))
+    colnames(ans) <- colnames(tescores)
+    rownames(ans)[testInd] <- rownames(tescores)
+    rownames(ans)[trainInd] <- rownames(trainScores(x)) 
+    ## updating test scores as returned by MLInterfaces::testScores
+    stopifnot(length(testInd) == length(testOut))
+    ans[testInd, ] <- tescores
+    ## updating train scores - setting appropriate cell to 1
+    for (i in 1:length(trainInd))
+      ans[trainInd[i], trainOut[i]] <- 1
+  }
+  return(ans)
 })
 
 
