@@ -8,4 +8,5 @@ CHANGES IN VERSION 1.37.1
  o changed maxit to maxiter in RAB4es and decr to decreasing 
    in fs.absT (partial argument matching note during checking) 
    (lgatto) <2012-04-02 Mon>
+ o fixed predScores <2012-04-03 Tue>
 

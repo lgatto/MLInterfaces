@@ -255,16 +255,17 @@ setMethod("predScores", "classifierOutput", function(x) {
   if (!is.matrix(tescores)) {
     ans <- matrix(predScore(x), ncol = 1)
   } else {
+    n <- nrow(tescores) + nrow(trainScores(x))
     trainOut <- as.character(x@trainOutcomes)
     testOut <- as.character(x@testOutcomes)
     trainInd <- x@trainInd
-    testInd <- (1:nrow(ans))[ -trainInd ]
+    testInd <- (1:n)[ -trainInd ]
     ans <-  matrix(0,
-                   nrow = nrow(tescores) + nrow(trainScores(x)),
-                   ncol = ncol(tescores))
+                   nrow = n,
+                   ncol = ncol(tescores))   
     colnames(ans) <- colnames(tescores)
     rownames(ans)[testInd] <- rownames(tescores)
-    rownames(ans)[trainInd] <- rownames(trainScores(x)) 
+    rownames(ans)[trainInd] <- rownames(trainScores(x))
     ## updating test scores as returned by MLInterfaces::testScores
     stopifnot(length(testInd) == length(testOut))
     ans[testInd, ] <- tescores
