@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.39.1
+-------------------------
+ o not scaling kmeans' partition in partPlot (lgatto) <2012-11-10 Sat>
+
 CHANGES IN VERSION 1.37.1
 -------------------------
  o added NEWS file (lgatto) <2012-04-02 Mon>
