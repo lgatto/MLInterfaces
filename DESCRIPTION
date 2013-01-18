@@ -1,6 +1,6 @@
 Package: MLInterfaces
 Title: Uniform interfaces to R machine learning procedures for data in Bioconductor containers
-Version: 1.39.2
+Version: 1.39.3
 Author: Vince Carey <stvjc@channing.harvard.edu>, Robert Gentleman, Jess Mar,
 	and contributions from Jason Vertrees <jv@cs.dartmouth.edu> and
 	Laurent Gatto <lg390@cam.ac.uk>
@@ -18,14 +18,16 @@ Imports: mboost, gdata, pls
 Enhances: parallel
 LazyLoad: yes
 Collate: AllClasses.R
-	RAB.R pplot.R varImp.R xval.R
-	MLearn.R
-	MLIConverters.R
-	MLIPredicters.R
-	localBridge.R
-	methods-classifierOutput.R
-	methods-clusteringOutput.R
-	methods-learnerSchema.R
-	schemaInterfaces.R
-	featSel.R partPlot.R
-	clDesign.R plsdaI.R
+	 RAB.R pplot.R varImp.R xval.R
+	 MLearn.R
+	 MLIConverters.R
+	 MLIPredicters.R
+	 localBridge.R
+	 methods-classifierOutput.R
+	 methods-clusteringOutput.R
+	 methods-learnerSchema.R
+	 performance-analytics.R
+	 schemaInterfaces.R
+	 featSel.R partPlot.R
+	 clDesign.R plsdaI.R
+

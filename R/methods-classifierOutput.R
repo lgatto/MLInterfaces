@@ -29,17 +29,19 @@ setMethod("trainScores", "classifierOutput", function(x) x@trainScores)
 
 
 ## recall, precision and macroF1 methods - L. Gatto <lg390@cam.ac.uk>, 30 July 2011
-setGeneric("recall",function(obj,type,...) standardGeneric("recall"))
-setGeneric("precision",function(obj,type,...) standardGeneric("precision"))
-setGeneric("macroF1",function(obj,type,...) standardGeneric("macroF1"))
+setGeneric("recall", function(obj, type,...) standardGeneric("recall"))
+setGeneric("precision", function(obj, type,...) standardGeneric("precision"))
+setGeneric("macroF1", function(obj, type,...) standardGeneric("macroF1"))
 
-.recall <- function(mat) {
-  ans <- numeric(nrow(mat))
-  names(ans) <- rownames(mat)
-  for (i in 1:nrow(mat))
-    ans[i] <- mat[i,i]/sum(mat[,i])
-  return(ans)
-}
+setGeneric("sensitivity",
+           function(obj, type,...) {
+             if (class(obj) == "table") {
+               recall(obj, ...)
+             } else {
+               recall(obj, type, ...)
+             }
+           })
+
 
 setMethod("recall",
           c("classifierOutput","missing"),
@@ -53,14 +55,6 @@ setMethod("recall",
           c("classifierOutput","numeric"),
           function(obj, type) return(.recall(confuMat(obj, "test", type))))
 
-.precision <- function(mat) {
-  ans <- numeric(nrow(mat))
-  names(ans) <- rownames(mat)
-  for (i in 1:nrow(mat))
-    ans[i] <- mat[i,i]/sum(mat[i,])
-  return(ans)
-}
-
 setMethod("precision",
           c("classifierOutput","missing"),
           function(obj, type, ...) return(.precision(confuMat(obj, "test", ...))))
@@ -72,12 +66,6 @@ setMethod("precision",
 setMethod("precision",
           c("classifierOutput","numeric"),
           function(obj, type) return(.precision(confuMat(obj, "test", type))))
-
-.macroF1 <- function(p, r) {
-  if (all(names(p) != names(r)))
-    stop("precision and recall do not match.")
-  mean((2*p*r)/(p+r))
-}
 
 setMethod("macroF1",
           c("classifierOutput","missing"),
