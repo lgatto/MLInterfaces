@@ -76,9 +76,7 @@ setMethod("precision",
 .macroF1 <- function(p, r) {
   if (all(names(p) != names(r)))
     stop("precision and recall do not match.")
-  p <- mean(p)
-  r <- mean(r)
-  return((2*p*r)/(p+r))
+  mean((2*p*r)/(p+r))
 }
 
 setMethod("macroF1",
