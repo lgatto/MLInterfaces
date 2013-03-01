@@ -260,7 +260,10 @@ setMethod("predScores", "classifierOutput", function(x) {
     testInd <- (1:n)[ -trainInd ]
     ans <-  matrix(0,
                    nrow = n,
-                   ncol = ncol(tescores))   
+                   ncol = ncol(tescores))
+    ## tmp rownames - if NULL produces error
+    ## when subsetting with rownames(ans)[testInd]
+    rownames(ans) <- 1:nrow(ans)
     colnames(ans) <- colnames(tescores)
     rownames(ans)[testInd] <- rownames(tescores)
     rownames(ans)[trainInd] <- rownames(trainScores(x))
@@ -268,6 +271,7 @@ setMethod("predScores", "classifierOutput", function(x) {
     stopifnot(length(testInd) == length(testOut))
     ans[testInd, ] <- tescores
     ## updating train scores - setting appropriate cell to 1
+    ## why not initialise to 1?
     for (i in 1:length(trainInd))
       ans[trainInd[i], trainOut[i]] <- 1
   }
