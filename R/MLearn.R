@@ -1,40 +1,41 @@
 setGeneric("MLearn", function(formula, data, .method, trainInd, ...) standardGeneric("MLearn"))
 
-setMethod("MLearn", c("formula", "data.frame", "learnerSchema",
-   "numeric" ), function( formula, data, .method, trainInd, ...) {
-## find software
-  pname = .method@packageName
-  fname = .method@mlFunName
-## create the requested function
-  lfun = do.call("::", list(pname, fname))
-## build test and train subsets
- if (length(trainInd) != nrow(data))
-  tedata = gdata::drop.levels(data[-trainInd,])
-  trdata = gdata::drop.levels(data[trainInd,])
-## execute on training data 
-  ans = lfun( formula, trdata, ...)
-## collect response subsets
-  trFrame = try(model.frame(formula, trdata, na.action=na.fail))
-  if (inherits(trFrame, "try-error")) stop("NA encountered in data.  Please rectify.")
-  teFrame = try(model.frame(formula, tedata, na.action=na.fail))
-  if (inherits(teFrame, "try-error")) stop("NA encountered in data.  Please rectify.")
-  trout = model.response( trFrame )
-  teout = model.response( teFrame )
-## tell what was done
-  thecall = match.call()
-## convert the execute result into an MLint output container
-  tmp = .method@converter( ans, data, trainInd )
-## add some stuff to the converted representation
-  if (!tmp@embeddedCV) {
-      tmp@testOutcomes = teout
-      tmp@trainOutcomes = trout
-  }
-  else tmp@testOutcomes = trout # if CV is embedded, the 'training' is 'test'
-  tmp@call = thecall
-  tmp@learnerSchema = .method
-  tmp@trainInd = trainInd
-  tmp
-})
+setMethod("MLearn",
+          c("formula", "data.frame", "learnerSchema", "numeric" ),
+          function( formula, data, .method, trainInd, ...) {
+            ## find software
+            pname = .method@packageName
+            fname = .method@mlFunName
+            ## create the requested function
+            lfun = do.call("::", list(pname, fname))
+            ## build test and train subsets
+            if (length(trainInd) != nrow(data))
+              tedata = gdata::drop.levels(data[-trainInd,])
+            trdata = gdata::drop.levels(data[trainInd,])
+            ## execute on training data 
+            ans = lfun( formula, trdata, ...)
+            ## collect response subsets
+            trFrame = try(model.frame(formula, trdata, na.action=na.fail))
+            if (inherits(trFrame, "try-error")) stop("NA encountered in data.  Please rectify.")
+            teFrame = try(model.frame(formula, tedata, na.action=na.fail))
+            if (inherits(teFrame, "try-error")) stop("NA encountered in data.  Please rectify.")
+            trout = model.response( trFrame )
+            teout = model.response( teFrame )
+            ## tell what was done
+            thecall = match.call()
+            ## convert the execute result into an MLint output container
+            tmp = .method@converter( ans, data, trainInd )
+            ## add some stuff to the converted representation
+            if (!tmp@embeddedCV) {
+              tmp@testOutcomes = teout
+              tmp@trainOutcomes = trout
+            }
+            else tmp@testOutcomes = trout # if CV is embedded, the 'training' is 'test'
+            tmp@call = thecall
+            tmp@learnerSchema = .method
+            tmp@trainInd = trainInd
+            tmp
+          })
 
 es2df = function(x,keep=NULL) {
 #
@@ -197,7 +198,7 @@ setMethod("MLearn",
               teScores <- do.call(rbind,teScores)
               testscores <- teScores[reord,]
             } else {
-              warning("Ignoring testScores of class ",class(teScores[[1]]),
+              warning("Ignoring testScores of class ", class(teScores[[1]]),
                       ", expecting vector or matrix.")
               testscores <- NULL
             }

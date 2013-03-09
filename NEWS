@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.39.4
+-------------------------
+ o plsda prediction returns prob matrix instead of 
+   array of [, , 1] dims (lgatto) <2013-03-09 Sat>
+
 CHANGES IN VERSION 1.39.3
 -------------------------
  o fixed predScores (lgatto) <2013-03-01 Fri>

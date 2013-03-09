@@ -3,8 +3,8 @@
 ## }
 
 MLIPredicter.plsda <- function(model, newdata, ...) {
-  .predClass <- predict(model,newdata,type="class") 
-  .predProb <- predict(model,newdata,type="prob")
+  .predClass <- predict(model,newdata,type="class")
+  .predProb <- predict(model,newdata,type="prob")  
   return(list(testPredictions=.predClass,
               testScores=.predProb))
 }

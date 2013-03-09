@@ -302,9 +302,13 @@ MLIConverter.plsda <- function(obj, data, trainInd) {
   trData <- data[ trainInd,rhs]
   teData <- data[-trainInd,rhs]
   tePredProb <- predict(obj,teData,type="prob")
+  if (inherits(tePredProb, "array") & dim(tePredProb)[3] == 1)
+    tePredProb <- tePredProb[, , 1]
   tePredClass <- predict(obj,teData,type="class")   
   names(tePredClass) <- rownames(teData)  
   trPredProb <- predict(obj,trData,type="prob")
+  if (inherits(trPredProb, "array") & dim(trPredProb)[3] == 1)
+    trPredProb <- trPredProb[, , 1]
   trPredClass <- predict(obj,trData,type="class")   
   names(trPredClass) <- rownames(trData)
   new("classifierOutput",
