@@ -85,7 +85,9 @@ MLIConverter.ksvm <- function(obj, data, trainInd) {
   trData <- data[trainInd,]
   require(kernlab)
   teprob <- predict(obj, teData, type="probabilities")
+  rownames(teprob) <- rownames(teData)
   trprob <- predict(obj, trData, type="probabilities")
+  rownames(trprob) <- rownames(trData)
   tepred <- predict(obj, teData, type="response")
   trpred <- predict(obj, trData, type="response")
   new("classifierOutput",
