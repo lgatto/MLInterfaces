@@ -1,3 +1,15 @@
+CHANGES IN VERSION 1.41.1
+-------------------------
+o new peformance analytics functions (lgatto) <2013-04-30 Tue>
+
+CHANGES IN VERSION 1.41.0
+-------------------------
+ o bump for Bioc devel 2.13 
+
+CHANGES IN VERSION 1.40.0
+-------------------------
+ o bump for Bioc stable 2.12 
+
 CHANGES IN VERSION 1.39.5
 -------------------------
  o ksvmI test/trainScores are have now rownames. 
@@ -15,6 +27,7 @@ CHANGES IN VERSION 1.39.3
 CHANGES IN VERSION 1.39.2
 -------------------------
  o macroF1 fix ans with na.rm
+ o fixed macro F1 score (lgatto) <2013-01-18 Fri>
 
 CHANGES IN VERSION 1.39.1
 -------------------------
