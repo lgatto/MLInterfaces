@@ -18,7 +18,6 @@ Suggests: class, e1071, ipred, randomForest, gpls, pamr, rpart, MASS,
 Imports: mboost, gdata, pls
 Enhances: parallel
 LazyLoad: yes
-<<<<<<< HEAD
 Collate: AllClasses.R RAB.R pplot.R varImp.R xval.R MLearn.R
         MLIConverters.R MLIPredicters.R localBridge.R
         methods-classifierOutput.R methods-clusteringOutput.R
