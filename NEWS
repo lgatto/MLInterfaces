@@ -16,6 +16,11 @@ CHANGES IN VERSION 1.39.2
 -------------------------
  o macroF1 fix ans with na.rm
 
+CHANGES IN VERSION 1.39.2
+-------------------------
+ o fixed macro F1 score (lgatto) <2013-01-18 Fri>
+>>>>>>> first draft performance analytics
+
 CHANGES IN VERSION 1.39.1
 -------------------------
  o not scaling kmeans' partition in partPlot (lgatto) <2012-11-10 Sat>

@@ -29,17 +29,19 @@ setMethod("trainScores", "classifierOutput", function(x) x@trainScores)
 
 
 ## recall, precision and macroF1 methods - L. Gatto <lg390@cam.ac.uk>, 30 July 2011
-setGeneric("recall",function(obj,type,...) standardGeneric("recall"))
-setGeneric("precision",function(obj,type,...) standardGeneric("precision"))
-setGeneric("macroF1",function(obj,type,...) standardGeneric("macroF1"))
+setGeneric("recall", function(obj, type,...) standardGeneric("recall"))
+setGeneric("precision", function(obj, type,...) standardGeneric("precision"))
+setGeneric("macroF1", function(obj, type,...) standardGeneric("macroF1"))
 
-.recall <- function(mat) {
-  ans <- numeric(nrow(mat))
-  names(ans) <- rownames(mat)
-  for (i in 1:nrow(mat))
-    ans[i] <- mat[i,i]/sum(mat[,i])
-  return(ans)
-}
+setGeneric("sensitivity",
+           function(obj, type,...) {
+             if (class(obj) == "table") {
+               recall(obj, ...)
+             } else {
+               recall(obj, type, ...)
+             }
+           })
+
 
 setMethod("recall",
           c("classifierOutput","missing"),
@@ -52,14 +54,6 @@ setMethod("recall",
 setMethod("recall",
           c("classifierOutput","numeric"),
           function(obj, type) return(.recall(confuMat(obj, "test", type))))
-
-.precision <- function(mat) {
-  ans <- numeric(nrow(mat))
-  names(ans) <- rownames(mat)
-  for (i in 1:nrow(mat))
-    ans[i] <- mat[i,i]/sum(mat[i,])
-  return(ans)
-}
 
 setMethod("precision",
           c("classifierOutput","missing"),
@@ -85,6 +79,7 @@ setMethod("macroF1",
             p <- precision(obj, "test", ...)
             r <- recall(obj, "test", ...)
             return(.macroF1(p,r))
+	fetch = :refs/remotes/hedgehog
           })
 
 setMethod("macroF1",

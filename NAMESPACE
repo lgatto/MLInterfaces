@@ -16,24 +16,26 @@ exportClasses(
 	"xvalSpec", "clusteringOutput")
 	
 exportMethods("show", "RObject", "confuMat", "trainInd",
-              "precision", "recall", "macroF1",
+              "precision", "recall", "sensitivity", "macroF1",
+              "F1", "acc", "tp", "tn", "fp", "fn", "specificity",
               "MLearn", "planarPlot", "Predict", "getVarImp", 
               "trainScores","trainPredictions",
               "testScores", "testPredictions",
               "predictions", "predScores", "predScore", 
               "fsHistory", "report", "getDist", "getConverter")
 
-export( randomForestI, knnI, dldaI, nnetI, rpartI, 
-	ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
-	RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, 
-        rab, lvq, RAB, DAB, plsda2, svm2, ksvm2, 
-	xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
-	rdaI, rdaML, plot,
-        plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
-        fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
-        adaI, fs.topVariance, hclustI, kmeansI, pamI,
-	blackboostI,
-        gbm2, BgbmI, plsdaI ) 
+export(randomForestI, knnI, dldaI, nnetI, rpartI, 
+       ldaI, svmI, ldaI.predParms, qdaI, glmI.logistic, 
+       RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, 
+       rab, lvq, RAB, DAB, plsda2, svm2, ksvm2, 
+       xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
+       rdaI, rdaML, plot,
+       plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
+       fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
+       adaI, fs.topVariance, hclustI, kmeansI, pamI,
+       blackboostI,
+       gbm2, BgbmI, plsdaI,
+       confuTab) 
 
 S3method("print", "rdacvML")
 S3method("print", "rdaML")
