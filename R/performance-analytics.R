@@ -80,29 +80,29 @@ makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
 
 .macroF1 <- function(p, r) {
   if (missing(r)) { 
-    F1 <- mean(.F1(p))
+    F1 <- .F1(p)
   } else { 
     F1 <- (2*p*r)/(p+r)
   }
   mean(F1) ## macro F1
 }
 
-._F1 <- function(mat, i) {
-  TP <- .tp(mat)[i]
-  FN <- .fn(mat)[i]
-  FP <- .fp(mat)[i] 
-  p <- sum(TP)/sum(TP, FP)
-  r <- sum(TP)/sum(TP, FN)
-  return((2*p*r)/(p+r))  
-}
+## ._F1 <- function(mat, i) {
+##   TP <- .tp(mat)[i]
+##   FN <- .fn(mat)[i]
+##   FP <- .fp(mat)[i] 
+##   p <- sum(TP)/sum(TP, FP)
+##   r <- sum(TP)/sum(TP, FN)
+##   return((2*p*r)/(p+r))  
+## }
 
-.macroF1_OLD <- function(p, r) {
-  if (!all.equal(names(p), names(r)))
-    stop("precision and recall do not match.")
-  p <- mean(p)
-  r <- mean(r)
-  return((2*p*r)/(p+r))
-}
+## .macroF1_OLD <- function(p, r) {
+##   if (!all.equal(names(p), names(r)))
+##     stop("precision and recall do not match.")
+##   p <- mean(p)
+##   r <- mean(r)
+##   return((2*p*r)/(p+r))
+## }
 
 setGeneric("acc", function(obj, ...) standardGeneric("acc"))
 setMethod("acc", "table", function(obj) .accuracy(obj))
