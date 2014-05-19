@@ -56,9 +56,11 @@ makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
 .accuracy <- function(mat)
   sum(diag(mat))/sum(mat)
 
-## same as sensitivity
-.recall <- function(mat) 
+.sensitivity <- 
+  .recall <- function(mat) 
   diag(mat)/colSums(mat)
+
+
 
 .specificity <- function(mat) {
   TN <- .tn(mat)
