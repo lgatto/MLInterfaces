@@ -39,7 +39,7 @@
 \alias{F1,table-method}
 \alias{F1}
 
-\title{ Assessing classifier preformance }
+\title{ Assessing classifier performance }
 
 \description{
   Methods to calculate the number of true positives (\code{tp}),
