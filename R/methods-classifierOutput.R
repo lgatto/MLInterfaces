@@ -80,7 +80,6 @@ setMethod("macroF1",
             p <- precision(obj, "test", ...)
             r <- recall(obj, "test", ...)
             return(.macroF1(p,r))
-	fetch = :refs/remotes/hedgehog
           })
 
 setMethod("macroF1",
