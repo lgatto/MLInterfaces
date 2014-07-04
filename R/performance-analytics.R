@@ -90,8 +90,7 @@ makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
 }
 
 
-.macroF1 <- function(p, r, naAs0 = FALSE) {
-    if (naAs0) mat <- naAs0(mat)
+.macroF1 <- function(p, r) {
     if (missing(r)) { 
         F1 <- .F1(p)
     } else { 
