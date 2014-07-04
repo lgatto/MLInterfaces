@@ -137,9 +137,18 @@ setMethod("F1", "table", function(obj) .F1(obj))
 setGeneric("specificity", function(obj, ...) standardGeneric("specificity"))
 setMethod("specificity", "table", function(obj) .specificity(obj))
 
+## Generic defined in methods-classification.R
 setMethod("macroF1", c("table","missing"),
-          function(obj, type, ...) {
+          function(obj, type, naAs0 = FALSE, ...) {
+              if (naAs0) obj <- naAs0(obj)
               return(.macroF1(obj))
+          })
+
+setMethod("macroF1", c("numeric","numeric"),
+          function(obj, type, ...) {
+              ## obj is precision
+              ## type is recall
+              return(.macroF1(obj, type))
           })
 
 setMethod("recall", c("table","missing"),
