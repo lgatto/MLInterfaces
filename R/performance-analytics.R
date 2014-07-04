@@ -2,15 +2,20 @@
 ##  *known*  classes to be along the *columns* and
 ##  *predicted* ones to be along the *rows*
 
+naAs0 <- function(x) {
+    x[is.na(x)] <- 0
+    x
+}
+
 ## for testing
 makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
-  if (k > 26)
-    k <- 26
-  m <- matrix(sample(i, 9, replace=TRUE), k)
-  dimnames(m) <- list(predicted = LETTERS[1:k],
-                      known = LETTERS[1:k])
-  diag(m) <- sample(j, 3)
-  as.table(m)
+    if (k > 26)
+        k <- 26
+    m <- matrix(sample(i, 9, replace=TRUE), k)
+    dimnames(m) <- list(predicted = LETTERS[1:k],
+                        known = LETTERS[1:k])
+    diag(m) <- sample(j, 3)
+    as.table(m)
 }
 
 
@@ -22,69 +27,77 @@ makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
 ## -> write the S4 methods and use caret
 
 .tp <- function(mat) {
-  ans <- diag(mat)
-  if (nrow(mat) == 2)
-    ans <- ans[1]
-  return(ans)
+    ans <- diag(mat)
+    if (nrow(mat) == 2)
+        ans <- ans[1]
+    return(ans)
 }
 
 .tn <- function(mat) {
-  if (nrow(mat) == 2) {
-    ans <- mat[2,2]
-  } else {
-    ans <- sapply(seq_len(nrow(mat)),
-                  function(i) sum(mat[-i, ][, -i]))
-    names(ans) <- rownames(mat)    
-  }
-  return(ans)
+    if (nrow(mat) == 2) {
+        ans <- mat[2,2]
+    } else {
+        ans <- sapply(seq_len(nrow(mat)),
+                      function(i) sum(mat[-i, ][, -i]))
+        names(ans) <- rownames(mat)    
+    }
+    return(ans)
 }
 
 .fp <- function(mat) {
-  ans <- rowSums(mat)-diag(mat)
-  if (nrow(mat) == 2)
-    ans <- ans[1]
-  return(ans)
+    ans <- rowSums(mat)-diag(mat)
+    if (nrow(mat) == 2)
+        ans <- ans[1]
+    return(ans)
 }
 
 .fn <- function(mat) {
-  ans <- colSums(mat)-diag(mat)
-  if (nrow(mat) == 2)
-    ans <- ans[2]
-  return(ans)
+    ans <- colSums(mat)-diag(mat)
+    if (nrow(mat) == 2)
+        ans <- ans[2]
+    return(ans)
 }
 
-.accuracy <- function(mat)
-  sum(diag(mat))/sum(mat)
+.accuracy <- function(mat, naAs0 = FALSE) {
+    if (naAs0) mat <- naAs0(mat)
+    sum(diag(mat))/sum(mat)
+}
 
 .sensitivity <- 
-  .recall <- function(mat) 
-  diag(mat)/colSums(mat)
+    .recall <- function(mat, naAs0 = FALSE) {
+        if (naAs0) mat <- naAs0(mat)
+        diag(mat)/colSums(mat)
+    }
 
 
-
-.specificity <- function(mat) {
-  TN <- .tn(mat)
-  FP <- .fp(mat)
-  TN/(TN+FP)
+.specificity <- function(mat, naAs0 = FALSE) {
+    if (naAs0) mat <- naAs0(mat)
+    TN <- .tn(mat)
+    FP <- .fp(mat)
+    TN/(TN+FP)
 }
 
-.precision <- function(mat) 
-  diag(mat)/rowSums(mat)
+.precision <- function(mat, naAs0 = FALSE) {
+    if (naAs0) mat <- naAs0(mat)
+    diag(mat)/rowSums(mat)
+}
 
-.F1 <- function(mat) {
-  r <- .recall(mat)
-  p <- .precision(mat)
-  return((2*p*r)/(p+r))
+.F1 <- function(mat, naAs0 = FALSE) {
+    if (naAs0) mat <- naAs0(mat)
+    r <- .recall(mat)
+    p <- .precision(mat)
+    return((2*p*r)/(p+r))
 }
 
 
-.macroF1 <- function(p, r) {
-  if (missing(r)) { 
-    F1 <- .F1(p)
-  } else { 
-    F1 <- (2*p*r)/(p+r)
-  }
-  mean(F1) ## macro F1
+.macroF1 <- function(p, r, naAs0 = FALSE) {
+    if (naAs0) mat <- naAs0(mat)
+    if (missing(r)) { 
+        F1 <- .F1(p)
+    } else { 
+        F1 <- (2*p*r)/(p+r)
+    }
+    mean(F1) ## macro F1
 }
 
 ## ._F1 <- function(mat, i) {
@@ -127,7 +140,7 @@ setMethod("specificity", "table", function(obj) .specificity(obj))
 
 setMethod("macroF1", c("table","missing"),
           function(obj, type, ...) {
-            return(.macroF1(obj))
+              return(.macroF1(obj))
           })
 
 setMethod("recall", c("table","missing"),
@@ -137,20 +150,21 @@ setMethod("precision", c("table","missing"),
           function(obj, type, ...) return(.precision(obj)))
 
 
-confuTab <- function(obj) {
-  .makeConfuTab <- function(x) {    
-    m <- matrix(x, nrow = 2)
-    dimnames(m) <- list(predicted = c(TRUE, FALSE),
-                        known = c(TRUE, FALSE))                        
-    as.table(m)
-  }
-  TP <- tp(obj)
-  FP <- fp(obj)
-  FN <- fn(obj)
-  TN <- tn(obj)  
-  ans <- lapply(seq_len(nrow(obj)),
-                function(i)
-                .makeConfuTab(c(TP[i], FN[i], FP[i], TN[i])))
-  names(ans) <- rownames(obj)
-  return(ans)
+confuTab <- function(obj, naAs0 = FALSE) {
+    .makeConfuTab <- function(x) {    
+        m <- matrix(x, nrow = 2)
+        dimnames(m) <- list(predicted = c(TRUE, FALSE),
+                            known = c(TRUE, FALSE))                        
+        as.table(m)
+    }
+    if (naAs0) mat <- naAs0(mat)    
+    TP <- tp(obj)
+    FP <- fp(obj)
+    FN <- fn(obj)
+    TN <- tn(obj)  
+    ans <- lapply(seq_len(nrow(obj)),
+                  function(i)
+                      .makeConfuTab(c(TP[i], FN[i], FP[i], TN[i])))
+    names(ans) <- rownames(obj)
+    return(ans)
 }
