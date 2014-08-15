@@ -40,6 +40,8 @@ discarded.
 }
 \seealso{ \code{\link{MLearn}} }
 \examples{
+library("MASS")
+data(crabs)
 # we will demonstrate this procedure with the crabs data.
 # first, create the closure to pick 3 features
 demFS = fs.absT(3)

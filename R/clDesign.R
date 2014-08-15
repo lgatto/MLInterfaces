@@ -17,7 +17,7 @@ setGeneric("getConverter", function(x)standardGeneric("getConverter"))
 setMethod("getDist", "clusteringSchema", function(x) x@distFun)
 setMethod("getConverter", "clusteringSchema", function(x) x@converter)
 
-require(cluster)
+## require(cluster)
 setOldClass("silhouette")
 
 setOldClass("prcomp")

@@ -174,6 +174,7 @@ Instances of classifierOutput or clusteringOutput
 %\seealso{  }
 
 \examples{
+library("MASS")
 data(crabs)
 set.seed(1234)
 kp = sample(1:200, size=120)

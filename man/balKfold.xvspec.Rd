@@ -46,6 +46,7 @@ function(data, clab, iternum) {
     (1:narr)[-which(unlist(grpinds) == iternum)]
   }
 # try it out
+library("MASS")
 data(crabs)
 p1c = balKfold.xvspec(5)
 inds = p1c( crabs, "sp", 3 )
