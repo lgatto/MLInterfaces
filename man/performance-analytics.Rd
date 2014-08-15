@@ -47,7 +47,10 @@
   true negatives (\code{tn}), false negatives (\code{fn}),
   false positive (\code{fp}), accuracy (\code{acc}),  
   \code{precision}, \code{recall} (same as \code{sensitivity}),
-  \code{specificity}, \code{F1} and \code{macroF1} scores. 
+  \code{specificity}, \code{F1} and \code{macroF1} scores.
+
+  Each method also accepts an \code{naAs0} argument definiting if
+  \code{NAs} should be replaced by \code{0} (default is \code{FALSE}).
 }
 
 \section{Methods}{
