@@ -61,6 +61,7 @@ when a \code{xvalSpec} is used.
 %\seealso{  }
 
 \examples{
+library("MASS")
 data(crabs)
 set.seed(1234)
 #

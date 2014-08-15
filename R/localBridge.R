@@ -112,7 +112,7 @@ dlda2 = function (formula, data, ...)
     mf = model.frame(formula, data)
     cl = model.response(mf)
     x = mf[, -1]
-    require(sfsmisc)
+    ## require(sfsmisc)
 # deal with global visibility
     ans = get("diagDA")(x, as.numeric(cl), x, ...) # not a list any more!
     ans = list(traindat = x, ans = ans, traincl = cl)
@@ -121,7 +121,7 @@ dlda2 = function (formula, data, ...)
 }
 
 predict.dlda2 = function(object, newdata, ...) {
- require(sfsmisc)
+## require(sfsmisc)
 # deal with global visibility
  get("diagDA")( object$traindat, as.numeric(object$traincl), newdata, ... )
 }

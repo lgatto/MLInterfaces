@@ -2,11 +2,15 @@ import("methods")
 import("tools")
 import("Biobase")
 import("annotate")
-import("mboost")
+import("MASS")
+import("rpart")
+import("sfsmisc")
+import("pls")
+import("rda")
 
+importFrom("genefilter", "rowttests")
 importFrom("graphics", "plot")
 importFrom("cluster", "silhouette")
-importFrom("sfsmisc", "diagDA")
 importFrom("gdata", "drop.levels")
 
 exportClasses( 

@@ -23,6 +23,7 @@
 \alias{macroF1,classifierOutput,missing-method}
 \alias{macroF1,classifierOutput,numeric-method}
 \alias{macroF1,table,missing-method}
+\alias{macroF1,numeric,numeric-method}
 \alias{macroF1}
 \alias{acc,table-method}
 \alias{acc}

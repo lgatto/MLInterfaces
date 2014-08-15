@@ -67,13 +67,6 @@ setMethod("precision",
           c("classifierOutput","numeric"),
           function(obj, type) return(.precision(confuMat(obj, "test", type))))
 
-## moved to performance-analytics.R
-## .macroF1 <- function(p, r) {
-##   if (all(names(p) != names(r)))
-##     stop("precision and recall do not match.")
-##   mean((2*p*r)/(p+r), na.rm=TRUE)
-## }
-
 setMethod("macroF1",
           c("classifierOutput","missing"),
           function(obj, type, ...) {
