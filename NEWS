@@ -1,8 +1,8 @@
 CHANGES IN VERSION 1.41.2
 -------------------------
  o performance analytics has new naAs0 argument [2014-07-04 Fri] 
- o cleaning up imports/depends/suggests as reported by check
-   [2014-08-15 Fri]
+ o cleaning up imports/depends/suggests as reported by check with R
+   3.2 [2014-08-15 Fri]
  
 CHANGES IN VERSION 1.41.1
 -------------------------
