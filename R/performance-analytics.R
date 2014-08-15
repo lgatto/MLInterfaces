@@ -58,46 +58,47 @@ makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
     return(ans)
 }
 
-.accuracy <- function(mat, naAs0 = FALSE) {
-    if (naAs0) mat <- naAs0(mat)
+.accuracy <- function(mat, naAs0. = FALSE) {
+    if (naAs0.) mat <- naAs0(mat)
     sum(diag(mat))/sum(mat)
 }
 
 .sensitivity <- 
-    .recall <- function(mat, naAs0 = FALSE) {
-        if (naAs0) mat <- naAs0(mat)
+    .recall <- function(mat, naAs0. = FALSE) {
+        if (naAs0.) mat <- naAs0(mat)
         diag(mat)/colSums(mat)
     }
 
 
-.specificity <- function(mat, naAs0 = FALSE) {
-    if (naAs0) mat <- naAs0(mat)
+.specificity <- function(mat, naAs0. = FALSE) {
+    if (naAs0.) mat <- naAs0(mat)
     TN <- .tn(mat)
     FP <- .fp(mat)
     TN/(TN+FP)
 }
 
-.precision <- function(mat, naAs0 = FALSE) {
-    if (naAs0) mat <- naAs0(mat)
+.precision <- function(mat, naAs0. = FALSE) {
+    if (naAs0.) mat <- naAs0(mat)
     diag(mat)/rowSums(mat)
 }
 
-.F1 <- function(mat, naAs0 = FALSE) {
-    if (naAs0) mat <- naAs0(mat)
+.F1 <- function(mat, naAs0. = FALSE) {
+    if (naAs0.) mat <- naAs0(mat)
     r <- .recall(mat)
     p <- .precision(mat)
     return((2*p*r)/(p+r))
 }
 
 
-.macroF1 <- function(p, r, naAs0 = FALSE) {
-    if (naAs0) p <- naAs0(p)            
+.macroF1 <- function(p, r, naAs0. = FALSE) {
+    if (naAs0.) p <- naAs0(p)            
     if (missing(r)) { 
-        F1 <- .F1(p)
+        F1 <- .F1(p, naAs0. = naAs0)
     } else {
-        if (naAs0) r <- naAs0(r)            
+        if (naAs0.) r <- naAs0(r)            
         F1 <- (2*p*r)/(p+r)
     }
+    if (naAs0.) F1 <- naAs0(F1)
     mean(F1) ## macro F1
 }
 
@@ -141,9 +142,8 @@ setMethod("specificity", "table", function(obj) .specificity(obj))
 
 ## Generic defined in methods-classification.R
 setMethod("macroF1", c("table","missing"),
-          function(obj, type, naAs0 = FALSE, ...) {
-              if (naAs0) obj <- naAs0(obj)
-              return(.macroF1(obj))
+          function(obj, type, naAs0. = FALSE, ...) {
+              return(.macroF1(obj, naAs0.))
           })
 
 setMethod("macroF1", c("numeric","numeric"),
@@ -160,14 +160,14 @@ setMethod("precision", c("table","missing"),
           function(obj, type, ...) return(.precision(obj)))
 
 
-confuTab <- function(obj, naAs0 = FALSE) {
+confuTab <- function(obj, naAs0. = FALSE) {
     .makeConfuTab <- function(x) {    
         m <- matrix(x, nrow = 2)
         dimnames(m) <- list(predicted = c(TRUE, FALSE),
                             known = c(TRUE, FALSE))                        
         as.table(m)
     }
-    if (naAs0) mat <- naAs0(mat)    
+    if (naAs0.) mat <- naAs0(mat)    
     TP <- tp(obj)
     FP <- fp(obj)
     FN <- fn(obj)
