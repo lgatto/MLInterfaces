@@ -90,10 +90,12 @@ makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
 }
 
 
-.macroF1 <- function(p, r) {
+.macroF1 <- function(p, r, naAs0 = FALSE) {
+    if (naAs0) p <- naAs0(p)            
     if (missing(r)) { 
         F1 <- .F1(p)
-    } else { 
+    } else {
+        if (naAs0) r <- naAs0(r)            
         F1 <- (2*p*r)/(p+r)
     }
     mean(F1) ## macro F1
