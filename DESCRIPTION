@@ -6,7 +6,7 @@ Author: Vince Carey <stvjc@channing.harvard.edu>, Robert Gentleman,
         Jess Mar, and contributions from Jason Vertrees
         <jv@cs.dartmouth.edu> and Laurent Gatto <lg390@cam.ac.uk>
 Description: Uniform interfaces to machine learning code for data in
-        Bioconductor containers
+	     Bioconductor containers	
 Maintainer: V. Carey <stvjc@channing.harvard.edu>
 License: LGPL
 Depends: R (>= 2.9), Biobase, methods, annotate, cluster
