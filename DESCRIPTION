@@ -1,7 +1,7 @@
 Package: MLInterfaces
 Title: Uniform interfaces to R machine learning procedures for data in
         Bioconductor containers
-Version: 1.45.2
+Version: 1.45.3
 Author: Vince Carey <stvjc@channing.harvard.edu>, Robert Gentleman,
         Jess Mar, and contributions from Jason Vertrees
         <jv@cs.dartmouth.edu> and Laurent Gatto <lg390@cam.ac.uk>
