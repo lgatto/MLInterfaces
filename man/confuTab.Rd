@@ -13,7 +13,7 @@
 }
 
 \usage{
-confuTab(obj, naAs0 = FALSE)
+confuTab(obj, naAs0. = FALSE)
 }
 
 
