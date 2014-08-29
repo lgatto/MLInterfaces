@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.41.3
+-------------------------
+ o Fix codoc mismatch [2014-08-29 Fri]
+
 CHANGES IN VERSION 1.41.2
 -------------------------
  o performance analytics has new naAs0 argument [2014-07-04 Fri] 
