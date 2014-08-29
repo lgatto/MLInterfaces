@@ -21,7 +21,7 @@ confuTab(obj, naAs0. = FALSE)
   \item{obj}{
     An instance of class \code{table}. Must be square.
   }
-  \item{naAs0}{
+  \item{naAs0.}{
     A \code{logical}, defining if \code{NA}s are to be replaced by
   \code{0}s. 
   }
