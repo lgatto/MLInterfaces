@@ -159,8 +159,8 @@ you must explicitly specify distance and agglomeration procedure.}
 you must explicitly specify centers and algorithm name.}
 } % end list of schemas
 
-If the \code{multicore} package is attached, cross-validation will
-be distributed to cores using \code{\link[multicore]{mclapply}}.
+If the \code{parallel} package is attached, cross-validation will
+be distributed to cores using \code{\link[parallel]{mclapply}}.
 
 } % end details
 \value{
@@ -180,7 +180,8 @@ set.seed(1234)
 kp = sample(1:200, size=120)
 rf1 = MLearn(sp~CW+RW, data=crabs, randomForestI, kp, ntree=600 )
 rf1
-nn1 = MLearn(sp~CW+RW, data=crabs, nnetI, kp, size=3, decay=.01 )
+nn1 = MLearn(sp~CW+RW, data=crabs, nnetI, kp, size=3, decay=.01,
+    trace=FALSE )
 nn1
 RObject(nn1)
 knn1 = MLearn(sp~CW+RW, data=crabs, knnI(k=3,l=2), kp)
@@ -252,16 +253,20 @@ par(opar)
 #
 # demonstrate cross validation
 #
-nn1cv = MLearn(sp~CW+RW, data=crabs[c(1:20,101:120),], nnetI, xvalSpec("LOO"), size=3, decay=.01 )
+nn1cv = MLearn(sp~CW+RW, data=crabs[c(1:20,101:120),], 
+   nnetI, xvalSpec("LOO"), size=3, decay=.01, trace=FALSE )
 confuMat(nn1cv)
 nn2cv = MLearn(sp~CW+RW, data=crabs[c(1:20,101:120),], nnetI, 
-   xvalSpec("LOG",5, balKfold.xvspec(5)), size=3, decay=.01 )
+   xvalSpec("LOG",5, balKfold.xvspec(5)), size=3, decay=.01,
+   trace=FALSE )
 confuMat(nn2cv)
 nn3cv = MLearn(sp~CW+RW+CL+BD+FL, data=crabs[c(1:20,101:120),], nnetI, 
-   xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fs.absT(2)), size=3, decay=.01 )
+   xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fs.absT(2)), size=3, decay=.01,
+   trace=FALSE )
 confuMat(nn3cv)
 nn4cv = MLearn(sp~.-index-sex, data=crabs[c(1:20,101:120),], nnetI, 
-   xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fs.absT(2)), size=3, decay=.01 )
+   xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fs.absT(2)), size=3, decay=.01,
+   trace=FALSE )
 confuMat(nn4cv)
 #
 # try with expression data
@@ -269,7 +274,9 @@ confuMat(nn4cv)
 library(golubEsets)
 data(Golub_Train)
 litg = Golub_Train[ 100:150, ]
-g1 = MLearn(ALL.AML~. , litg, nnetI, xvalSpec("LOG",5, balKfold.xvspec(5), fsFun=fs.probT(.75)), size=3, decay=.01 )
+g1 = MLearn(ALL.AML~. , litg, nnetI, 
+   xvalSpec("LOG",5, balKfold.xvspec(5), 
+   fsFun=fs.probT(.75)), size=3, decay=.01, trace=FALSE )
 confuMat(g1)
 #
 # illustrate rda.cv interface from package rda (requiring local bridge)

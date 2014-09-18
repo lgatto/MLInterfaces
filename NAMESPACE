@@ -9,7 +9,7 @@ import("pls")
 import("rda")
 
 importFrom("genefilter", "rowttests")
-importFrom("graphics", "plot")
+#importFrom("graphics", "plot")
 importFrom("cluster", "silhouette")
 importFrom("gdata", "drop.levels")
 
@@ -33,7 +33,7 @@ export(randomForestI, knnI, dldaI, nnetI, rpartI,
        RABI, lvqI, naiveBayesI, baggingI, knn2, dlda2, 
        rab, lvq, RAB, DAB, plsda2, svm2, ksvm2, 
        xvalSpec, getVarImp, balKfold.xvspec, rdacvI, rdacvML,
-       rdaI, rdaML, plot,
+       rdaI, rdaML, 
        plotXvalRDA, makeLearnerSchema, standardMLIConverter, sldaI, 
        fs.absT, fs.probT, ksvmI, knn.cvI, knn.cv2, 
        adaI, fs.topVariance, hclustI, kmeansI, pamI,
@@ -45,3 +45,4 @@ S3method("print", "rdacvML")
 S3method("print", "rdaML")
 S3method("predict", "classifierOutput")
 
+exportMethods("plot")
