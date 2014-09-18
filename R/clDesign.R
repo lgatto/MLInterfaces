@@ -55,7 +55,11 @@ setMethod("plot", "clusteringOutput", function(x, y, ...) {
   }
   else if (x@learnerSchema@mlFunName == "pam") {
     plot(RObject(x), which=1, ...)
-  } else {
+  } 
+  else if (x@learnerSchema@mlFunName == "hclust") {
+    stats:::plot.hclust(RObject(x), ...)
+  } 
+  else {
     plot(RObject(x), ...)
   }
   plot(x@silhouette, main="silhouette")
