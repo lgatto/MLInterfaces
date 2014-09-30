@@ -668,6 +668,7 @@ We have a rudimentary interface, in which the
 key parameters are chosen by native cross-validation (in rda.cv)
 and then applied once to get the final object.
 <<lkrda,results=hide,cache=TRUE>>=
+set.seed(1234)
 rdaALL = MLearn( mol.biol~., fusk, rdacvI, 1:40 )
 <<lkrda2>>=
 rdaALL
@@ -680,7 +681,7 @@ This can be established as follows:
 library(hgu95av2.db)
 psid = RObject(rdaALL)$keptFeatures
 psid = gsub("^X", "", psid) # make.names is run inopportunely
-mget(psid, hgu95av2GENENAME)[1:5]
+mget(psid, hgu95av2GENENAME, ifnotfound=NA)[1:5]
 @
 
 \addtocounter{mlq}{1}

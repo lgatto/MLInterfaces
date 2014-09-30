@@ -11,6 +11,7 @@ setMethod("MLearn",
             ## build test and train subsets
             if (length(trainInd) != nrow(data))
               tedata = gdata::drop.levels(data[-trainInd,])
+            else tedata = data  # needed for xvalSpec("NOTEST") with rdacvI (only?)
             trdata = gdata::drop.levels(data[trainInd,])
             ## execute on training data 
             ans = lfun( formula, trdata, ...)
