@@ -87,7 +87,7 @@ makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
     r <- .recall(mat, naAs0.)
     p <- .precision(mat, naAs0.)
     ans <- (2*p*r)/(p+r)
-    if (naAs0.) mat <- naAs0(ans)
+    if (naAs0.) ans <- naAs0(ans)
     return(ans)
 }
 
