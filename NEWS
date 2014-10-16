@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.47.1
+-------------------------
+ o fix proper asNA0 propagation in performance analytics functions
+   [2014-10-16 Thu]
+
 CHANGES IN VERSION 1.41.3
 -------------------------
  o Fix codoc mismatch [2014-08-29 Fri]
@@ -42,7 +47,6 @@ CHANGES IN VERSION 1.39.2
 CHANGES IN VERSION 1.39.2
 -------------------------
  o fixed macro F1 score (lgatto) <2013-01-18 Fri>
->>>>>>> first draft performance analytics
 
 CHANGES IN VERSION 1.39.1
 -------------------------
