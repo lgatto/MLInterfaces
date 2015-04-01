@@ -1,5 +1,6 @@
 import("methods")
 import("tools")
+import("BiocGenerics")
 import("Biobase")
 import("annotate")
 import("MASS")

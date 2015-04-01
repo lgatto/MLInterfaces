@@ -101,5 +101,3 @@ xvalSpec <- function(type,
 #   b) probability matrices (as with nnet predict) vs
 #       vector scores (as in knn voting proportions)
 
-
-setOldClass("dist")
