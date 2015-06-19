@@ -1,3 +1,8 @@
+README.txt for MLInterfaces, Jun 19 2015
+
+hclustWidget has been added to demonstrate roles for shiny and ggvis in
+tuning cluster analysis.
+
 README.txt for MLInterfaces, Sep 16 2008
 
 The *B methods have been removed.  The NAMESPACE is used to reduce
