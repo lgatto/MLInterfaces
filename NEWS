@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.49.1
+-------------------------
+ o add hclustWidget
+
 CHANGES IN VERSION 1.41.3
 -------------------------
  o Fix codoc mismatch [2014-08-29 Fri]
