@@ -8,6 +8,9 @@ import("rpart")
 import("sfsmisc")
 import("pls")
 import("rda")
+import("shiny")
+import("ggvis")
+import("fpc")
 
 importFrom("genefilter", "rowttests")
 #importFrom("graphics", "plot")
@@ -47,3 +50,6 @@ S3method("print", "rdaML")
 S3method("predict", "classifierOutput")
 
 exportMethods("plot")
+export(hclustWidget)
+
+
