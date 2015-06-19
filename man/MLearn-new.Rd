@@ -171,7 +171,8 @@ Instances of classifierOutput or clusteringOutput
 %\note{  }
 
 
-%\seealso{  }
+\seealso{Try \code{example(hclustWidget, ask=FALSE)} for an interactive
+approach to cluster analysis tuning.  }
 
 \examples{
 library("MASS")
