@@ -50,6 +50,6 @@ S3method("print", "rdaML")
 S3method("predict", "classifierOutput")
 
 exportMethods("plot")
-export(hclustWidget)
+export(hclustWidget, mlearnWidget)
 
 
