@@ -1,15 +1,16 @@
-hclustWidget = function(mat, featureName="feature", minfeats=2, auxdf=NULL) {
+hclustWidget = function(mat, featureName="feature", 
+    title=paste0("hclustWidget for ", deparse(substitute(mat))),
+     minfeats=2, auxdf=NULL) {
 #
 # software that defines interactive browser interface
 # to approaches to clustering the rows of a matrix
 #
 #
-# to use, run library(shiny); library(cluster); library(fpc); library(MLInterfaces); run(hclustWidget(mat))
+# to use: library(MLInterfaces); run(hclustWidget(mat))
 #
- #require("cluster")
- #require("fpc")
- #require("ggvis")
  shinyApp(ui = fluidPage(
+  fluidRow( column(6, textOutput("title", container=h1)),
+            column(2, actionButton("btnSend", "Stop widget"))),
   fluidRow(
    column(2,  numericInput("ngenes", label = paste0("N ", featureName, "s"), 
      minfeats, min = minfeats, max = nrow(mat))),
@@ -25,6 +26,7 @@ hclustWidget = function(mat, featureName="feature", minfeats=2, auxdf=NULL) {
   fluidRow(column(7, plotOutput("tree"))),
   fluidRow(column(7, ggvisOutput("pcp")))
  ), server= function(input, output, session) {
+    output$title <- renderText(title)
     output$tree <- renderPlot({
 dm = dist(mat[,1:input$ngenes], method=input$distmeth)
 sink(tempfile())
@@ -56,8 +58,13 @@ sink(NULL)
          }
       pcdf %>% ggvis(~PC1, ~PC2, key := ~rowid, fill = ~assigned) %>% layer_points() %>%
                add_tooltip(all_values, "hover") 
-#      pairs(pc[,1:3], col=ct, pch=19, cex=1.5)
       }) 
       P1 %>% bind_shiny("pcp")
+      observe({
+         if (input$btnSend > 0)
+            isolate({
+                stopApp(returnValue = 0)
+                })
+         })       
 } )
 }
