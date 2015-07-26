@@ -9,7 +9,9 @@ shiny-oriented GUI for cluster or classifier exploration
 shiny-oriented GUI for cluster or classifier exploration
 }
 \usage{
-hclustWidget(mat, featureName = "feature", minfeats = 2, auxdf = NULL)
+hclustWidget(mat, featureName = "feature", title =
+                 paste0("hclustWidget for ", deparse(substitute(mat))),
+                 minfeats = 2, auxdf = NULL)
 
 mlearnWidget(eset, infmla)
 }

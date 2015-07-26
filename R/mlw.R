@@ -1,26 +1,29 @@
 
 planarPlot2 = function (clo, eset, classifLab, ...) 
 {
-    require(RColorBrewer)
+    requireNamespace("RColorBrewer")
     pal <- brewer.pal("Set2", n = 8)
-    ff <- MLInterfaces:::getGrid(eset)
+    ff <- getGrid(eset)
     if (clo@learnerSchema@mlFunName %in% c("nnet", "rpart")) 
         ps <- predict(RObject(clo), newdata = ff, type = "class")
     else if (clo@learnerSchema@mlFunName %in% c("dlda2"))
-        ps <- MLInterfaces:::predict.dlda2(RObject(clo), newdata = ff)
+        #ps <- MLInterfaces:::predict.dlda2(RObject(clo), newdata = ff)
+        ps <- predict.dlda2(RObject(clo), newdata = ff)
     else if (clo@learnerSchema@mlFunName %in% c("ada"))
         ps <- ada:::predict.ada(RObject(clo), newdata = ff, type="vector")
     else if (clo@learnerSchema@mlFunName %in% c("lda"))
         ps <- MASS:::predict.lda(RObject(clo), newdata = ff)
     else if (clo@learnerSchema@mlFunName %in% c("knn2"))
-        ps <- MLInterfaces:::predict.knn2(RObject(clo), newdata = ff)
+        #ps <- MLInterfaces:::predict.knn2(RObject(clo), newdata = ff)
+        ps <- predict.knn2(RObject(clo), newdata = ff)
     else if (clo@learnerSchema@mlFunName %in% c("svm2"))
         ps <- e1071:::predict.svm(RObject(clo), newdata = ff)
     else if (clo@learnerSchema@mlFunName == "randomForest") {
         names(ff) <- rownames(exprs(eset))
         ps <- predict(RObject(clo), newdata = ff)
     }
-    else ps <- MLInterfaces:::predict(RObject(clo), newdata = ff)
+    #else ps <- MLInterfaces:::predict(RObject(clo), newdata = ff)
+    else ps <- predict(RObject(clo), newdata = ff)
     if (clo@learnerSchema@mlFunName %in% c("lda", "qda")) 
         ps <- ps[[1]]
     plot(ff[, 1], ff[, 2], col = pal[as.numeric(factor(ps))], 
@@ -93,7 +96,7 @@ totext = function(x) {
     tf = tempfile()
     sink(tf)
     print(x)
-    hwrite(matrix(readLines(tf), nc=1))
+    hwrite(matrix(readLines(tf), ncol=1))
 }
 
 tize = function (x) 
@@ -109,7 +112,7 @@ tize = function (x)
     sink(tf)
     print(RObject(x))
     rl = readLines(tf)
-    hwrite(matrix(rl[1:min(10, length(rl))], nc=1), byrow=TRUE)
+    hwrite(matrix(rl[1:min(10, length(rl))], ncol=1), byrow=TRUE)
 }
 
    ans = reactive({ 
@@ -134,7 +137,8 @@ tize = function (x)
                             toktype = "SYMBOL" )
                    else if (input$learner == "rpart" & input$valmeth == "NOTEST") {
                       par(mfrow=c(1,2))
-                      library(rpart)
+#                      library(rpart)
+                      requireNamespace("rpart")
                       plotcp(RObject( ans() ) )
                       plot(RObject( ans() ) )
                       text(RObject( ans() ) )

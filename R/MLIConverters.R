@@ -83,7 +83,7 @@ MLIConverter.svm = function(obj, data, trainInd) { # decision.values parm needed
 MLIConverter.ksvm <- function(obj, data, trainInd) {
   teData <- data[-trainInd,]
   trData <- data[trainInd,]
-  require(kernlab)
+  requireNamespace("kernlab")
   teprob <- predict(obj, teData, type="probabilities")
   rownames(teprob) <- rownames(teData)
   trprob <- predict(obj, trData, type="probabilities")

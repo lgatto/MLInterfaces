@@ -12,6 +12,8 @@ import("shiny")
 import("ggvis")
 import("fpc")
 
+importFrom(gbm, gbm)
+
 importFrom("genefilter", "rowttests")
 #importFrom("graphics", "plot")
 importFrom("cluster", "silhouette")
@@ -52,4 +54,8 @@ S3method("predict", "classifierOutput")
 exportMethods("plot")
 export(hclustWidget, mlearnWidget)
 
+exportClasses("projectedLearner")
+export(projectLearnerToGrid)
+exportMethods("learnerIn3D", "plotOne")
 
+importFrom(rgl, plot3d, text3d)
