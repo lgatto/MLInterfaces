@@ -18,8 +18,8 @@ MLIPredicter.svm <- function(model, newdata, ...) {
 }
 
 MLIPredicter.ksvm <- function(model, newdata, ...) {
-  .predClass <- predict(model, newdata, type="response", ...)
-  .predProb <- predict(model, newdata, type="probabilities", ...)
+  .predClass <- kernlab::predict(model, newdata, type="response", ...)
+  .predProb <- kernlab::predict(model, newdata, type="probabilities", ...)
   return(list(testPredictions=factor(.predClass),
               testScores=.predProb))
 }
