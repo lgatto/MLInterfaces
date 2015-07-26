@@ -84,12 +84,12 @@ MLIConverter.ksvm <- function(obj, data, trainInd) {
   teData <- data[-trainInd,]
   trData <- data[trainInd,]
   requireNamespace("kernlab")
-  teprob <- predict(obj, teData, type="probabilities")
+  teprob <- kernlab::predict(obj, teData, type="probabilities")
   rownames(teprob) <- rownames(teData)
-  trprob <- predict(obj, trData, type="probabilities")
+  trprob <- kernlab::predict(obj, trData, type="probabilities")
   rownames(trprob) <- rownames(trData)
-  tepred <- predict(obj, teData, type="response")
-  trpred <- predict(obj, trData, type="response")
+  tepred <- kernlab::predict(obj, teData, type="response")
+  trpred <- kernlab::predict(obj, trData, type="response")
   new("classifierOutput",
       testPredictions =factor(tepred),
       trainPredictions=factor(trpred),
