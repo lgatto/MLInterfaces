@@ -37,7 +37,7 @@ setGeneric("planarPlot", function(clo, eset, classifLab ) standardGeneric("plana
 
 setMethod("planarPlot", c("classifierOutput", "ExpressionSet", "character"), 
 	function(clo, eset, classifLab) {
- require(RColorBrewer)
+ requireNamespace("RColorBrewer")
  pal <- brewer.pal("Set2", n=8)
  ff <- getGrid(eset)
  if (clo@learnerSchema@mlFunName %in% c("nnet", "rpart"))

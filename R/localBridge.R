@@ -281,7 +281,7 @@ cverrs = function (x, type = c("both", "error", "gene"), nice = FALSE,
 # then call gbm
 
 gbm2 = function(formula, data, ...) {
- require(gbm, quietly=TRUE)
+ requireNamespace("gbm") #, quietly=TRUE)
  mf = model.frame(formula, data)
  resp = model.response(mf)
  if (!is(resp, "factor")) stop("dependent variable must be a factor in MLearn")
@@ -301,7 +301,7 @@ gbm2 = function(formula, data, ...) {
 #  need to use as.numeric(as.character())
 
 predict.gbm2 = function(object, newdata, ...) {
- require(gbm, quietly=TRUE)
+ requireNamespace("gbm") #, quietly=TRUE)
  ans = predict.gbm(object, newdata, ...)
  factor(ans)
 }
