@@ -19,6 +19,8 @@ importFrom("genefilter", "rowttests")
 importFrom("cluster", "silhouette")
 importFrom("gdata", "drop.levels")
 
+importFrom("RColorBrewer", "brewer.pal")
+
 exportClasses( 
 	"varImpStruct",
 #	"raboostCont", "daboostCont",
