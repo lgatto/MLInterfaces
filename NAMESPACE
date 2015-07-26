@@ -12,7 +12,7 @@ import("shiny")
 import("ggvis")
 import("fpc")
 
-importFrom(gbm, gbm)
+importFrom(gbm, gbm, predict.gbm)
 
 importFrom("genefilter", "rowttests")
 #importFrom("graphics", "plot")
