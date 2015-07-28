@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.49.8
+-------------------------
+ o Enable learnerIn3D customisation <2015-07-28 Tue>
+
 CHANGES IN VERSION 1.49.7
 -------------------------
  o fix proper asNA0 propagation in performance analytics functions
