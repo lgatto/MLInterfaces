@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.49.7
+-------------------------
+ o fix proper asNA0 propagation in performance analytics functions
+    (implemented 2014-10-16 Thu, commited on 2015-07-28 Tue)
+
 CHANGES IN VERSION 1.49.1
 -------------------------
  o add hclustWidget
@@ -46,7 +51,6 @@ CHANGES IN VERSION 1.39.2
 CHANGES IN VERSION 1.39.2
 -------------------------
  o fixed macro F1 score (lgatto) <2013-01-18 Fri>
->>>>>>> first draft performance analytics
 
 CHANGES IN VERSION 1.39.1
 -------------------------
