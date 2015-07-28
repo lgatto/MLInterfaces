@@ -96,7 +96,11 @@ nnetp = projectLearnerToGrid(cl~., data=hcu, nnetI, sam, size=2,
    decay=.01, predExtras=list(type="class"))
 plot(nnetp)
 confuMat(nnetp@fittedLearner)
-if (require(rgl)) learnerIn3D(nnetp)
+if (require(rgl)) {
+    learnerIn3D(nnetp)
+    ## customising the rgl plot
+    learnerIn3D(nnetp, size = 10, alpha = 0.1)
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

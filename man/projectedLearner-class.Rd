@@ -38,16 +38,18 @@ generate this wonderful thing }
   }
 }
 \section{Methods}{
-  \describe{
-    \item{learnerIn3D}{\code{signature(x = "projectedLearner")}: uses rgl
-to give a dynamic 3d-like projection of labels in colored regions }
+  \describe{   
+    \item{learnerIn3D}{\code{signature(x = "projectedLearner")}: uses
+      \code{rgl} to give a dynamic 3d-like projection of labels in
+      colored regions.  See \code{\link{projectLearnerToGrid}} for an
+      example.}
     \item{plot}{\code{signature(x = "projectedLearner", y = "ANY")}: pairs
-plot of the tesselated PCA of the training features }
+      plot of the tesselated PCA of the training features }
     \item{plotOne}{\code{signature(x = "projectedLearner")}: a 2d plot
-of tesselation projection for selected axes of the PCA}
+      of tesselation projection for selected axes of the PCA}
     \item{show}{\code{signature(object = "projectedLearner")}: object
-housing numerical resources for the renderings  }
-	 }
+      housing numerical resources for the renderings  }
+  }
 }
 \references{
 None.
