@@ -21,6 +21,8 @@ importFrom("gdata", "drop.levels")
 
 importFrom("RColorBrewer", "brewer.pal")
 
+importFrom("hwriter", "hwrite")
+
 exportClasses( 
 	"varImpStruct",
 #	"raboostCont", "daboostCont",
