@@ -23,10 +23,12 @@ matrix with feature vectors in rows
   \item{featureName}{
 name to be used for control that asks for number of features to use
 }
+  \item{title}{
+widget title
+}
   \item{minfeats}{
 lower bound on number of features to use
-}
-  \item{auxdf}{
+}  \item{auxdf}{
 data.frame with number of rows equal to nrow(mat), with metadata
 to be displayed in hovering tooltip
 }
