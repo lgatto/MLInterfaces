@@ -1,7 +1,7 @@
 CHANGES IN VERSION 1.49.7
 -------------------------
  o fix proper asNA0 propagation in performance analytics functions
-    (implemented 2014-10-16 Thu, commited on 2015-07-28 Tue)
+   (implemented 2014-10-16 Thu, commited on 2015-07-28 Tue)
 
 CHANGES IN VERSION 1.49.1
 -------------------------
