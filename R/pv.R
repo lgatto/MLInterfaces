@@ -143,6 +143,6 @@ setMethod("learnerIn3D", "projectedLearner",
      text3d(x@testFeatsProjectedToTrainingPCs[, ind1], 
                   x@testFeatsProjectedToTrainingPCs[, ind2], 
                   x@testFeatsProjectedToTrainingPCs[, ind3], 
-                     text=as.character(x@testLabels), col="black")
+                     texts=as.character(x@testLabels), col="black")
 })
 
