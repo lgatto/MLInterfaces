@@ -122,7 +122,7 @@ makeConfuMat <- function(i = 0:5, j = 15:20, k = 3) {
 ## }
 
 setGeneric("acc", function(obj, ...) standardGeneric("acc"))
-setMethod("acc", "table", function(obj) .accuracy(obj, ...))
+setMethod("acc", "table", function(obj, ...) .accuracy(obj, ...))
 
 setGeneric("tp", function(obj, ...) standardGeneric("tp"))
 setMethod("tp", "table", function(obj) .tp(obj))
@@ -137,15 +137,15 @@ setGeneric("fp", function(obj, ...) standardGeneric("fp"))
 setMethod("fp", "table", function(obj) .fp(obj))
 
 setGeneric("F1", function(obj, ...) standardGeneric("F1"))
-setMethod("F1", "table", function(obj) .F1(obj, ...))
+setMethod("F1", "table", function(obj, ...) .F1(obj, ...))
 
 setGeneric("specificity", function(obj, ...) standardGeneric("specificity"))
-setMethod("specificity", "table", function(obj) .specificity(obj, ...))
+setMethod("specificity", "table", function(obj, ...) .specificity(obj, ...))
 
 ## Generic defined in methods-classification.R
 setMethod("macroF1", c("table","missing"),
           function(obj, type, naAs0. = FALSE, ...) {
-              return(.macroF1(obj, naAs0.))
+              return(.macroF1(obj, naAs0., ...))
           })
 
 setMethod("macroF1", c("numeric","numeric"),
