@@ -1,5 +1,5 @@
 
-plspinHcube = function() {
+plspinHcube = function(insbwidth=4) {
 # learner candidates -- bound up with extras for parameters etc.
   learnerTags = c("LDA", "DLDA", "rpart(cp)", "randomForest",
                    "knn1", "nnet(size, decay)") #, "blackboost")
@@ -9,7 +9,7 @@ plspinHcube = function() {
       textOutput("title", container=h1)) ),
    #fluidRow( column(2, 
    sidebarLayout(
-    sidebarPanel(
+    sidebarPanel(width=insbwidth,
 #
 # 3 boxes for data setup
         p(strong("Data setup for mlbench Hypercube:")),
@@ -18,7 +18,7 @@ plspinHcube = function() {
         div(style="display:inline-block",numericInput(inputId="cubedim", label="cube dim.", value = 
                          3, min=2, max=6, step=1)), #),
         div(style="display:inline-block",      numericInput("vertSd", 
-                         label="SD around vertex",
+                         label="SD@vrtx",
                          value = .1, min=.05, max=2, step=.05)),
 # box for learner method
         div(style="display:block"),
@@ -117,7 +117,7 @@ plspinHcube = function() {
        cmat = confuMat(cur@fittedLearner)
        ok = sum(diag(cmat))
        err = sum(cmat) - ok
-       output$mcl = renderText( paste0("Test miscl. proportion (random half) = ", round(err/ok, 2) ) )
+       output$mcl = renderText( paste0("Test miscl. proportion (random half) = ", round(err/sum(cmat), 2) ) )
        proj = cur@gridFeatsProjectedToTrainingPCs
        projtest = cur@testFeatsProjectedToTrainingPCs
   
