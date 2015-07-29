@@ -11,6 +11,8 @@ import("rda")
 import("shiny")
 import("ggvis")
 import("fpc")
+import(threejs)
+import(mlbench)
 
 importFrom(gbm, gbm, predict.gbm)
 
@@ -63,3 +65,4 @@ export(projectLearnerToGrid)
 exportMethods("learnerIn3D", "plotOne")
 
 importFrom(rgl, plot3d, text3d)
+export(plspinHcube)
