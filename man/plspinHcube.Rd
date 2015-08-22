@@ -8,7 +8,10 @@ shiny app for interactive 3D visualization of mlbench hypercube
 shiny app for interactive 3D visualization of mlbench hypercube
 }
 \usage{
-plspinHcube()
+plspinHcube(insbwidth=4)
+}
+\arguments{
+ \item{insbwidth}{numeric, sidebar width}
 }
 %- maybe also 'usage' for other objects documented here.
 \details{
@@ -34,7 +37,7 @@ VJ Carey <stvjc@channing.harvard.edu>
 \code{\link[mlbench]{mlbench.hypercube}}
 }
 \examples{
-plspinHcube()
+if (interactive()) plspinHcube()
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
