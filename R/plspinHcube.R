@@ -119,7 +119,9 @@ plspinHcube = function(insbwidth=4) {
        err = sum(cmat) - ok
        output$mcl = renderText( paste0("Test miscl. proportion (random half) = ", round(err/sum(cmat), 2) ) )
        proj = cur@gridFeatsProjectedToTrainingPCs
+       if (input$cubedim == 2) proj = cbind(proj,0)
        projtest = cur@testFeatsProjectedToTrainingPCs
+       if (input$cubedim == 2) projtest = cbind(projtest,0)
   
        nclass = length(unique(cur@gridPredictions))
 #       thecolors = palette(rainbow(nclass))[cur@gridPredictions]
