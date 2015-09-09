@@ -96,7 +96,7 @@ nnetp = projectLearnerToGrid(cl~., data=hcu, nnetI, sam, size=2,
    decay=.01, predExtras=list(type="class"))
 plot(nnetp)
 confuMat(nnetp@fittedLearner)
-if (require(rgl)) {
+if (require(rgl) && interactive()) {
     learnerIn3D(nnetp)
     ## customising the rgl plot
     learnerIn3D(nnetp, size = 10, alpha = 0.1)
