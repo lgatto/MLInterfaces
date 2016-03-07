@@ -245,7 +245,7 @@ ranpart = function(K, data) {
 }
 ranPartition = function(K) function(data, clab, iternum) {
  p = ranpart(K, data)
- which(p == iternum)
+ which(p != iternum) # to retain training fraction
 }
 lkran <- MLearn(ALL.AML~., smallG, knnI(k=1,l=0), xvalSpec("LOG", 8, partitionFunc=ranPartition(8)))
 confuMat(lkran)
