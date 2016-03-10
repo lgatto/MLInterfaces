@@ -4,6 +4,7 @@ plspinHcube = function(insbwidth=4) {
   learnerTags = c("LDA", "DLDA", "rpart(cp)", "randomForest",
                    "knn1", "nnet(size, decay)") #, "blackboost")
 #
+  message("This only works if threejs 0.2.2 is installed.  go to github.")
   shinyApp(ui = fluidPage(
    fluidRow( column(10, 
       textOutput("title", container=h1)) ),
