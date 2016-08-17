@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.51.1
+-------------------------
+ o Suggest rather than import rgl <2016-08-17 Wed>
+ 
 CHANGES IN VERSION 1.49.8
 -------------------------
  o Enable learnerIn3D customisation <2015-07-28 Tue>

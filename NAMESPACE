@@ -64,7 +64,6 @@ exportClasses("projectedLearner")
 export(projectLearnerToGrid)
 exportMethods("learnerIn3D", "plotOne")
 
-importFrom(rgl, plot3d, text3d)
 export(plspinHcube)
 
 # recommended

@@ -134,13 +134,13 @@ setMethod("learnerIn3D", "projectedLearner",
    function(x, ind1=1, ind2=2, ind3=3, ...)  {
      requireNamespace("rgl")
      proj = x@gridFeatsProjectedToTrainingPCs
-     plot3d(proj[,ind1], proj[,ind2], proj[,ind3],
+     rgl::plot3d(proj[,ind1], proj[,ind2], proj[,ind3],
             col=factor(x@gridPredictions),
             xlab=paste0("PC", ind1),
             ylab=paste0("PC", ind2),
             zlab=paste0("PC", ind3),
             ...)
-     text3d(x@testFeatsProjectedToTrainingPCs[, ind1], 
+     rgl::text3d(x@testFeatsProjectedToTrainingPCs[, ind1], 
                   x@testFeatsProjectedToTrainingPCs[, ind2], 
                   x@testFeatsProjectedToTrainingPCs[, ind3], 
                      texts=as.character(x@testLabels), col="black")
