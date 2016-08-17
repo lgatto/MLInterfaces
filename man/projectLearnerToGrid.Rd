@@ -8,7 +8,7 @@ create learned tesselation of feature space after PC transformation
 create learned tesselation of feature space after PC transformation
 }
 \usage{
-projectLearnerToGrid(fmla, data, learnerSchema, 
+projectLearnerToGrid(formula, data, learnerSchema, 
    trainInds, ..., 
    dropIntercept = TRUE, 
    ngpts = 20, 
@@ -17,7 +17,7 @@ projectLearnerToGrid(fmla, data, learnerSchema,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{fmla}{
+  \item{formula}{
 standard formula, typically of the form "y~." where y denotes
 the class label variable to be predicted by all remaining features
 in the input data frame
@@ -96,7 +96,7 @@ nnetp = projectLearnerToGrid(cl~., data=hcu, nnetI, sam, size=2,
    decay=.01, predExtras=list(type="class"))
 plot(nnetp)
 confuMat(nnetp@fittedLearner)
-if (require(rgl)) {
+if (require(rgl) && interactive()) {
     learnerIn3D(nnetp)
     ## customising the rgl plot
     learnerIn3D(nnetp, size = 10, alpha = 0.1)

@@ -1,7 +1,7 @@
 Package: MLInterfaces
 Title: Uniform interfaces to R machine learning procedures for data in
         Bioconductor containers
-Version: 1.49.8
+Version: 1.53.0
 Author: Vince Carey <stvjc@channing.harvard.edu>, Robert Gentleman,
         Jess Mar, and contributions from Jason Vertrees
         <jv@cs.dartmouth.edu> and Laurent Gatto <lg390@cam.ac.uk>
@@ -12,9 +12,10 @@ License: LGPL
 Depends: R (>= 2.9), methods, BiocGenerics (>= 0.13.11), Biobase, annotate,
         cluster
 Imports: gdata, pls, sfsmisc, MASS, rpart, rda, genefilter, fpc, ggvis,
-	shiny, rgl, gbm, RColorBrewer, hwriter
+	shiny, rgl, gbm, RColorBrewer, hwriter, threejs (>= 0.2.2), mlbench,
+	stats4
 Suggests: class, e1071, ipred, randomForest, gpls, pamr,
-        nnet, ALL, mlbench, hgu95av2.db, som, 
+        nnet, ALL, hgu95av2.db, som, 
         hu6800.db, lattice, caret (>= 5.07), golubEsets, ada,
         keggorthology, kernlab, mboost, party
 Enhances: parallel
@@ -24,5 +25,5 @@ Collate: AllClasses.R RAB.R pplot.R varImp.R xval.R MLearn.R
 	 methods-classifierOutput.R methods-clusteringOutput.R
 	 methods-learnerSchema.R schemaInterfaces.R featSel.R
 	 partPlot.R clDesign.R plsdaI.R performance-analytics.R hcw.R 
-	 mlw.R pv.R
+	 mlw.R pv.R plspinHcube.R
 biocViews: Classification, Clustering

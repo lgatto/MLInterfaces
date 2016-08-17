@@ -24,7 +24,7 @@ setMethod("show", "projectedLearner", function(object) {
  cat("dimensions of projected feature grid:\n")
  print(dim(object@gridFeatsProjectedToTrainingPCs))
 })
-projectLearnerToGrid = function(fmla, data, learnerSchema, trainInds, ...,
+projectLearnerToGrid = function(formula, data, learnerSchema, trainInds, ...,
     dropIntercept=TRUE, ngpts=20, predExtras=list(), predWrapper=force) {
 #
 # 1) check trainInds, get nrow(data), compute testInds
@@ -42,9 +42,9 @@ projectLearnerToGrid = function(fmla, data, learnerSchema, trainInds, ...,
   nd = nrow(data)
   testInds = setdiff(1:nd, trainInds)
 # 2a:
-  m1 = do.call(MLearn, c(list(fmla, data, learnerSchema, trainInds), list(...)))
+  m1 = do.call(MLearn, c(list(formula, data, learnerSchema, trainInds), list(...)))
 # 2b:
-  mm = model.matrix( fmla, data )
+  mm = model.matrix( formula, data )
   if (dropIntercept) {
       ind = match("(Intercept)", colnames(mm))
       if (!is.na(ind)) mm = mm[,-ind]
@@ -54,7 +54,7 @@ projectLearnerToGrid = function(fmla, data, learnerSchema, trainInds, ...,
 # 2c:
   prcomp.train = prcomp( trfeats, scale=TRUE )
 # 2d:
-  fullresp = model.response(model.frame(fmla, data))
+  fullresp = model.response(model.frame(formula, data))
   trainingLabels = as.character(fullresp[trainInds])
   testLabels = as.character(fullresp[testInds])
 # 2e: 

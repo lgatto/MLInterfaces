@@ -11,11 +11,13 @@ import("rda")
 import("shiny")
 import("ggvis")
 import("fpc")
+import(threejs)
+import(mlbench)
 
 importFrom(gbm, gbm, predict.gbm)
 
 importFrom("genefilter", "rowttests")
-#importFrom("graphics", "plot")
+importFrom("stats4", "plot")
 importFrom("cluster", "silhouette")
 importFrom("gdata", "drop.levels")
 
@@ -63,3 +65,13 @@ export(projectLearnerToGrid)
 exportMethods("learnerIn3D", "plotOne")
 
 importFrom(rgl, plot3d, text3d)
+export(plspinHcube)
+
+# recommended
+importFrom("grDevices", "colorRampPalette")
+importFrom("graphics", "axis", "barplot", "legend", "pairs", "par",
+             "points", "text")
+importFrom("stats", "as.formula", "cutree", "dist", "hclust", "median",
+             "model.frame", "model.matrix", "model.response", "na.fail",
+             "prcomp", "predict", "quantile", "terms", "var")
+
