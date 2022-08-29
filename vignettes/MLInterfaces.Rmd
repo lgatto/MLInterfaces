@@ -1,0 +1,276 @@
+---
+title: "*MLInterfaces*: towards uniform behavior of machine learning
+  tools in R"
+author: "VJ Carey, J Mar, R Gentleman"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteIndexEntry{MLInterfaces Primer}
+  %\VignetteDepends{golubEsets}
+  %\VignetteKeywords{Genomics}
+  %\VignettePackage{MLInterfaces}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Quick-start Guide}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::html_document:
+    number_sections: true
+    toc: yes
+    toc_depth: 4
+---
+
+# Introduction
+
+We define machine learning methods as data based algorithms for
+prediction. Given data D, a generic machine learning procedure MLP
+produces a function ML = MLP(D). For data D' with structure comparable
+to D, ML(D') is a set of predictions about elements of D'.
+
+To be slightly more precise, a dataset D is a set of records. Each
+record has the same structure, consisting of a set of features
+(predictors) and one or more predictands (classes or responses of
+interest, to be predicted). MLP uses features, predictands, and tuning
+parameter settings to construct the function ML. ML is to be a function
+from features only to predictands.
+
+There are many packages and functions in R that provide machine learning
+procedures. They conform to the abstract setup described above, but with
+great diversity in the details of implementation and use. The input
+requirements and the output objects differ from procedure to procedure.
+
+Our objective in *MLInterfaces* is to simplify the use and evaluation of
+machine learning methods by providing specifications and implementations
+for a uniform interface. (The `tune` procedures in *e1071* also pursue
+more uniform interface to machine learning procedures.) At present, we
+want to simplify use of machine learning with microarray data, assumed
+to take the form of `ExpressionSet`s. The present implementation
+addresses the following concerns:
+
+-   simplify the selection of the predictand from `ExpressionSet`
+    structure;
+
+-   simplify (in fact, require) decomposition of input data into
+    training and test set, with output emphasizing test set results;
+
+-   provide a uniform output structure.
+
+The output structures currently supported are subclasses of a general
+class *MLOutput*, described in Section
+[#mlosec]{#mlosec} below.
+
+To give a flavor of the current implementation, we perform a few runs
+with different machine learning tools. We will use 60 genes drawn
+arbitrarily from Golub's data.
+
+```{r eval=TRUE, message=FALSE, results='hide'}
+library(MLInterfaces)
+library(golubEsets)
+library(genefilter)
+```
+
+```{r redu}
+data(Golub_Merge)
+smallG <- Golub_Merge[200:259,]
+smallG
+```
+
+Here is how $k$-nearest neighbors is used to get predictions of ALL status, 
+using the first 40 records as the training set:
+
+```{r doknnB}
+#krun <- knnB( smallG, "ALL.AML", trainInd=1:40 )
+krun = MLearn(ALL.AML~., smallG, knnI(k=1), 1:40)
+krun
+```
+
+The `confuMat` method computes the confusion matrix
+resulting from applying the trained model to the reserved test data:
+
+
+```{r lkco}
+confuMat(krun)
+```
+
+Additional parameters can be supplied as accepted by the target procedure in package 
+*class*. To use a neural netin the same context (with fewer genes to simplify the summary 
+below)
+
+```{r lkco2}
+set.seed(1234)
+#nns <- nnetB( smallG[1:10,], "ALL.AML", trainInd=1:40, size=2, decay=.01, maxit=250 )
+nns <- MLearn( ALL.AML~., smallG[1:10,], nnetI, trainInd=1:40, size=2, decay=.01, maxit=250 )
+nns
+confuMat(nns)
+```
+
+# Usage
+
+The basic call sequence for supervised learning for `ExpressionSet`s is
+
+    MLearn(formula, data, learnerSchema, trainInd, ...)
+
+The parameter `formula` is a standard R formula, with `y~x`z+ indicating
+that `x` and `z`+ are predictors of response `y`. If `data` is a
+data.frame instance, then the formula has the usual interpretation for
+R. If `data` is an `ExpressionSet` instance, then it is assumed that the
+dependent variable is present in the pData component of phenoData, and
+the variables on the RHS are found in the exprs component of assayData.
+If . is used on the RHS, then all features in the exprs component are
+used as predictors. The `learnerSchema` parameter is bound by instances
+of the learnerSchema class. Many examples are provided with
+MLInterfaces, see the page from help(MLearn) for a complete list.
+Parameter `trainInd` is a numeric sequence isolating the samples to be
+used for training; it may also be bound by an instance of xvalSpec to
+define a cross-validation of a learning process (see section
+[xval](#classes)).
+
+# Classes
+
+For input to MLearn, to define the procedure to be used, two major
+classes are defined: learnerSchema, and xvalSpec.
+
+
+```{r eval=FALSE,echo=FALSE}
+summary(RObject(nns))
+```
+
+```{r eval=FALSE,echo=FALSE}
+ags <- agnesB(smallG, k=4, height=0, stand=FALSE)
+```
+
+```{r eval=FALSE, echo=FALSE, fig=TRUE}
+plot(RObject(ags), which.plot=2)
+```
+
+
+```{r lkci}
+getClass("learnerSchema")
+getClass("xvalSpec")
+```
+
+For output, we have only the classifierOutput class: 
+
+```{r lkcc}
+getClass("classifierOutput")
+```
+
+# Cross-validation
+
+Instances of the xvalSpec class are bound to the trainInd parameter of
+MLearn to perform cross-validation. The constructor `xvalSpec` can be
+used in line. It has parameters type (only relevant to select \"LOO\",
+for leave-one out), niter (number of partitions to use), partitionFunc
+(function that returns indices of members of partitions), fsFunc
+(function that performs feature selection and returns a formula with
+selected features on right-hand side).
+
+The partitionFunc must take parameters data, clab, iternum. data is the
+usual data frame to be supplied to the learner function. clab must be
+the name of a column in data. Values of the variable in that column are
+balanced across cross-validation partitions. iternum is used to select
+the partition elements as we iterate through cross validation.
+
+-   straight leave-one-out (LOO) -- note the group parameter must be
+    integer; it is irrelevant for the LOO method. 
+    
+```{r dox}
+library(golubEsets)
+data(Golub_Merge)
+smallG <- Golub_Merge[200:250,]
+lk1 <- MLearn(ALL.AML~., smallG, knnI(k=1,l=0), xvalSpec("LOO"))
+confuMat(lk1)
+```
+    
+-   Now do a random 8-fold cross-validation. 
+
+```{r doxr}
+ranpart = function(K, data) {
+ N = nrow(data)
+ cu = as.numeric(cut(1:N, K))
+ sample(cu, size=N, replace=FALSE)
+}
+ranPartition = function(K) function(data, clab, iternum) {
+ p = ranpart(K, data)
+ which(p != iternum) # to retain training fraction
+}
+lkran <- MLearn(ALL.AML~., smallG, knnI(k=1,l=0), xvalSpec("LOG", 8, partitionFunc=ranPartition(8)))
+confuMat(lkran)
+```
+
+
+-   Now do an 8-fold cross-validation with approximate balance among
+    groups with respect to frequency of ALL and AML. The utility
+    function balKfold.xvspec helps for this. 
+    
+```{r dox2}
+lk3 <- MLearn(ALL.AML~., smallG, knnI(k=1,l=0), xvalSpec("LOG", 8, partitionFunc=balKfold.xvspec(8)))
+confuMat(lk3)
+```
+
+# Cross validation with feature selection
+
+Stephen Henderson of UC London supplied infrastructure to allow
+embedding of feature selection in the cross-validation process. These
+have been wrapped in fs.\* closures that can be passed in xvalSpec:
+
+```{r dofs}
+data(iris)
+iris2 = iris[ iris$Species %in% levels(iris$Species)[1:2], ]
+iris2$Species = factor(iris2$Species) # drop unused levels
+x1 = MLearn(Species~., iris2, ldaI, xvalSpec("LOG", 3,
+   balKfold.xvspec(3), fs.absT(3)))
+fsHistory(x1)
+```
+
+# A sketch of a `doubt' computation
+
+The {\texttt{nnet}} function returns a structure encoding
+predicted probabilities of class occupancy.  We will use
+this to enrich the {\texttt{MLearn/nnetI}} output to include
+a ``doubt'' outcome.  As written this code will handle
+a two-class outcome; additional structure emerges with
+more than two classes and some changes will be needed
+for such cases.
+
+First we obtain the predicted probabilities (for the test set)
+and round these for display purposes.
+
+```{r getpp}
+predProb <- round(testScores(nns),3)
+```
+
+We save the true labels and the predicted labels.
+
+```{r gettrue}
+truth <- as.character(smallG$ALL.AML[-c(1:40)]) 
+simpPred <- as.character(testPredictions(nns))
+```
+
+We create a closure that allows boundaries of class probabilities to be specified for 
+assertion of "doubt": 
+
+```{r mkclo}
+douClo <- function(pprob)  function(lo,hi) pprob>lo & pprob<hi
+```
+
+Evaluate the closure on the predicted probabilities, yielding a function of two arguments 
+(lo, hi).
+
+```{r evclo}
+smallDou <- douClo(predProb)
+```
+
+Now replace the labels for those predictions that are very close to .5. 
+
+```{r repla}
+douPred <- simpPred
+douPred[smallDou(.35,.65)] <- "doubt"
+```
+
+The resulting modified predictions are in the fourth column:
+
+```{r lkpr}
+mm <- cbind(predProb,truth,simpPred,douPred)
+mm
+table(mm[,"truth"], mm[,"simpPred"])
+table(mm[,"truth"], mm[,"douPred"])
+```
